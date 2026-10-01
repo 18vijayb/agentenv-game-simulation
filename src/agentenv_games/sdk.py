@@ -176,6 +176,13 @@ class Game(ABC):
         """How the log words a move, such as "calls 40"; called before ``play``. None keeps the default."""
         return None
 
+    def secret(self, turn: Turn, move: Move) -> dict | None:
+        """Spectator-only facts about a move whose action is not itself the claim, as ``{"truth": ...,
+        "lie": bool}`` plus anything else worth recording. ``Turn.truth`` covers a turn whose action *is* the
+        claim; this covers a claim implied by an action, such as UNO's Wild +4 asserting "I hold none of the
+        current colour". Called before ``play``, with the state the move was made in. None means no claim."""
+        return None
+
     def bot(self, turn: Turn) -> Move:
         """The move a stand-in makes when a player cannot; random and legal by default."""
         amount = None

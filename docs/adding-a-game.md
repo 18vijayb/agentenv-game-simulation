@@ -82,7 +82,9 @@ class LiarsDice(Game):
    its moves. A secret action is `private=True` and must have `speak="none"`.
 6. **Mark claims with `truth`.** When a player tells the table something checkable ("I drew two
    liberals"), make it a turn whose action is the claim and set `truth` to the real value. The
-   framework flags lies to spectators, and the summaries count them.
+   framework flags lies to spectators, and the summaries count them. When the claim is implied by a
+   move rather than being the move (UNO's Wild +4 asserts "I hold none of the current colour"),
+   override `secret(turn, move)` to return `{"truth": ..., "lie": bool}` and the same flagging applies.
 7. **Narrate consequences, not moves.** The framework already logs every move, its speech and its
    private reasoning. Use `self.log.event(...)` for what follows from moves (a card revealed, a player
    out, a pot won), and `describe()` when a move needs better wording than "chose 'raise' 250".

@@ -5,8 +5,8 @@ game's rules as a small Python class. Agents and models play it through an MCP s
 agent-env explorer shows every game live or as a replay: the game state on the left, and on the
 right the log of what each player said, did and privately thought.
 
-This repo is the `agentenv-games` plugin, with three games (Secret Hitler, no-limit Texas Hold'em
-and the iterated Prisoner's Dilemma), plus [`simulations/`](simulations/): games played between
+This repo is the `agentenv-games` plugin, with four games (Secret Hitler, no-limit Texas Hold'em,
+the iterated Prisoner's Dilemma and UNO with the Wild +4 challenge rule), plus [`simulations/`](simulations/): games played between
 frontier models, each with a summary and its full event log.
 
 Adding a game? Follow [`docs/adding-a-game.md`](docs/adding-a-game.md); coding agents pick up [`AGENTS.md`](AGENTS.md) automatically.

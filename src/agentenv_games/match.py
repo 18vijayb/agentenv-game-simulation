@@ -94,6 +94,8 @@ class Match:
         secret = None
         if turn.truth is not None and move.action is not None:
             secret = {"truth": turn.truth, "lie": move.action != turn.truth}
+        elif move.action is not None:
+            secret = self.game.secret(turn, move) or None
         self.log.add("move", seen_by=[turn.seat] if turn.private else None, secret=secret,
                      text=". ".join(parts) if parts else f"{name} passed.", actor=turn.seat, turn=turn.kind,
                      prompt=turn.prompt, action=move.action, amount=move.amount, say=move.say,

@@ -1,1 +1,1 @@
-Six bots play on native agent-env game envs: `deploy_env` deploys the game server in a local sandbox, and `play_game` plays it. The two tasks differ only in `env_id`. Run `agent-env games setup` once first (needs Docker).
+Six bots play on native agent-env game envs: `deploy_env` deploys the game server in a local sandbox, and `play_game` plays it. The tasks differ only in `env_id`. Run `agent-env games setup` once first (needs Docker).
