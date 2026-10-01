@@ -84,7 +84,9 @@ def summarize(folder: Path) -> dict:
 
 
 def index(root: Path, games: list[dict]) -> None:
-    lines = ["# Simulations", "", "| Game | Kind | Result | Minutes | Lies | Stand-ins |", "|---|---|---|---|---|---|"]
+    notes = root / "notes.md"
+    lines = ["# Simulations", "", *([notes.read_text().strip(), ""] if notes.is_file() else []),
+             "| Game | Kind | Result | Minutes | Lies | Stand-ins |", "|---|---|---|---|---|---|"]
     for g in games:
         m = g["meta"]
         lines.append(f"| [{g['folder']}]({g['folder']}/summary.md) | {m.get('title')} | {m.get('summary')} | "

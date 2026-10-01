@@ -55,6 +55,9 @@ a { color: var(--ink); }
 .tag { font-size: 11px; line-height: 17px; padding: 0 7px; border-radius: 8px; background: var(--ground); color: var(--ink); }
 .tag.role { color: #10151a; font-weight: 600; background: var(--team, var(--muted)); }
 .tag.gold { background: var(--gold); color: #2a2008; }
+.tag.red { background: var(--red); color: #2a0d06; }
+.tag.blue { background: var(--blue); color: #0f2230; }
+.tag.muted { background: none; color: var(--muted); box-shadow: inset 0 0 0 1px var(--edge); }
 .player.out { opacity: .45; }
 .player.out .nm { text-decoration: line-through; }
 .player.speaking { box-shadow: 0 0 0 2px var(--gold), 0 0 18px -2px color-mix(in oklab, var(--gold) 70%, transparent); }
@@ -235,7 +238,8 @@ function renderPlayers(e) {
     const r = rows[s] || {};
     const color = teamColor(r.team);
     const tags = [r.role ? `<span class="tag role">${esc(r.role)}</span>` : ""]
-      .concat((r.tags || []).map(t => `<span class="tag ${/^(President|Chancellor|Leader|Captain)$/.test(t) ? "gold" : ""}">${esc(t)}</span>`)).join("");
+      .concat((r.tags || []).map(t => typeof t === "string" ? { label: t } : t)
+        .map(t => `<span class="tag ${["gold", "red", "blue", "muted"].includes(t.tone) ? t.tone : ""}">${esc(t.label)}</span>`)).join("");
     const cls = ["player", r.out ? "out" : "", speaking === s ? "speaking" : "", ui.focus === s ? "focus" : ""].join(" ");
     return `<button class="${cls}" data-seat="${s}" style="${color ? `--team:${color}` : ""}" aria-label="Follow ${esc(p.name)}">
       ${pending.has(s) ? `<span class="thinking" title="Thinking"><i></i><i></i><i></i></span>` : ""}
@@ -296,10 +300,11 @@ function entryHTML(e, current) {
   switch (e.k) {
     case "move": {
       const lie = e.secret && ui.spoilers ? `<span class="stamp ${e.secret.lie ? "lie" : "true"} ${current ? "fresh" : ""}">${e.secret.lie ? "Lie" : "True"}</span>` : "";
-      const act = e.action !== null && e.action !== undefined ? `<span class="act">${esc(e.action)}</span>` : "";
+      const act = e.action !== null && e.action !== undefined ? `<span class="act">${esc(e.action)}${e.amount !== null && e.amount !== undefined ? " " + esc(e.amount) : ""}</span>` : "";
       const standin = e.stand_in ? `<span class="kind">stand-in</span>` : "";
-      if (e.say) return `<div class="entry say ${hidden(e) ? "private" : ""}"><div class="head">${esc(nm(e.actor))}${roleBadge(e.actor)}<span class="kind">${esc(e.turn)}</span>${act}${lie}${standin}</div><div class="body">${esc(e.say)}</div></div>`;
-      return `<div class="entry action ${hidden(e) ? "private" : ""}">${priv}<b>${esc(nm(e.actor))}</b> ${esc(e.turn)} ${act}${lie}${standin}</div>`;
+      if (e.say) return `<div class="entry say ${hidden(e) ? "private" : ""}"><div class="head">${esc(nm(e.actor))}${roleBadge(e.actor)}<span class="kind">${esc(e.turn)}</span>${e.described ? `<span class="act">${esc(e.described)}</span>` : act}${lie}${standin}</div><div class="body">${esc(e.say)}</div></div>`;
+      const what = e.described ? `<span>${esc(e.described)}</span>` : act;
+      return `<div class="entry action ${hidden(e) ? "private" : ""}">${priv}<b>${esc(nm(e.actor))}</b> <span class="kind">${esc(e.turn)}</span> ${what}${lie}${standin}</div>`;
     }
     case "think": return `<div class="entry think"><div class="head">${esc(nm(e.actor))} thinks</div><div class="body">${esc(e.text)}</div></div>`;
     case "stand_in": return `<div class="entry warn">${esc(e.text)}</div>`;

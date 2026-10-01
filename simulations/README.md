@@ -1,8 +1,22 @@
 # Simulations
 
+Games between frontier models, each called through a LiteLLM proxy. Open a game's `summary.md` for
+the seating, roles, what happened and every lie with the liar's stated reason, or load the logs into
+your own explorer with `python scripts/games.py load simulations/` to replay them.
+
+- `*-mcp-*` games were played through each game's MCP tools (`get_turn`, `take_action`, ...), with
+  models calling them by function calling.
+- `secret-hitler-text-*` games came first: each turn the model got a text prompt and answered with
+  one JSON object. Their logs are converted to the current format.
+
+All seats ran on each model's default settings. GPT-5.4, Claude Opus 5.5, Qwen3 235B and DeepSeek V4
+Pro answered without reasoning tokens; Gemini 3.1 Pro, Grok 4.20 and Kimi K3 reasoned. Read results
+as a baseline, not a ranking.
+
 | Game | Kind | Result | Minutes | Lies | Stand-ins |
 |---|---|---|---|---|---|
 | [prisoners-dilemma-mcp-1](prisoners-dilemma-mcp-1/summary.md) | Iterated Prisoner's Dilemma | GPT-5.4 wins 24 to 19. | 2 | 0 | 0 |
+| [secret-hitler-mcp-1](secret-hitler-mcp-1/summary.md) | Secret Hitler | The liberals win: five liberal policies were enacted. | 30 | 0 | 0 |
 | [secret-hitler-text-1](secret-hitler-text-1/summary.md) | Secret Hitler | The liberals win: Hitler was executed. | 15 | 3 | 0 |
 | [secret-hitler-text-2](secret-hitler-text-2/summary.md) | Secret Hitler | The liberals win: five liberal policies were enacted. | 35 | 0 | 0 |
 | [secret-hitler-text-3](secret-hitler-text-3/summary.md) | Secret Hitler | The liberals win: five liberal policies were enacted. | 14 | 4 | 0 |
@@ -11,10 +25,10 @@
 
 | Player | Games | Wins | Roles | Lies / claims | Stand-ins |
 |---|---|---|---|---|---|
-| DeepSeek V4 Pro | 3 | 3 | Liberal 3 | 0 / 8 | 0 |
-| GPT-5.4 | 4 | 3 | Hitler 1, Liberal 2, – 1 | 2 / 7 | 0 |
-| Gemini 3.1 Pro | 3 | 3 | Liberal 3 | 0 / 9 | 0 |
-| Claude Opus 5.5 | 4 | 2 | Fascist 1, Liberal 2, – 1 | 1 / 9 | 0 |
-| Kimi K3 | 3 | 1 | Fascist 1, Hitler 1, Liberal 1 | 1 / 10 | 0 |
-| Qwen3 235B | 3 | 1 | Fascist 1, Hitler 1, Liberal 1 | 1 / 3 | 0 |
-| Grok 4.20 | 3 | 0 | Fascist 3 | 2 / 3 | 0 |
+| DeepSeek V4 Pro | 4 | 4 | Liberal 4 | 0 / 11 | 0 |
+| Claude Opus 5.5 | 5 | 3 | Fascist 1, Liberal 3, – 1 | 1 / 13 | 0 |
+| GPT-5.4 | 5 | 3 | Fascist 1, Hitler 1, Liberal 2, – 1 | 2 / 8 | 0 |
+| Gemini 3.1 Pro | 4 | 3 | Hitler 1, Liberal 3 | 0 / 11 | 0 |
+| Kimi K3 | 4 | 2 | Fascist 1, Hitler 1, Liberal 2 | 1 / 12 | 0 |
+| Grok 4.20 | 4 | 1 | Fascist 3, Liberal 1 | 2 / 7 | 0 |
+| Qwen3 235B | 4 | 1 | Fascist 2, Hitler 1, Liberal 1 | 1 / 4 | 0 |

@@ -66,7 +66,7 @@ async def test_an_agent_seat_without_its_deployed_agent_fails_up_front(store):
             TaskStepContext(instance_id="run-x"))
 
 
-@pytest.mark.parametrize("bundle", ["game-prisoners-dilemma", "game-secret-hitler", "game-secret-hitler-models",
+@pytest.mark.parametrize("bundle", ["game-prisoners-dilemma", "game-secret-hitler", "game-secret-hitler-models", "game-texas-holdem", "game-texas-holdem-models",
                                     "game-prisoners-dilemma-models"])
 def test_the_shipped_bundles_are_valid(bundle):
     folder = resources.files("agentenv_games").joinpath("bundles", bundle, "tasks")

@@ -89,9 +89,11 @@ class Runner:
 
     def _log_move(self, turn: Turn, move: Move) -> None:
         name = self.game.names[turn.seat]
-        parts = []
-        if move.action is not None:
-            parts.append(f"{name} chose {move.action!r}" if not turn.private else f"{name} chose {move.action!r} (secret)")
+        described = self.game.describe(turn, move)
+        parts = [f"{name} {described}"] if described else []
+        if move.action is not None and not described:
+            chosen = f"{move.action} {move.amount}" if move.amount is not None else repr(move.action)
+            parts.append(f"{name} chose {chosen}" + (" (secret)" if turn.private else ""))
         if move.say:
             parts.append(f'{name} says: "{move.say}"')
         secret = None
@@ -99,7 +101,8 @@ class Runner:
             secret = {"truth": turn.truth, "lie": move.action != turn.truth}
         self.log.add("move", seen_by=[turn.seat] if turn.private else None, secret=secret,
                      text=". ".join(parts) if parts else f"{name} passed.", actor=turn.seat, turn=turn.kind,
-                     prompt=turn.prompt, action=move.action, say=move.say, stand_in=move.stand_in)
+                     prompt=turn.prompt, action=move.action, amount=move.amount, say=move.say, stand_in=move.stand_in,
+                     described=described)
 
 
 class BotPlayer:

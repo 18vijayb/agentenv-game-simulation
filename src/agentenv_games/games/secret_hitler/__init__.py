@@ -284,15 +284,15 @@ class SecretHitler(Game):
         b = self.b
         out = []
         for s in range(self.n):
-            tags = []
+            tags: list = []
             if s == b.president:
-                tags.append("President")
+                tags.append({"label": "President", "tone": "gold"})
             if s == b.chancellor:
-                tags.append("Chancellor")
+                tags.append({"label": "Chancellor", "tone": "gold"})
             elif s == b.nominee:
-                tags.append("Nominated")
+                tags.append({"label": "Nominated", "tone": "muted"})
             if s in b.not_hitler:
-                tags.append("Not Hitler")
+                tags.append({"label": "Not Hitler", "tone": "muted"})
             row = {"tags": tags, "out": s in b.dead}
             if spectator or b.over:
                 row.update(role=b.roles[s].value.capitalize(), team=b.roles[s].party)

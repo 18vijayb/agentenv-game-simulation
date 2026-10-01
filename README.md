@@ -5,9 +5,9 @@ game's rules as a small Python class. Agents and models play it through an MCP s
 agent-env explorer shows every game live or as a replay: the game state on the left, and on the
 right the log of what each player said, did and privately thought.
 
-This repo is the `agentenv-games` plugin, with two games (Secret Hitler and the iterated Prisoner's
-Dilemma), plus [`simulations/`](simulations/): games played between frontier models, each with a
-summary and its full event log.
+This repo is the `agentenv-games` plugin, with three games (Secret Hitler, no-limit Texas Hold'em
+and the iterated Prisoner's Dilemma), plus [`simulations/`](simulations/): games played between
+frontier models, each with a summary and its full event log.
 
 ## Quick start
 
@@ -23,6 +23,7 @@ With a model endpoint configured (`[model]` in the config, or `LITELLM_BASE_URL`
 
 ```bash
 agent-env run game-prisoners-dilemma-models   # Claude Opus 5.5 against GPT-5.4, about 2 minutes
+agent-env run game-texas-holdem-models        # six models, ten hands
 agent-env run game-secret-hitler-models       # seven models, 30 to 60 minutes
 ```
 
@@ -68,10 +69,10 @@ coin = "my_games.coin:Coin"
 
 | Part | What it does |
 |---|---|
-| `Turn(seat, prompt, choices=... or number=(lo, hi), speak=..., private=..., truth=...)` | One decision. `choices` lists the legal actions, `number` bounds an integer, neither makes it a speaking turn. `speak` is `"required"`, `"optional"` or `"none"`. A `private` action is seen only by the player who made it. `truth` marks a claim: the framework compares the action with it and flags lies to spectators. Return several turns to have them answered at once, as in a vote. |
-| `play(moves)` | Gets a `Move` per seat (`action`, `say`, `reasoning`, `beliefs`). The framework already logs each move, its speech and its reasoning; the game narrates consequences with `self.log.event(text, seen_by=[seats])`, where `seen_by` makes an event private. |
+| `Turn(seat, prompt, choices=... or number=(lo, hi), amounts=..., speak=..., private=..., truth=...)` | One decision. `choices` lists the legal actions, `number` bounds an integer, neither makes it a speaking turn. `amounts` gives choices that also take an integer, such as `{"raise": (40, 1000)}`; players send `take_action(action="raise", amount=250)`. `speak` is `"required"`, `"optional"` or `"none"`. A `private` action is seen only by the player who made it. `truth` marks a claim: the framework compares the action with it and flags lies to spectators. `prompt` is logged publicly, so secrets belong in `view`. Return several turns to have them answered at once, as in a vote. |
+| `play(moves)` | Gets a `Move` per seat (`action`, `amount`, `say`, `reasoning`, `beliefs`). The framework already logs each move, its speech and its reasoning; the game narrates consequences with `self.log.event(text, seen_by=[seats])`, where `seen_by` makes an event private. `describe(turn, move)` may word a move for the log, such as "calls 40 and is all-in". |
 | `intro(seat)` / `view(seat)` | What a seat is told once (its identity and secret role), and what it may see right now (its hand, its investigation results). Never put another seat's secrets here. |
-| `board(spectator)` / `players(spectator)` | The viewer's state panel. Board values can be scalars, lists, nested dicts, or `{"value": n, "max": m}`, which draws as a meter. Each player can have a `role`, a `team` (coloured by the class's `teams`), `tags` and `out`. With `spectator=True` you may include hidden information; the viewer shows it only when hidden information is switched on. |
+| `board(spectator)` / `players(spectator)` | The viewer's state panel. Board values can be scalars, lists, nested dicts, or `{"value": n, "max": m}`, which draws as a meter. Each player can have a `role` (a badge: a secret role, or poker hole cards), a `team` (coloured by the class's `teams`), `tags` (strings, or `{"label": ..., "tone": "gold" / "red" / "blue" / "muted"}`) and `out`. With `spectator=True` you may include hidden information; the viewer shows it only when hidden information is switched on. |
 | `beliefs` | Optional. A phrase such as `"the probability that they are on the fascist team"`; players then report a number per opponent each turn, and the viewer adds a beliefs heatmap. |
 | `bot(turn)` | The move a stand-in makes. Random and legal by default; a game can make it smarter. |
 

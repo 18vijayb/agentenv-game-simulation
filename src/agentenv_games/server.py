@@ -76,14 +76,15 @@ class Table:
         self._done[seat].set()
 
     def _parse(self, turn: Turn, raw: dict) -> Move:
-        action = turn.check(raw.get("action"))
+        action, amount = turn.parse(raw.get("action"), raw.get("amount"))
         say = str(raw.get("say") or "").strip()[:MAX_SAY] or None
         if turn.speak == "required" and not say:
             raise ValueError('"say" is required this turn: tell the table something')
         if turn.speak == "none":
             say = None
         reasoning = str(raw.get("reasoning") or "").strip()[:MAX_REASONING]
-        return Move(action=action, say=say, reasoning=reasoning, beliefs=self._beliefs(turn.seat, raw.get("beliefs")))
+        return Move(action=action, amount=amount, say=say, reasoning=reasoning,
+                    beliefs=self._beliefs(turn.seat, raw.get("beliefs")))
 
     def _beliefs(self, seat: int, raw: Any) -> dict[int, float]:
         if not isinstance(raw, dict) or not self.game.beliefs:
@@ -146,11 +147,14 @@ def _seat_server(table: Table, seat: int, game_name: str, advertise: str) -> Fas
         return table.turn(seat)
 
     @mcp.tool()
-    def take_action(action: str = "", say: str = "", reasoning: str = "", beliefs: dict[str, float] | None = None) -> str:
+    def take_action(action: str = "", amount: int = 0, say: str = "", reasoning: str = "",
+                    beliefs: dict[str, float] | None = None) -> str:
         """Make your decision for this turn. action: your choice, as get_turn describes it (empty for a speech-only turn).
-        say: what you tell all players, if anything. reasoning: why you chose this, in a sentence or two (never shown
-        to other players). beliefs: optional, see get_rules."""
-        return table.submit(seat, {"action": action, "say": say, "reasoning": reasoning, "beliefs": beliefs})
+        amount: for a choice get_turn says needs an amount, that integer; otherwise leave it 0. say: what you tell all
+        players, if anything. reasoning: why you chose this, in a sentence or two (never shown to other players).
+        beliefs: optional, see get_rules."""
+        return table.submit(seat, {"action": action, "amount": amount, "say": say, "reasoning": reasoning,
+                                   "beliefs": beliefs})
 
     @mcp.tool()
     def read_log(since: int = 0) -> list[str]:

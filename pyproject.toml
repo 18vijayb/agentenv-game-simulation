@@ -24,12 +24,15 @@ agent_games = "agentenv_games.explorer:GamesExplorer"
 [project.entry-points."agentenv_games.games"]
 secret_hitler = "agentenv_games.games.secret_hitler:SecretHitler"
 prisoners_dilemma = "agentenv_games.games.prisoners_dilemma:PrisonersDilemma"
+texas_holdem = "agentenv_games.games.holdem:TexasHoldem"
 
 [project.entry-points."agent_env.bundles"]
 game-prisoners-dilemma = "agentenv_games.bundles"
 game-secret-hitler = "agentenv_games.bundles"
 game-secret-hitler-models = "agentenv_games.bundles"
 game-prisoners-dilemma-models = "agentenv_games.bundles"
+game-texas-holdem = "agentenv_games.bundles"
+game-texas-holdem-models = "agentenv_games.bundles"
 
 [build-system]
 requires = ["hatchling"]
