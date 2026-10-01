@@ -53,5 +53,7 @@ packages = ["src/agentenv_games"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+addopts = "-m 'not integration'"
+markers = ["integration: needs Docker and the local registry on :5000; run with -m integration"]
 testpaths = ["tests"]
 pythonpath = ["tests"]

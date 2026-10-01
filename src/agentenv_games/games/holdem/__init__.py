@@ -49,14 +49,11 @@ class TexasHoldem(Game):
         self.street = "preflop"
         self.blind_seats: tuple[int | None, int | None] = (None, None)
         self.current_bet = self.min_raise = 0
-        self.started = False
+        self._new_hand()
 
     # ---- turns -------------------------------------------------------------------------------
 
     def turns(self) -> list[Turn]:
-        if not self.started:
-            self.started = True
-            self._new_hand()
         if self.finished:
             return []
         s = self.actor
@@ -259,7 +256,7 @@ class TexasHoldem(Game):
     # ---- what players and spectators see ------------------------------------------------------
 
     def result(self) -> Result | None:
-        if not self.started or not self.finished:
+        if not self.finished:
             return None
         top = max(self.chips)
         winners = tuple(s for s in range(self.n) if self.chips[s] == top)

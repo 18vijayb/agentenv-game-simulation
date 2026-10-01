@@ -31,16 +31,32 @@ class Match:
         self.game, self.log = game, log
         game.bind(list(names), random.Random(seed), log, params)
         self.table = Table(game, log)
+        self.stage = "new"  # "new", then "setup" while setup() runs, then "playing"
 
     def state(self) -> dict:
+        """Both boards and both player lists, and who is still to move. Empty before ``setup`` starts,
+        and for events ``setup`` logs before the state they describe exists."""
+        if self.stage == "new":
+            return {}
+        if self.stage == "setup":
+            try:
+                return self._snapshot()
+            except (AttributeError, KeyError, IndexError, TypeError):
+                return {}
+        return self._snapshot()
+
+    def _snapshot(self) -> dict:
         t = self.table
         return {"board": self.game.board(False), "spectator": self.game.board(True), "players": self.game.players(False),
                 "spectator_players": self.game.players(True), "pending": sorted(set(t.pending) - set(t.moves))}
 
     def begin(self) -> list[int]:
+        """Log the setup event, then set the game up, so anything ``setup`` narrates comes after it."""
         g = self.game
-        g.setup()
         self.log.add("setup", text=f"{g.title}: {', '.join(g.names)}.")
+        self.stage = "setup"
+        g.setup()
+        self.stage = "playing"
         for seat in range(g.n):
             self.log.add("intro", seen_by=[seat], actor=seat, text=g.intro(seat))
         return self._open()

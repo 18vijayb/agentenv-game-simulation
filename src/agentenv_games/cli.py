@@ -20,8 +20,24 @@ def setup(names: tuple[str, ...]) -> None:
     """Build the game server image and register each game as an env (needs Docker)."""
     from .setup import setup as run
 
-    run(list(names) or None, echo=click.echo)
-    click.echo("Done. Tasks reference these envs by id, such as agent-games/texas_holdem.")
+    envs = run(list(names) or None, echo=click.echo)
+    click.echo(f"Done. A deploy_env step deploys them by id: {', '.join(e.id for e in envs)}.")
+
+
+@games.command(name="list")
+@click.option("--limit", default=10, show_default=True, help="How many games to show, newest first.")
+def list_games(limit: int) -> None:
+    """Recent games in the configured store, with their result and where to replay them."""
+    from .storage import recent_games
+
+    games_ = recent_games(limit)
+    if not games_:
+        click.echo("No games yet. Try: agent-env run game-texas-holdem")
+    for g in games_:
+        where = f"env {g['env_id']} v{g.get('env_version')}" if g.get("env_id") else "in-process"
+        click.echo(f"{g['game_id']}  {g.get('title') or g.get('game')}  {g['status']}  ({where})")
+        click.echo(f"    {g.get('summary') or g.get('error') or ''}")
+        click.echo(f"    replay: http://localhost:8234/games/{g['game_id']}  (with `agent-env up` running)")
 
 
 @games.command()

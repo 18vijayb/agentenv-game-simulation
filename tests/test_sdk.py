@@ -73,15 +73,21 @@ async def test_a_minimal_game_runs_end_to_end():
 
 def test_every_installed_game_is_in_the_env_image_and_has_bundles():
     from importlib import resources
+    from importlib.metadata import entry_points
 
     from agentenv_games.envserver import BUILT_IN
 
     assert set(available_games()) == set(BUILT_IN), "register a new game in pyproject.toml and envserver.BUILT_IN"
     for name, cls in BUILT_IN.items():
         assert cls.name == name and cls.title and cls.rules
-    bundles = {p.name for p in resources.files("agentenv_games").joinpath("bundles").iterdir()}
+    folders = {p.name for p in resources.files("agentenv_games").joinpath("bundles").iterdir()}
+    declared = {ep.name for ep in entry_points(group="agent_env.bundles") if ep.value == "agentenv_games.bundles"}
     for name in BUILT_IN:
-        assert f"game-{name.replace('_', '-')}" in bundles, f"add a bots bundle game-{name.replace('_', '-')}"
+        bundle = f"game-{name.replace('_', '-')}"
+        assert bundle in folders, f"add a bots bundle folder bundles/{bundle}"
+        assert bundle in declared, f'declare {bundle} = "agentenv_games.bundles" under agent_env.bundles in pyproject.toml'
+    assert declared <= folders, f"bundles declared without a folder: {sorted(declared - folders)}"
+
 
 
 async def test_a_game_may_declare_a_claim_implied_by_a_move():

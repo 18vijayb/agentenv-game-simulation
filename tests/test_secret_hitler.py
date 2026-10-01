@@ -33,4 +33,5 @@ async def test_claims_carry_the_truth_and_public_players_hide_roles():
     assert claims and all(e["secret"]["lie"] == (e["action"] != e["secret"]["truth"]) for e in claims)
     running = [e for e in log.events if e["k"] == "move"]
     assert all("role" not in p for e in running[:-1] for p in e["state"]["players"])
-    assert all("role" in p for p in log.events[0]["state"]["spectator_players"])
+    assert log.events[0]["k"] == "setup" and log.events[0]["state"] == {}
+    assert all("role" in p for p in log.events[1]["state"]["spectator_players"])

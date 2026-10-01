@@ -44,7 +44,7 @@ last player with dice wins. Table talk is allowed and may be a bluff."""
         self.round_no = 0
         self.last_challenge = "–"
         self.last_reveal: dict[str, str] = {}
-        self.started = False
+        self._new_round()
 
     # ---- turns -------------------------------------------------------------------------------
 
@@ -70,9 +70,6 @@ last player with dice wins. Table talk is allowed and may be a bluff."""
         return out
 
     def turns(self) -> list[Turn]:
-        if not self.started:
-            self.started = True
-            self._new_round()
         if len(self.alive) < 2:
             return []
         amounts = self.legal_bids()
@@ -144,7 +141,7 @@ last player with dice wins. Table talk is allowed and may be a bluff."""
     # ---- what players and spectators see ------------------------------------------------------
 
     def result(self) -> Result | None:
-        if not self.started or len(self.alive) > 1:
+        if len(self.alive) > 1:
             return None
         (winner,) = self.alive
         return Result(winners=(winner,), summary=f"{self.names[winner]} is the last player with dice, "
@@ -166,7 +163,7 @@ last player with dice wins. Table talk is allowed and may be a bluff."""
         return out
 
     def board(self, spectator: bool) -> dict:
-        over = self.started and len(self.alive) < 2
+        over = len(self.alive) < 2
         out: dict = {
             "Round": self.round_no,
             "Dice in play": {"value": self.total, "max": self.start_dice * self.n},

@@ -14,7 +14,8 @@ from agent_env.config import get_config
 from agent_env.explorer.plugin import ExplorerPlugin
 from agent_env.store import ObjectNotFoundError
 
-from .log import GAME_ID, KEY_PREFIX, events_key, meta_key
+from .log import GAME_ID, events_key, meta_key
+from .storage import recent_games
 
 API = "/api/v1/games"
 PAGES = "/games"
@@ -42,16 +43,7 @@ def build_router() -> APIRouter:
     @router.get(API)
     def list_games() -> dict:
         """Every logged game, newest first."""
-        store = get_config().get_object_store()
-        games = []
-        for key in store.list(KEY_PREFIX):
-            if key.endswith("/meta.json"):
-                try:
-                    games.append(json.loads(store.get(store.object_url(key))))
-                except ObjectNotFoundError:
-                    continue
-        games.sort(key=lambda g: g.get("started_at", ""), reverse=True)
-        return {"games": games}
+        return {"games": recent_games()}
 
     @router.get(f"{API}/{{game_id}}")
     def get_game(game_id: str, since: int = Query(0, ge=0)) -> dict:

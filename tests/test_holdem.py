@@ -1,15 +1,14 @@
-import dataclasses
 
 import pytest
 
-from agentenv_games import Game, Turn
+from agentenv_games import Turn
 from agentenv_games.games.holdem import TexasHoldem
 from agentenv_games.games.holdem.cards import best_hand, describe, show
 from agentenv_games.players import ChatEndpoint, ModelPlayer
 from agentenv_games.runner import BotPlayer
 from agentenv_games.server import McpServer
 
-from helpers import play, scripted_llm, setup_game
+from helpers import RandomPlayer, play, scripted_llm, setup_game
 
 
 def hand(text: str) -> list[str]:
@@ -84,22 +83,14 @@ def test_raises_take_an_amount_in_range():
 
 
 async def test_games_keep_every_chip_and_end():
-    class Random(BotPlayer):
-        def __init__(self, game):
-            self.game = game
-
-        async def play(self, seat, match):
-            table = match.match.table
-            table.record(seat, dataclasses.replace(Game.bot(self.game, table.pending[seat]), reasoning="", stand_in=False))
-
     for n in (2, 3, 6, 9):
         for seed in range(8):
-            for player in (BotPlayer, Random):
+            for player in (BotPlayer, RandomPlayer):
                 g, match, log = setup_game(TexasHoldem, [f"P{i}" for i in range(n)], seed,
                                            {"hands": 12, "double_blinds_every": 3})
-                result = await play(match, [player(g) if player is Random else player() for _ in range(n)])
+                result = await play(match, [player(g) if player is RandomPlayer else player() for _ in range(n)])
                 assert sum(g.chips) == n * g.start_chips and result.winners
-                for e in log.events:
+                for e in log.events[1:]:
                     tags = [t for p in e["state"]["players"] for t in p.get("tags", [])]
                     assert all(isinstance(t, (str, dict)) for t in tags)
 
@@ -109,7 +100,7 @@ async def test_hole_cards_stay_private_until_a_showdown():
     await play(match, [BotPlayer() for _ in range(4)])
     dealt = [e for e in log.events if e["k"] == "hole"]
     assert dealt and all(e["vis"] == "private" and len(e["seen_by"]) == 1 for e in dealt)
-    assert all("role" not in p for e in log.events for p in e["state"]["players"] if e["k"] == "hole")
+    assert all("role" not in p for e in log.events if e["k"] == "hole" for p in e["state"]["players"])
     for e in log.events:
         if e["k"] == "move":
             assert "dealt" not in e["prompt"]

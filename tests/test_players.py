@@ -1,6 +1,5 @@
 import asyncio
 
-import httpx
 
 from agentenv_games.games.prisoners_dilemma import PrisonersDilemma
 from agentenv_games.games.secret_hitler import SecretHitler

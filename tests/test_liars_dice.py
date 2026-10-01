@@ -1,23 +1,13 @@
-import dataclasses
 
 import pytest
 
-from agentenv_games import Game, Move
+from agentenv_games import Move
 from agentenv_games.games.liars_dice import LiarsDice
 from agentenv_games.players import ChatEndpoint, ModelPlayer, call_mcp
 from agentenv_games.runner import BotPlayer
 from agentenv_games.server import McpServer
 
-from helpers import play, scripted_llm, setup_game
-
-
-class RandomLegal(BotPlayer):
-    def __init__(self, game):
-        self.game = game
-
-    async def play(self, seat, match):
-        table = match.match.table
-        table.record(seat, dataclasses.replace(Game.bot(self.game, table.pending[seat]), reasoning="", stand_in=False))
+from helpers import RandomPlayer, play, scripted_llm, setup_game
 
 
 def game(n=3, **params):
@@ -30,7 +20,7 @@ def game(n=3, **params):
 def check_dice(g, log):
     """Dice only ever leave the table one per challenge, and the board agrees with each seat's cup."""
     reveals = 0
-    for e in log.events:
+    for e in log.events[1:]:
         reveals += e["k"] == "reveal"
         board, players = e["state"]["board"], e["state"]["spectator_players"]
         assert board["Dice in play"]["value"] == sum(board["Dice"].values()) == g.start_dice * g.n - reveals
@@ -43,7 +33,7 @@ async def test_bot_games_end_with_one_player_holding_dice():
         for seed in range(20):
             for random_moves in (False, True):
                 g, match, log = setup_game(LiarsDice, [f"P{i}" for i in range(n)], seed)
-                result = await play(match, [RandomLegal(g) if random_moves else BotPlayer() for _ in range(n)])
+                result = await play(match, [RandomPlayer(g) if random_moves else BotPlayer() for _ in range(n)])
                 assert len(result.winners) == 1 and g.alive == list(result.winners)
                 assert log.events[-1]["k"] == "end" and not [e for e in log.events if e["k"] == "stand_in"]
                 check_dice(g, log)
@@ -115,7 +105,7 @@ async def test_dice_stay_under_the_cup_until_a_challenge():
     await play(match, [BotPlayer() for _ in names])
     rolls = [e for e in log.events if e["k"] == "roll"]
     assert rolls and all(e["vis"] == "private" and len(e["seen_by"]) == 1 for e in rolls)
-    for e in log.events:
+    for e in log.events[1:]:
         assert all("role" not in p for p in e["state"]["players"])
         assert "Matching" not in e["state"]["board"]
         if e["k"] == "move":

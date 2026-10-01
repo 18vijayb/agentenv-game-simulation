@@ -22,12 +22,13 @@ uv pip install --python .venv/bin/python -e ../agentenv-framework/packages/agent
 
 | Command | What it does |
 |---|---|
-| `.venv/bin/python -m pytest -q` | all tests that need no Docker |
-| `.venv/bin/python -m pytest -q tests/integration` | native envs end to end; needs Docker and a registry on `:5000` |
+| `.venv/bin/python -m pytest -q` | every test that needs no Docker |
+| `.venv/bin/python -m pytest -q -m integration` | native envs end to end; needs Docker and a registry on `:5000` |
 | `.venv/bin/agent-env plugin check` | every entry point of this package is active |
 | `.venv/bin/agent-env run game-<name>` | a bot game in-process |
 | `.venv/bin/agent-env games setup` | build the game server image and register `agent-games/<game>` envs |
 | `.venv/bin/agent-env run native-games --task <game>` | a bot game on a deployed env |
+| `.venv/bin/agent-env games list` | recent games with their result, env and replay link |
 | `.venv/bin/agent-env up --no-bootstrap` | the explorer at `localhost:8234/games`; needs a `.agentenv/config.toml` (empty is fine) |
 
 ## Layout

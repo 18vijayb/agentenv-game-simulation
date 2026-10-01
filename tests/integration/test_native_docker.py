@@ -26,7 +26,8 @@ def _available() -> bool:
         return False
 
 
-pytestmark = pytest.mark.skipif(not _available(), reason="needs Docker and the local registry on :5000")
+pytestmark = [pytest.mark.integration,
+              pytest.mark.skipif(not _available(), reason="needs Docker and the local registry on :5000")]
 
 
 @pytest.mark.parametrize("task, game", [("texas-holdem", "texas_holdem"), ("secret-hitler", "secret_hitler"),

@@ -1,9 +1,10 @@
+import dataclasses
 import json
-import random
 import re
 
 import httpx
 
+from agentenv_games import Game
 from agentenv_games.log import GameLog
 from agentenv_games.match import LocalMatch, Match
 from agentenv_games.players import call_mcp
@@ -22,6 +23,19 @@ def setup_game(cls, names, seed=0, params=None, sink=None):
 
 async def play(match, players, **kw):
     return await Runner(LocalMatch(match), players, **kw).run()
+
+
+class RandomPlayer(BotPlayer):
+    """Plays a uniformly random legal move (``Game.bot`` of the base class) in an in-process match:
+    finds the paths a sensible bot never takes. Its moves count as the player's own, not stand-ins."""
+
+    def __init__(self, game: Game):
+        self.game = game
+
+    async def play(self, seat, match):
+        table = match.match.table
+        move = Game.bot(self.game, table.pending[seat])
+        table.record(seat, dataclasses.replace(move, reasoning="", stand_in=False))
 
 
 async def bot_game(cls, n, seed, params=None):

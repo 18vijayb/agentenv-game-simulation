@@ -5,7 +5,6 @@ import contextlib
 import socket
 
 import httpx
-import pytest
 import uvicorn
 
 from agentenv_games.envserver import GameEnvironment
