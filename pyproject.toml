@@ -29,6 +29,7 @@ secret_hitler = "agentenv_games.games.secret_hitler:SecretHitler"
 prisoners_dilemma = "agentenv_games.games.prisoners_dilemma:PrisonersDilemma"
 texas_holdem = "agentenv_games.games.holdem:TexasHoldem"
 uno = "agentenv_games.games.uno:Uno"
+liars_dice = "agentenv_games.games.liars_dice:LiarsDice"
 
 [project.entry-points."agent_env.bundles"]
 game-prisoners-dilemma = "agentenv_games.bundles"
@@ -39,6 +40,7 @@ game-texas-holdem = "agentenv_games.bundles"
 game-texas-holdem-models = "agentenv_games.bundles"
 game-uno = "agentenv_games.bundles"
 game-uno-models = "agentenv_games.bundles"
+game-liars-dice = "agentenv_games.bundles"
 native-games = "agentenv_games.bundles"
 native-games-models = "agentenv_games.bundles"
 

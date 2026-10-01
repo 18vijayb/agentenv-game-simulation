@@ -29,7 +29,8 @@ def _available() -> bool:
 pytestmark = pytest.mark.skipif(not _available(), reason="needs Docker and the local registry on :5000")
 
 
-@pytest.mark.parametrize("task, game", [("texas-holdem", "texas_holdem"), ("secret-hitler", "secret_hitler"), ("uno", "uno")])
+@pytest.mark.parametrize("task, game", [("texas-holdem", "texas_holdem"), ("secret-hitler", "secret_hitler"),
+                                        ("uno", "uno"), ("liars-dice", "liars_dice")])
 def test_a_native_game_deploys_plays_and_tears_down(tmp_path, task, game):
     config = tmp_path / ".agentenv" / "config.toml"
     config.parent.mkdir()

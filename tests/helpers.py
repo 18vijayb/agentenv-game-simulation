@@ -40,6 +40,12 @@ def first_legal(turn: dict) -> str:
     return number.group(1) if number else ""
 
 
+def first_amount(turn: dict, action: str) -> int:
+    """The low end of the amount ``action`` needs, if get_turn says it needs one; otherwise 0."""
+    needed = re.search(rf'"{re.escape(action)}" also needs "amount", an integer from (-?\d+)', turn.get("action", ""))
+    return int(needed.group(1)) if needed else 0
+
+
 def scripted_llm(*, say="I have nothing to hide.", stall=False, filtered=False):
     """An OpenAI-compatible endpoint that plays by tool calls: get_rules, get_turn, then take_action."""
     def tool_call(messages, name, args):
@@ -65,8 +71,9 @@ def scripted_llm(*, say="I have nothing to hide.", stall=False, filtered=False):
             if not turn.get("your_turn"):
                 return httpx.Response(200, json={"choices": [{"finish_reason": "stop", "message": {"content": "Waiting."}}]})
             speech = say if turn.get("say") == "required" else ""
-            return tool_call(messages, "take_action", {"action": first_legal(turn), "say": speech,
-                                                       "reasoning": "The first legal option."})
+            action = first_legal(turn)
+            return tool_call(messages, "take_action", {"action": action, "amount": first_amount(turn, action),
+                                                       "say": speech, "reasoning": "The first legal option."})
         return httpx.Response(200, json={"choices": [{"finish_reason": "stop", "message": {"content": "Done."}}]})
 
     return httpx.MockTransport(handle)
@@ -84,7 +91,9 @@ def harness_agent(registered: dict):
         turn = json.loads(await call_mcp(url, "get_turn"))
         if turn.get("your_turn"):
             speech = "Playing it straight." if turn.get("say") == "required" else ""
-            await call_mcp(url, "take_action", {"action": first_legal(turn), "say": speech, "reasoning": "harness"})
+            action = first_legal(turn)
+            await call_mcp(url, "take_action", {"action": action, "amount": first_amount(turn, action), "say": speech,
+                                                "reasoning": "harness"})
         registered["messages"] = registered.get("messages", 0) + 1
         return httpx.Response(200, json={"jsonrpc": "2.0", "id": body["id"], "result": {
             "kind": "task", "id": "t", "status": {"state": "completed"}}})

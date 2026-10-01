@@ -1,0 +1,26 @@
+[
+  {
+    "id": "game",
+    "type": "play_game",
+    "game": "liars_dice",
+    "params": {},
+    "seats": [
+      {
+        "name": "Ada",
+        "bot": true
+      },
+      {
+        "name": "Boris",
+        "bot": true
+      },
+      {
+        "name": "Cleo",
+        "bot": true
+      },
+      {
+        "name": "Dmitri",
+        "bot": true
+      }
+    ]
+  }
+]

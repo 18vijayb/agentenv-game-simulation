@@ -18,6 +18,7 @@ from agentenv_protocol import AgentEnvEnvironment, extension, reset_data, tool
 
 from . import GAMES_GROUP, Game
 from .games.holdem import TexasHoldem
+from .games.liars_dice import LiarsDice
 from .games.prisoners_dilemma import PrisonersDilemma
 from .games.secret_hitler import SecretHitler
 from .games.uno import Uno
@@ -26,7 +27,7 @@ from .match import Match
 
 SEAT_HEADER = "x-agent-games-seat"
 CONTROL_URI = "urn:agentenv-games:control/v1"
-BUILT_IN: dict[str, type[Game]] = {g.name: g for g in (SecretHitler, TexasHoldem, PrisonersDilemma, Uno)}
+BUILT_IN: dict[str, type[Game]] = {g.name: g for g in (SecretHitler, TexasHoldem, PrisonersDilemma, Uno, LiarsDice)}
 _TOKEN = {"control_token": {"type": "string"}}
 CONTROL_OPS = [
     ("start", {"names": {"type": "array", "items": {"type": "string"}}, "seed": {"type": "integer"},
