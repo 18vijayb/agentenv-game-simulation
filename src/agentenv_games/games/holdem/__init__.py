@@ -318,7 +318,7 @@ class TexasHoldem(Game):
                     tags.append({"label": "all-in", "tone": "red"})
                 if self.bet[s]:
                     tags.append({"label": f"bet {self.bet[s]}", "tone": "blue"})
-            row = {"tags": tags, "out": self.chips[s] == 0 and s not in self.in_hand}
+            row = {"tags": tags, "out": self.chips[s] == 0 and (self.finished or s not in self.in_hand)}
             if s in self.hole and (spectator or s in self.revealed):
                 row["role"] = show(self.hole[s])
             rows.append(row)
