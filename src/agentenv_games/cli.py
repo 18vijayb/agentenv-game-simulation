@@ -59,7 +59,7 @@ def minecraft_setup() -> None:
 @click.option("--players", default=8, show_default=True, help="How many 3D views to forward (one per seat).")
 def watch(players: int) -> None:
     """Forward the running Minecraft env to this machine: the server on localhost:25565 for your own Java
-    1.21.4 client, and each seat's 3D view on localhost:3000 and up."""
+    1.21.4 client, and each seat's 3D view on 127.0.0.1:8300 and up."""
     from .watch import forward
 
     for line in forward(players):

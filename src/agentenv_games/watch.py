@@ -7,6 +7,8 @@ import subprocess
 
 FORWARDER = "agent-games-minecraft-watch"
 SOCAT_IMAGE = "alpine/socat:1.8.0.3"
+VIEW_PORT = 3000
+HOST_VIEW_PORT = 8300
 
 
 def _docker(*args: str) -> str:
@@ -27,11 +29,12 @@ def forward(players: int = 8) -> list[str]:
     network, ip = _docker("inspect", "-f", "{{range $k, $v := .NetworkSettings.Networks}}{{$k}} {{$v.IPAddress}}\n{{end}}",
                           cid).splitlines()[0].split()
     subprocess.run(["docker", "rm", "-f", FORWARDER], capture_output=True)
-    ports = [25565, *range(3000, 3000 + players)]
-    script = " & ".join(f"socat TCP-LISTEN:{p},fork,reuseaddr TCP:{ip}:{p}" for p in ports) + " & wait"
+    ports = {25565: 25565, **{HOST_VIEW_PORT + i: VIEW_PORT + i for i in range(players)}}
+    script = " & ".join(f"socat TCP-LISTEN:{p},fork,reuseaddr TCP:{ip}:{p}" for p in ports.values()) + " & wait"
     _docker("run", "-d", "--rm", "--name", FORWARDER, "--network", network,
-            *[a for p in ports for a in ("-p", f"127.0.0.1:{p}:{p}")], "--entrypoint", "sh", SOCAT_IMAGE, "-c", script)
+            *[a for host, p in ports.items() for a in ("-p", f"127.0.0.1:{host}:{p}")], "--entrypoint", "sh", SOCAT_IMAGE,
+            "-c", script)
     return [f"Forwarding env container {cid[:12]} ({ip} on {network}):",
             "  Minecraft Java 1.21.4: Multiplayer > Direct Connection > localhost:25565",
-            f"  3D views: http://localhost:3000 to http://localhost:{3000 + players - 1}, one per seat",
+            f"  3D views: http://127.0.0.1:{HOST_VIEW_PORT} to http://127.0.0.1:{HOST_VIEW_PORT + players - 1}, one per seat",
             f"Stop with: docker rm -f {FORWARDER}"]

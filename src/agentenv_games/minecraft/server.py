@@ -26,6 +26,7 @@ from ..remote import CONTROL_URI
 BRIDGE = "http://127.0.0.1:3100"
 SEAT_HEADER = "x-agent-games-seat"
 VIEWER_BASE_PORT = 3000
+HOST_VIEWER_PORT = 8300  # where `agent-env games minecraft watch` forwards the views
 ACTION_TIMEOUT = 150
 TITLE = "Minecraft"
 DEFAULT_GOAL = ("By the end, every player holds their own stone pickaxe, so help each other. Wood comes from logs, "
@@ -170,12 +171,14 @@ class MinecraftEnvironment(AgentEnvEnvironment):
             "Team progress": self.progress(),
             "Time left": f"{left // 60}:{left % 60:02d}",
             "In-game": self.world.get("time") or "—",
-            "Live 3D views": {n: f"http://localhost:{VIEWER_BASE_PORT + i}" for i, n in enumerate(self.names)},
+            "Live 3D views": {n: f"http://127.0.0.1:{HOST_VIEWER_PORT + i}" for i, n in enumerate(self.names)},
         }
         rows = []
         for u in self.usernames:
             b = bots.get(u) or {}
-            items = sorted((b.get("inventory") or {}).items(), key=lambda kv: -kv[1])
+            goal = {*self.target, *self.each}
+            items = sorted((b.get("inventory") or {}).items(),
+                           key=lambda kv: (not any(kv[0] == g or kv[0].endswith("_" + g) for g in goal), -kv[1]))
             tags: list = [f"at {' '.join(map(str, b['at']))}" if b.get("at") else "offline"]
             if b.get("health") is not None and b["health"] < 20:
                 tags.append({"label": f"health {b['health']}", "tone": "red"})
@@ -200,15 +203,17 @@ class MinecraftEnvironment(AgentEnvEnvironment):
             raise ValueError("The session is over.")
         return self.seats[token]
 
-    async def _act(self, op: str, args: dict, reasoning: str) -> str:
+    async def _act(self, op: str, args: dict, intent: str) -> str:
+        """Run one action on the seat's bot and log it; ``intent`` is not named reasoning, which some providers'
+        filters refuse on a tool that also carries free text."""
         seat = self._seat()
         args = {k: v for k, v in args.items() if v not in (None, "")}
         if op == "chat":
             self.log.add("move", actor=seat, turn="chat", action=None, say=args.get("message", ""),
-                         reasoning=reasoning or None)
+                         reasoning=intent or None)
         else:
             self.log.add("move", actor=seat, turn=op.replace("_", " "), action=describe(op, args),
-                         reasoning=reasoning or None)
+                         reasoning=intent or None)
         result = await self._bridge("POST", f"/bots/{self.usernames[seat]}/{op}", args)
         with contextlib.suppress(Exception):
             await self._refresh()
@@ -245,38 +250,39 @@ class MinecraftEnvironment(AgentEnvEnvironment):
 
     @tool(name="go_to")
     async def go_to(self, x: int | None = None, y: int | None = None, z: int | None = None, player: str = "",
-                    block: str = "", reasoning: str = "") -> str:
+                    block: str = "", intent: str = "") -> str:
         """Walk somewhere: to coordinates (x and z, y optional), to a player by username, or to the nearest block
-        of a kind. reasoning: why, in a sentence (shown to spectators, not players)."""
-        return await self._act("go_to", {"x": x, "y": y, "z": z, "player": player, "block": block}, reasoning)
+        of a kind. Every action takes an optional intent: what you are trying to do, in a sentence (shown to
+        spectators, not players)."""
+        return await self._act("go_to", {"x": x, "y": y, "z": z, "player": player, "block": block}, intent)
 
     @tool(name="collect")
-    async def collect(self, block: str, count: int = 1, reasoning: str = "") -> str:
+    async def collect(self, block: str, count: int = 1, intent: str = "") -> str:
         """Find, walk to, mine and pick up up to ``count`` blocks of a kind nearby (within about 48 blocks), using
         the best tool you carry. Some blocks, like stone, need a pickaxe to drop anything."""
-        return await self._act("collect", {"block": block, "count": count}, reasoning)
+        return await self._act("collect", {"block": block, "count": count}, intent)
 
     @tool(name="craft")
-    async def craft(self, item: str, count: int = 1, reasoning: str = "") -> str:
+    async def craft(self, item: str, count: int = 1, intent: str = "") -> str:
         """Craft ``count`` of an item from your inventory, walking to a crafting table within 32 blocks if the
         recipe needs one. Says what the recipe needs if you are short."""
-        return await self._act("craft", {"item": item, "count": count}, reasoning)
+        return await self._act("craft", {"item": item, "count": count}, intent)
 
     @tool(name="place")
     async def place(self, item: str, x: int | None = None, y: int | None = None, z: int | None = None,
-                    reasoning: str = "") -> str:
+                    intent: str = "") -> str:
         """Place a block from your inventory: next to you, or at x, y, z (it needs a solid neighbour)."""
-        return await self._act("place", {"item": item, "x": x, "y": y, "z": z}, reasoning)
+        return await self._act("place", {"item": item, "x": x, "y": y, "z": z}, intent)
 
     @tool(name="give")
-    async def give(self, player: str, item: str, count: int = 1, reasoning: str = "") -> str:
+    async def give(self, player: str, item: str, count: int = 1, intent: str = "") -> str:
         """Walk to another player (by username) and throw them items; they pick them up when close."""
-        return await self._act("give", {"player": player, "item": item, "count": count}, reasoning)
+        return await self._act("give", {"player": player, "item": item, "count": count}, intent)
 
     @tool(name="chat")
-    async def chat(self, message: str, reasoning: str = "") -> str:
+    async def chat(self, message: str, intent: str = "") -> str:
         """Say something in the game chat; every player sees it."""
-        return await self._act("chat", {"message": message}, reasoning)
+        return await self._act("chat", {"message": message}, intent)
 
     # ---- control -------------------------------------------------------------------------------
 

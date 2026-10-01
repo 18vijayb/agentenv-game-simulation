@@ -86,7 +86,7 @@ goal met or the time runs out, and the env logs every action for the explorer vi
 ```bash
 agent-env games minecraft setup               # build the image (a few minutes; accepts the Minecraft EULA for its server)
 agent-env run native-minecraft --task duo     # Claude and GPT, 8 minutes; --task pickaxes for four models
-agent-env games minecraft watch               # while it runs: the world on localhost:25565, 3D views on :3000 and up
+agent-env games minecraft watch               # while it runs: the world on localhost:25565, 3D views on 127.0.0.1:8300 and up
 ```
 
 `watch` forwards the env's game server to loopback, so you can join the agents' world from your own
