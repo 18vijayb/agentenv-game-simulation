@@ -13,7 +13,14 @@
     "depends_on": [
       "env"
     ],
-    "params": {},
+    "params": {
+      "hands": 10,
+      "chips": 1000,
+      "small_blind": 10,
+      "big_blind": 20,
+      "double_blinds_every": 4,
+      "discussion_turns": 1
+    },
     "seats": [
       {
         "name": "Ada",
@@ -29,6 +36,14 @@
       },
       {
         "name": "Dmitri",
+        "bot": true
+      },
+      {
+        "name": "Esme",
+        "bot": true
+      },
+      {
+        "name": "Felix",
         "bot": true
       }
     ]

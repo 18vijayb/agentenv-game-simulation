@@ -64,6 +64,7 @@ form alliances against whoever is about to go out."""
             self.rng.shuffle(self.pile)  # the opening card is a plain number card
         self.discard = [self.pile.pop()]
         self.color = self.discard[-1].split(" ")[0]
+        self.color_before = self.color    # the colour a Wild +4 was played on, for its challenge
         self.seat = self.rng.randrange(self.n)
         self.direction = 1
         self.turn_no = 1
@@ -135,7 +136,7 @@ form alliances against whoever is about to go out."""
                             f"and they draw four instead; if not, you draw six.", choices=("accept", "challenge"),
                          kind="challenge")]
         if self.phase == "drawn":
-            return [Turn(s, f"You drew {show(self.drawn)} and it is playable: play it now, or keep it and end your turn.",
+            return [Turn(s, "The card you just drew is playable: play it now, or keep it and end your turn.",
                          choices=tuple(self._choices([self.drawn]) + ["keep"]), kind="drawn")]
         legal = self._choices(c for c in hand if self.playable(c)) + ["draw"]
         prompt = (f"Turn {self.turn_no}: top card {show(self.top)}" + (f", colour {self.color}" if self.top in WILDS else "")
@@ -313,6 +314,8 @@ form alliances against whoever is about to go out."""
             "whose turn": self.names[self.seat], "next player": self.names[self._next(1)],
             "turn": self.turn_no, "turn limit": self.max_turns,
         }
+        if seat == self.seat and self.phase == "drawn":
+            out["just drew"] = show(self.drawn)
         if seat == self.seat and self.phase == "play":
             out["playable now"] = self._choices(c for c in hand if self.playable(c))
             out["wild4 would be legal"] = not self.holds_color(seat, self.color)
@@ -325,6 +328,7 @@ form alliances against whoever is about to go out."""
             "Direction": self._dir_word(),
             "To play": self.names[self.seat] if self.winner is None else "game over",
             "Draw pile": len(self.pile),
+            "Discard pile": len(self.discard),
             "Cards in hand": {self.names[s]: len(self.hands[s]) for s in range(self.n)},
             "Last play": self.last,
         }
@@ -336,8 +340,6 @@ form alliances against whoever is about to go out."""
         return out
 
     def players(self, spectator: bool) -> list[dict]:
-        """Per-seat rows. The generic viewer reads role/tags/out; richer viewers may use the extra fields
-        (``count``, ``hand`` with hidden information, and ``table`` on row 0)."""
         rows = []
         for s in range(self.n):
             n = len(self.hands[s])
@@ -350,17 +352,9 @@ form alliances against whoever is about to go out."""
                 tags.append({"label": f"forgot UNO ×{self.stats[s]['forgot_uno']}", "tone": "muted"})
             if self.winner == s:
                 tags.append({"label": "winner", "tone": "gold"})
-            row: dict = {"tags": tags, "out": False, "count": n, "to_play": self.winner is None and s == self.seat,
-                         "uno": n == 1, "penalties": self.stats[s]["forgot_uno"], "winner": self.winner == s}
+            row: dict = {"tags": tags, "out": False}
             if spectator:
                 row["role"] = " ".join(show(c) for c in self.hands[s]) or "—"
-                row["hand"] = list(self.hands[s])
-                row["stats"] = dict(self.stats[s])
-            if s == 0:
-                row["table"] = {"top": self.top, "color": self.color, "dir": self.direction, "pile": len(self.pile),
-                                "discards": len(self.discard), "seat": self.seat, "turn": self.turn_no,
-                                "max_turns": self.max_turns, "last": self.last, "over": self.winner is not None,
-                                "phase": self.phase}
             rows.append(row)
         return rows
 
