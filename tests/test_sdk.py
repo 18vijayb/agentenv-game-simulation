@@ -82,3 +82,33 @@ def test_every_installed_game_is_in_the_env_image_and_has_bundles():
     bundles = {p.name for p in resources.files("agentenv_games").joinpath("bundles").iterdir()}
     for name in BUILT_IN:
         assert f"game-{name.replace('_', '-')}" in bundles, f"add a bots bundle game-{name.replace('_', '-')}"
+
+
+async def test_a_game_may_declare_a_claim_implied_by_a_move():
+    """``Game.secret`` lets a move that is not literally a claim still carry a truth and a lie flag."""
+    class Bluff(Game):
+        name, title, rules = "bluff", "Bluff", "Say 'all in' only when you hold an ace."
+        min_players = max_players = 1
+
+        def setup(self):
+            self.done, self.ace = False, False
+
+        def turns(self):
+            return [] if self.done else [Turn(0, "All in or fold?", choices=("all in", "fold"))]
+
+        def play(self, moves):
+            self.done = True
+
+        def result(self):
+            return Result(winners=(0,), summary="done") if self.done else None
+
+        def secret(self, turn, move):
+            return {"truth": "no ace", "lie": not self.ace} if move.action == "all in" else None
+
+        def bot(self, turn):
+            return Move(action="all in")
+
+    g, match, log = setup_game(Bluff, ["Solo"], 0)
+    await play(match, [BotPlayer()])
+    move = next(e for e in log.events if e["k"] == "move")
+    assert move["secret"] == {"truth": "no ace", "lie": True} and move["vis"] == "public"

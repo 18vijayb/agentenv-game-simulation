@@ -1,0 +1,2 @@
+[{"id": "game", "type": "play_game", "game": "uno", "params": {}, "seats": [
+  {"name": "Ada", "bot": true}, {"name": "Boris", "bot": true}, {"name": "Cleo", "bot": true}, {"name": "Dmitri", "bot": true}]}]

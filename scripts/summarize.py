@@ -80,9 +80,16 @@ def summarize(folder: Path) -> dict:
             lines += ["", "## Final read", "",
                       f"On their last stated beliefs ({meta.get('beliefs')}), players gave members of the other team "
                       f"**{sum(other) / len(other):.0%}** on average and their own team **{sum(same) / len(same):.0%}**."]
+    stats = next((e["stats"] for e in reversed(events) if e["k"] == "stats" and isinstance(e.get("stats"), dict)), None)
+    if stats:
+        keys = sorted({k for row in stats.values() for k in row})
+        lines += ["", "## Stats", "", "| Player | " + " | ".join(k.replace("_", " ") for k in keys) + " |",
+                  "|---|" + "---|" * len(keys)]
+        for s, row in sorted(stats.items(), key=lambda kv: int(kv[0])):
+            lines.append(f"| {names[int(s)]} | " + " | ".join(str(row.get(k, "")) for k in keys) + " |")
     (folder / "summary.md").write_text("\n".join(lines).rstrip() + "\n")
     return {"folder": folder.name, "meta": meta, "lies": lies, "claims": claims, "stand_ins": stand_ins,
-            "winners": winners, "final": final, "minutes": minutes(meta)}
+            "winners": winners, "final": final, "minutes": minutes(meta), "stats": stats or {}}
 
 
 def index(root: Path, games: list[dict]) -> None:
@@ -103,10 +110,20 @@ def index(root: Path, games: list[dict]) -> None:
             row["lies"] += g["lies"][s]
             row["stand_ins"] += g["stand_ins"][s]
             row[f"role:{g['final'][s].get('role', '–')}"] += 1
+            for k, v in (g["stats"].get(str(s)) or g["stats"].get(s) or {}).items():
+                if isinstance(v, (int, float)) and not isinstance(v, bool):
+                    row[f"stat:{k}"] += v
     lines += ["", "## By player", "", "| Player | Games | Wins | Roles | Lies / claims | Stand-ins |", "|---|---|---|---|---|---|"]
     for name, row in sorted(per.items(), key=lambda kv: (-kv[1]["wins"], kv[0])):
         roles = ", ".join(f"{k[5:]} {v}" for k, v in sorted(row.items()) if k.startswith("role:"))
         lines.append(f"| {name} | {row['games']} | {row['wins']} | {roles} | {row['lies']} / {row['claims']} | {row['stand_ins']} |")
+    stat_keys = sorted({k[5:] for row in per.values() for k in row if k.startswith("stat:")})
+    if stat_keys:
+        lines += ["", "## Game stats by player", "", "Summed over every game that logged a `stats` event.", "",
+                  "| Player | " + " | ".join(k.replace("_", " ") for k in stat_keys) + " |", "|---|" + "---|" * len(stat_keys)]
+        for name, row in sorted(per.items(), key=lambda kv: (-kv[1]["wins"], kv[0])):
+            if any(f"stat:{k}" in row for k in stat_keys):
+                lines.append(f"| {name} | " + " | ".join(str(row.get(f"stat:{k}", 0)) for k in stat_keys) + " |")
     (root / "README.md").write_text("\n".join(lines) + "\n")
 
 
