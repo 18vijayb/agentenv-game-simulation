@@ -1,0 +1,56 @@
+{
+ "game_id": "game-5yd62ygu",
+ "status": "finished",
+ "started_at": "2026-10-01T21:35:22.805+00:00",
+ "updated_at": "2026-10-01T21:50:05.559+00:00",
+ "events": 305,
+ "players": [
+  {
+   "seat": 0,
+   "name": "Claude Sonnet 5.5",
+   "kind": "model",
+   "model": "anthropic/claude-sonnet-5-5"
+  },
+  {
+   "seat": 1,
+   "name": "GPT-5.5",
+   "kind": "model",
+   "model": "openai/gpt-5.5"
+  },
+  {
+   "seat": 2,
+   "name": "Gemini 3.1 Pro",
+   "kind": "model",
+   "model": "vertex_ai/gemini-3.1-pro-preview"
+  },
+  {
+   "seat": 3,
+   "name": "Grok 4.7",
+   "kind": "model",
+   "model": "xai/grok-4.7"
+  },
+  {
+   "seat": 4,
+   "name": "DeepSeek V3.2",
+   "kind": "model",
+   "model": "vertex_ai/deepseek-ai/deepseek-v3.2-maas"
+  },
+  {
+   "seat": 5,
+   "name": "GLM 5.2",
+   "kind": "model",
+   "model": "vertex_ai/zai-org/glm-5.2-maas"
+  }
+ ],
+ "seed": 1303387828,
+ "instance_id": "@local/uno-arena/game-uno-scale/game-5yd62ygu",
+ "game": "uno",
+ "title": "UNO",
+ "teams": {},
+ "beliefs": null,
+ "winners": [
+  1
+ ],
+ "summary": "GPT-5.5 goes out on turn 70 and wins UNO. Cards left: Claude Sonnet 5.5 6, Gemini 3.1 Pro 3, Grok 4.7 4, DeepSeek V3.2 2, GLM 5.2 3.",
+ "team": null
+}

@@ -108,12 +108,60 @@ def table(state: dict, names: list[str]) -> dict:
             "blinds": board.get("Blinds"), "street": board.get("Street")}
 
 
+UNO_DOTS = {"🔴": "red", "🟢": "green", "🔵": "blue", "🟡": "yellow"}
+EMOJI = re.compile("[\U0001F300-\U0001FAFF\u2600-\u27BF\uFE0F]")
+
+
+def uno_cards(text: str) -> list[str]:
+    """'🔵 1 🟢 skip 🌈 wild +4' -> ['blue 1', 'green skip', 'wild4']; the role badge and the Top card string use it."""
+    out, tokens, i = [], text.split(), 0
+    while i < len(tokens):
+        t = tokens[i]
+        if t in UNO_DOTS and i + 1 < len(tokens):
+            rank = tokens[i + 1]
+            out.append(f"{UNO_DOTS[t]} {'draw2' if rank == '+2' else rank}")
+            i += 2
+        elif t == "🌈" and i + 1 < len(tokens):
+            if i + 2 < len(tokens) and tokens[i + 2] == "+4":
+                out.append("wild4"); i += 3
+            else:
+                out.append("wild"); i += 2
+        else:
+            i += 1
+    return out
+
+
+def uno_table(state: dict, names: list[str]) -> dict:
+    """What the renderer draws for UNO: each seat's cards and count, the piles, the colour and the direction."""
+    rows = state.get("spectator_players") or []
+    board = state.get("spectator") or state.get("board") or {}
+    counts = board.get("Cards in hand") or {}
+    seats = []
+    for s, p in enumerate(rows):
+        tags = [t if isinstance(t, str) else t.get("label", "") for t in p.get("tags", [])]
+        seats.append({"name": names[s], "cards": uno_cards(p.get("role") or ""), "count": counts.get(names[s], 0),
+                      "chips": 0, "bet": 0, "dealer": False, "folded": False, "allin": False, "out": False,
+                      "uno": "UNO!" in tags, "winner": "winner" in tags, "toPlay": "to play" in tags or "challenge?" in tags})
+    top_text = board.get("Top card") or ""
+    head, _, tail = top_text.partition(" · ")
+    top = (uno_cards(head) or [None])[0]
+    color = next((UNO_DOTS[t] for t in tail.split() if t in UNO_DOTS), None) or (top.split(" ")[0] if top and not top.startswith("wild") else None)
+    turn = board.get("Turn") or {}
+    return {"kind": "uno", "seats": seats, "board": [], "pot": 0, "hand": None, "hands": None, "blinds": None,
+            "street": None, "uno": {"top": top, "color": color, "direction": -1 if "↺" in (board.get("Direction") or "") else 1,
+                                    "turn": turn.get("value"), "maxTurns": turn.get("max"), "pile": board.get("Draw pile", 0),
+                                    "last": board.get("Last play", ""), "toPlay": board.get("To play", "")}}
+
+
 def build(game_dir: Path, cut_path: Path) -> dict:
     meta = json.loads((game_dir / "meta.json").read_text())
     events = json.loads((game_dir / "events.json").read_text())
     cut = json.loads(cut_path.read_text())
     names = [p["name"] for p in meta["players"]]
     cast = cut["cast"]
+    uno = meta.get("game") == "uno"
+    table_of = (lambda st: uno_table(st, names)) if uno else (lambda st: table(st, names))
+    voice_text = (lambda t: EMOJI.sub("", t).replace("—", ", ").replace("–", "-").replace("+4", "plus four").replace("+2", "plus two")) if uno else spoken
     beats, frame = [], 0
     for b in cut["beats"]:
         e = events[b["seq"]]
@@ -129,19 +177,20 @@ def build(game_dir: Path, cut_path: Path) -> dict:
         voice = cast["narrator"] if speaker is None else cast[names[speaker]]
         audio, seconds = (None, 1.3)
         if text and mode != "act":
-            audio, seconds = tts(spoken(text), voice["voice"], voice["style"], mode)
+            audio, seconds = tts(voice_text(text), voice["voice"], voice["style"], mode)
         frames = int((seconds + b.get("pause", 0.35)) * FPS)
         beats.append({"from": frame, "frames": frames, "mode": mode, "speaker": speaker, "text": text,
                       "action": e.get("described") if e["k"] == "move" else None, "audio": audio,
-                      "table": table(state, names), "seq": b["seq"]})
+                      "table": table_of(state), "seq": b["seq"]})
         frame += frames
-    final = table(events[-1]["state"], names)
-    standings = sorted(final["seats"], key=lambda s: -s["chips"])
+    final = table_of(events[-1]["state"])
+    standings = sorted(final["seats"], key=(lambda s: s["count"]) if uno else (lambda s: -s["chips"]))
     outro = int(6 * FPS)
     return {"title": cut["title"], "subtitle": cut.get("subtitle", ""), "fps": FPS, "intro": int(4 * FPS),
             "outro": outro, "players": [{"name": n, "color": cast[n]["color"], "label": cast[n]["label"],
                          "mono": cast[n].get("mono", cast[n]["label"][0])} for n in names],
-            "beats": beats, "standings": [{"name": s["name"], "chips": s["chips"]} for s in standings],
+            "beats": beats, "standings": [{"name": s["name"], "chips": s["chips"], "count": s.get("count")} for s in standings],
+            "kind": "uno" if uno else "poker",
             "summary": meta.get("summary"), "frames": int(4 * FPS) + frame + outro}
 
 

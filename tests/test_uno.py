@@ -181,3 +181,18 @@ async def test_a_model_plays_uno_through_mcp():
         await play(match, players)
     assert not [e for e in log.events if e["k"] == "stand_in"]
     assert any(e["k"] == "move" and e["actor"] == 0 for e in log.events)
+
+
+def test_the_board_carries_a_table_picture_that_hides_hands_from_the_public():
+    import base64
+    g, _, _ = game(3, 11)
+    g.setup()
+    g.hands[0] = ["red 7", "blue skip", "wild4"]
+    public, hidden = g.board(False)["Table"], g.board(True)["Table"]
+    for pic in (public, hidden):
+        assert pic["image"].startswith("data:image/svg+xml;base64,") and pic["alt"].startswith("UNO table")
+    svg_public = base64.b64decode(public["image"].split(",", 1)[1]).decode()
+    svg_hidden = base64.b64decode(hidden["image"].split(",", 1)[1]).decode()
+    assert "<svg" in svg_public and "⊘" not in svg_public and "+4" not in svg_public   # backs only
+    assert "⊘" in svg_hidden and "+4" in svg_hidden                                   # faces for spectators
+    assert "hands:" in hidden["alt"] and "hands:" not in public["alt"]

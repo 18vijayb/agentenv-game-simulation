@@ -4,11 +4,12 @@ import {
   useCurrentFrame, useVideoConfig,
 } from "remotion";
 import type { Beat, Player, Seat, Storyboard, Table } from "./types";
+import { UnoEpisode } from "./Uno";
 
-const DISPLAY = "'Big Shoulders Display', 'Arial Narrow', Impact, sans-serif";
-const TEXT = "'Literata', Georgia, serif";
-const GOLD = "#e3b956";
-const INK = "#f1ead8";
+export const DISPLAY = "'Big Shoulders Display', 'Arial Narrow', Impact, sans-serif";
+export const TEXT = "'Literata', Georgia, serif";
+export const GOLD = "#e3b956";
+export const INK = "#f1ead8";
 const RED_SUITS = new Set(["♥", "♦"]);
 
 const fontsReady = delayRender("fonts");
@@ -21,11 +22,11 @@ Promise.all([
   continueRender(fontsReady);
 });
 
-const CENTER = { x: 700, y: 560 };
+export const CENTER = { x: 700, y: 560 };
 const RADIUS = { x: 530, y: 340 };
 const PANEL = { left: 1350, width: 530 };
 
-function seatPos(i: number, n: number) {
+export function seatPos(i: number, n: number) {
   const a = (-90 + (360 / n) * i) * (Math.PI / 180);
   return { x: CENTER.x + RADIUS.x * Math.cos(a), y: CENTER.y + RADIUS.y * Math.sin(a) };
 }
@@ -163,7 +164,7 @@ function reveal(text: string, frame: number, frames: number) {
   );
 }
 
-function Line({ beat, board, local, current }: { beat: Beat; board: Storyboard; local: number; current: boolean }) {
+export function Line({ beat, board, local, current }: { beat: Beat; board: Storyboard; local: number; current: boolean }) {
   const { fps } = useVideoConfig();
   const pop = current ? spring({ frame: local, fps, config: { damping: 16, mass: 0.7 } }) : 1;
   const narr = beat.mode === "narrate";
@@ -232,7 +233,7 @@ function Panel({ board, idx, local }: { board: Storyboard; idx: number; local: n
   );
 }
 
-function ActionBanner({ beat, player, n, local }: { beat: Beat; player: Player; n: number; local: number }) {
+export function ActionBanner({ beat, player, n, local }: { beat: Beat; player: Player; n: number; local: number }) {
   const { fps } = useVideoConfig();
   const { x, y } = seatPos(beat.speaker!, n);
   const pop = spring({ frame: local - (beat.mode === "act" ? 0 : 6), fps, config: { damping: 11, mass: 0.6 } });
@@ -292,7 +293,7 @@ function TableScene({ board }: { board: Storyboard }) {
   );
 }
 
-function Intro({ board }: { board: Storyboard }) {
+export function Intro({ board }: { board: Storyboard }) {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const fade = interpolate(frame, [board.intro - 12, board.intro], [1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
@@ -349,6 +350,7 @@ function Outro({ board }: { board: Storyboard }) {
 }
 
 export const Episode = ({ board }: { board: Storyboard }) => {
+  if (board.kind === "uno") return <UnoEpisode board={board} />;
   const tableStart = 0;
   const outroAt = board.frames - board.outro;
   return (

@@ -198,7 +198,8 @@ data and an `image_ref`, later events the `image_ref` alone, so a reader resolve
 [`video/`](video/) turns a game's log into a narrated episode with voiced thoughts; see its README.
 
 `scripts/summarize.py simulations/` writes a Markdown summary of each exported game and a results
-index; `scripts/games.py export` and `load` move games between the object store and a folder.
+index; `scripts/benchmark.py <folder>` turns a folder of exported games into a per-model benchmark (wins, and for
+UNO deception, collaboration and mistakes); `scripts/games.py export` and `load` move games between the object store and a folder.
 
 ## Development
 
