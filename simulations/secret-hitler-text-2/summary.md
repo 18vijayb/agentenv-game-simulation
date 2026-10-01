@@ -2,14 +2,14 @@
 
 **The liberals win: five liberal policies were enacted.** 572 events, 35 minutes.
 
-| Seat | Player | Plays as | Role | Moves | Claims | Lies | Stand-ins | Won |
+| Seat | Player | Plays as | At the end | Moves | Claims | Lies | Stand-ins | Won |
 |---|---|---|---|---|---|---|---|---|
 | 1 | Grok 4.20 | `xai/grok-4.20-0309-reasoning` | Fascist (out) | 17 | 1 | 0 | 0 | no |
 | 2 | Kimi K3 | `fireworks_ai/kimi-k3` | Fascist | 27 | 4 | 0 | 0 | no |
 | 3 | Qwen3 235B | `bedrock/qwen.qwen3-235b-a22b-2507-v1:0` | Hitler | 23 | 1 | 0 | 0 | no |
-| 4 | DeepSeek V4 Pro | `azure_ai/DeepSeek-V4-Pro` | Liberal | 13 | 2 | 0 | 0 | yes |
-| 5 | Claude Opus 5.5 | `anthropic/claude-opus-5-5` | Liberal | 15 | 4 | 0 | 0 | yes |
-| 6 | GPT-5.4 | `openai/gpt-5.4` | Liberal | 15 | 3 | 0 | 0 | yes |
+| 4 | DeepSeek V4 Pro | `azure_ai/DeepSeek-V4-Pro` | Liberal, President | 13 | 2 | 0 | 0 | yes |
+| 5 | Claude Opus 5.5 | `anthropic/claude-opus-5-5` | Liberal, Not Hitler | 15 | 4 | 0 | 0 | yes |
+| 6 | GPT-5.4 | `openai/gpt-5.4` | Liberal, Chancellor, Not Hitler | 15 | 3 | 0 | 0 | yes |
 | 7 | Gemini 3.1 Pro | `gemini/gemini-3.1-pro-preview` | Liberal | 14 | 2 | 0 | 0 | yes |
 
 ## What happened

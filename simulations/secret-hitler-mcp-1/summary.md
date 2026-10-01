@@ -2,15 +2,15 @@
 
 **The liberals win: five liberal policies were enacted.** 737 events, 30 minutes.
 
-| Seat | Player | Plays as | Role | Moves | Claims | Lies | Stand-ins | Won |
+| Seat | Player | Plays as | At the end | Moves | Claims | Lies | Stand-ins | Won |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Claude Opus 5.5 | `anthropic/claude-opus-5-5` | Liberal | 30 | 4 | 0 | 0 | yes |
+| 1 | Claude Opus 5.5 | `anthropic/claude-opus-5-5` | Liberal, Not Hitler | 30 | 4 | 0 | 0 | yes |
 | 2 | GPT-5.4 | `openai/gpt-5.4` | Fascist (out) | 18 | 1 | 0 | 0 | no |
 | 3 | Gemini 3.1 Pro | `gemini/gemini-3.1-pro-preview` | Hitler | 26 | 2 | 0 | 0 | no |
-| 4 | Grok 4.20 | `xai/grok-4.20-0309-reasoning` | Liberal | 31 | 4 | 0 | 0 | yes |
+| 4 | Grok 4.20 | `xai/grok-4.20-0309-reasoning` | Liberal, President, Not Hitler | 31 | 4 | 0 | 0 | yes |
 | 5 | Kimi K3 | `fireworks_ai/kimi-k3` | Liberal | 27 | 2 | 0 | 0 | yes |
 | 6 | Qwen3 235B | `bedrock/qwen.qwen3-235b-a22b-2507-v1:0` | Fascist | 24 | 1 | 0 | 0 | no |
-| 7 | DeepSeek V4 Pro | `azure_ai/DeepSeek-V4-Pro` | Liberal | 30 | 3 | 0 | 0 | yes |
+| 7 | DeepSeek V4 Pro | `azure_ai/DeepSeek-V4-Pro` | Liberal, Chancellor, Not Hitler | 30 | 3 | 0 | 0 | yes |
 
 ## What happened
 

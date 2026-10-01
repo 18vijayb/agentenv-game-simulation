@@ -34,11 +34,13 @@ def summarize(folder: Path) -> dict:
 
     lines = [f"# {folder.name}: {meta.get('title', meta.get('game'))}", "",
              f"**{meta.get('summary', meta['status'])}** {len(events)} events, {minutes(meta):.0f} minutes.", "",
-             "| Seat | Player | Plays as | Role | Moves | Claims | Lies | Stand-ins | Won |", "|---|---|---|---|---|---|---|---|---|"]
+             "| Seat | Player | Plays as | At the end | Moves | Claims | Lies | Stand-ins | Won |", "|---|---|---|---|---|---|---|---|---|"]
     for p in meta["players"]:
         s = p["seat"]
         who = f"`{p['model']}`" if p.get("model") else (f"agent `{p['agent_name']}`" if p.get("agent_name") else "bot")
-        role = final[s].get("role", "–") + (" (out)" if final[s].get("out") else "")
+        tags = [t if isinstance(t, str) else t.get("label", "") for t in final[s].get("tags", [])]
+        role = ", ".join(x for x in [final[s].get("role") if final[s].get("team") else None, *tags] if x) or "–"
+        role += " (out)" if final[s].get("out") else ""
         lines.append(f"| {s + 1} | {p['name']} | {who} | {role} | {moves[s]} | {claims[s]} | {lies[s]} | {stand_ins[s]} | "
                      f"{'yes' if s in winners else 'no'} |")
 

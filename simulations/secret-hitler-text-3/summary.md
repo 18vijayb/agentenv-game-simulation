@@ -2,13 +2,13 @@
 
 **The liberals win: five liberal policies were enacted.** 503 events, 14 minutes.
 
-| Seat | Player | Plays as | Role | Moves | Claims | Lies | Stand-ins | Won |
+| Seat | Player | Plays as | At the end | Moves | Claims | Lies | Stand-ins | Won |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Qwen3 235B | `bedrock/qwen.qwen3-235b-a22b-2507-v1:0` | Liberal | 19 | 1 | 1 | 0 | yes |
-| 2 | DeepSeek V4 Pro | `azure_ai/DeepSeek-V4-Pro` | Liberal | 12 | 3 | 0 | 0 | yes |
+| 1 | Qwen3 235B | `bedrock/qwen.qwen3-235b-a22b-2507-v1:0` | Liberal, President | 19 | 1 | 1 | 0 | yes |
+| 2 | DeepSeek V4 Pro | `azure_ai/DeepSeek-V4-Pro` | Liberal, Not Hitler | 12 | 3 | 0 | 0 | yes |
 | 3 | Claude Opus 5.5 | `anthropic/claude-opus-5-5` | Fascist (out) | 11 | 3 | 1 | 0 | no |
-| 4 | GPT-5.4 | `openai/gpt-5.4` | Liberal | 11 | 2 | 0 | 0 | yes |
-| 5 | Gemini 3.1 Pro | `gemini/gemini-3.1-pro-preview` | Liberal | 13 | 4 | 0 | 0 | yes |
+| 4 | GPT-5.4 | `openai/gpt-5.4` | Liberal, Not Hitler | 11 | 2 | 0 | 0 | yes |
+| 5 | Gemini 3.1 Pro | `gemini/gemini-3.1-pro-preview` | Liberal, Chancellor, Not Hitler | 13 | 4 | 0 | 0 | yes |
 | 6 | Grok 4.20 | `xai/grok-4.20-0309-reasoning` | Fascist | 20 | 1 | 1 | 0 | no |
 | 7 | Kimi K3 | `fireworks_ai/kimi-k3` | Hitler | 22 | 3 | 1 | 0 | no |
 

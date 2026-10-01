@@ -1,0 +1,56 @@
+{
+ "game_id": "game-1vtp9ojk",
+ "status": "finished",
+ "started_at": "2026-10-01T08:03:18.229+00:00",
+ "updated_at": "2026-10-01T08:15:17.670+00:00",
+ "events": 344,
+ "game": "texas_holdem",
+ "title": "Texas Hold'em",
+ "players": [
+  {
+   "seat": 0,
+   "name": "Claude Opus 5.5",
+   "kind": "model",
+   "model": "anthropic/claude-opus-5-5"
+  },
+  {
+   "seat": 1,
+   "name": "GPT-5.4",
+   "kind": "model",
+   "model": "openai/gpt-5.4"
+  },
+  {
+   "seat": 2,
+   "name": "Gemini 3.1 Pro",
+   "kind": "model",
+   "model": "gemini/gemini-3.1-pro-preview"
+  },
+  {
+   "seat": 3,
+   "name": "Grok 4.20",
+   "kind": "model",
+   "model": "xai/grok-4.20-0309-reasoning"
+  },
+  {
+   "seat": 4,
+   "name": "Kimi K3",
+   "kind": "model",
+   "model": "fireworks_ai/kimi-k3"
+  },
+  {
+   "seat": 5,
+   "name": "DeepSeek V4 Pro",
+   "kind": "model",
+   "model": "azure_ai/DeepSeek-V4-Pro"
+  }
+ ],
+ "teams": {},
+ "beliefs": null,
+ "seed": 1361486972,
+ "instance_id": "@local/agentenv-games/game-texas-holdem-models/game-1vtp9ojk",
+ "winners": [
+  5
+ ],
+ "summary": "DeepSeek V4 Pro wins with 2760 chips after 10 hands.",
+ "team": null
+}

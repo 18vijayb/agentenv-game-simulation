@@ -2,10 +2,10 @@
 
 **GPT-5.4 wins 24 to 19.** 124 events, 2 minutes.
 
-| Seat | Player | Plays as | Role | Moves | Claims | Lies | Stand-ins | Won |
+| Seat | Player | Plays as | At the end | Moves | Claims | Lies | Stand-ins | Won |
 |---|---|---|---|---|---|---|---|---|
-| 1 | Claude Opus 5.5 | `anthropic/claude-opus-5-5` | – | 16 | 0 | 0 | 0 | no |
-| 2 | GPT-5.4 | `openai/gpt-5.4` | – | 16 | 0 | 0 | 0 | yes |
+| 1 | Claude Opus 5.5 | `anthropic/claude-opus-5-5` | 19 points | 16 | 0 | 0 | 0 | no |
+| 2 | GPT-5.4 | `openai/gpt-5.4` | 24 points | 16 | 0 | 0 | 0 | yes |
 
 ## What happened
 

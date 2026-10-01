@@ -20,15 +20,16 @@ as a baseline, not a ranking.
 | [secret-hitler-text-1](secret-hitler-text-1/summary.md) | Secret Hitler | The liberals win: Hitler was executed. | 15 | 3 | 0 |
 | [secret-hitler-text-2](secret-hitler-text-2/summary.md) | Secret Hitler | The liberals win: five liberal policies were enacted. | 35 | 0 | 0 |
 | [secret-hitler-text-3](secret-hitler-text-3/summary.md) | Secret Hitler | The liberals win: five liberal policies were enacted. | 14 | 4 | 0 |
+| [texas-holdem-mcp-1](texas-holdem-mcp-1/summary.md) | Texas Hold'em | DeepSeek V4 Pro wins with 2760 chips after 10 hands. | 12 | 0 | 0 |
 
 ## By player
 
 | Player | Games | Wins | Roles | Lies / claims | Stand-ins |
 |---|---|---|---|---|---|
-| DeepSeek V4 Pro | 4 | 4 | Liberal 4 | 0 / 11 | 0 |
-| Claude Opus 5.5 | 5 | 3 | Fascist 1, Liberal 3, – 1 | 1 / 13 | 0 |
-| GPT-5.4 | 5 | 3 | Fascist 1, Hitler 1, Liberal 2, – 1 | 2 / 8 | 0 |
-| Gemini 3.1 Pro | 4 | 3 | Hitler 1, Liberal 3 | 0 / 11 | 0 |
-| Kimi K3 | 4 | 2 | Fascist 1, Hitler 1, Liberal 2 | 1 / 12 | 0 |
-| Grok 4.20 | 4 | 1 | Fascist 3, Liberal 1 | 2 / 7 | 0 |
+| DeepSeek V4 Pro | 5 | 5 | Liberal 4, Q♦ J♠ 1 | 0 / 11 | 0 |
+| Claude Opus 5.5 | 6 | 3 | 3♣ 9♥ 1, Fascist 1, Liberal 3, – 1 | 1 / 13 | 0 |
+| GPT-5.4 | 6 | 3 | 6♣ 4♥ 1, Fascist 1, Hitler 1, Liberal 2, – 1 | 2 / 8 | 0 |
+| Gemini 3.1 Pro | 5 | 3 | 4♦ A♦ 1, Hitler 1, Liberal 3 | 0 / 11 | 0 |
+| Kimi K3 | 5 | 2 | A♥ 9♠ 1, Fascist 1, Hitler 1, Liberal 2 | 1 / 12 | 0 |
+| Grok 4.20 | 5 | 1 | Fascist 3, Liberal 1, – 1 | 2 / 7 | 0 |
 | Qwen3 235B | 4 | 1 | Fascist 2, Hitler 1, Liberal 1 | 1 / 4 | 0 |
