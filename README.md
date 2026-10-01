@@ -75,6 +75,25 @@ The tasks are identical except for one line:
 - **In-process mode.** `play_game` with `"game": "<name>"` instead runs the game inside the step,
   with no Docker, which the `game-*` bundles use.
 
+## Minecraft: a real-time world
+
+`agent-games/minecraft` is a native env with a real Minecraft server inside: Paper 1.21.4 with a
+pre-generated world, one [Mineflayer](https://github.com/PrismarineJS/mineflayer) bot per seat, and MCP
+tools that drive the bot with high-level skills (`observe`, `go_to`, `collect`, `craft`, `place`, `give`,
+`chat`). There are no turns: the `play_world` step runs every seat at once until the env reports the
+goal met or the time runs out, and the env logs every action for the explorer viewer as for a game.
+
+```bash
+agent-env games minecraft setup               # build the image (a few minutes; accepts the Minecraft EULA for its server)
+agent-env run native-minecraft --task duo     # Claude and GPT, 8 minutes; --task pickaxes for four models
+agent-env games minecraft watch               # while it runs: the world on localhost:25565, 3D views on :3000 and up
+```
+
+`watch` forwards the env's game server to loopback, so you can join the agents' world from your own
+Minecraft Java 1.21.4 client (Multiplayer, Direct Connection, `localhost:25565`) and talk to them in chat;
+the agents see what you say. The goal and target come from `params`: `goal` (text), `each` (items every
+player must hold, default one `stone_pickaxe`), `target` (items the team holds in total), `seconds`.
+
 ## Writing a game
 
 A game is a `Game` subclass that keeps its state on `self`. The framework calls `setup` once, then

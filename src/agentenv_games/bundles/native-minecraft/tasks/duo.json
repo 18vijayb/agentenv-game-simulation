@@ -1,0 +1,29 @@
+[
+  {
+    "id": "env",
+    "type": "deploy_env",
+    "env_id": "agent-games/minecraft",
+    "sandbox_type": "local",
+    "ttl_seconds": 7200
+  },
+  {
+    "id": "world",
+    "type": "play_world",
+    "env_step_id": "env",
+    "depends_on": [
+      "env"
+    ],
+    "seconds": 480,
+    "params": {},
+    "seats": [
+      {
+        "name": "Claude",
+        "model": "anthropic/claude-opus-5-5"
+      },
+      {
+        "name": "GPT",
+        "model": "openai/gpt-5.4"
+      }
+    ]
+  }
+]

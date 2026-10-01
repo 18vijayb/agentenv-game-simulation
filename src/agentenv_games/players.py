@@ -34,11 +34,11 @@ MCP_TIMEOUT = 60
 async def call_mcp(url: str, tool: str | None = None, args: dict | None = None, timeout: float = MCP_TIMEOUT,
                    headers: dict[str, str] | None = None):
     """One MCP exchange on a fresh session: list the tools, or call one and return its text."""
-    return await asyncio.wait_for(_call_mcp(url, tool, args, headers), timeout)
+    return await asyncio.wait_for(_call_mcp(url, tool, args, headers, timeout), timeout)
 
 
-async def _call_mcp(url: str, tool: str | None, args: dict | None, headers: dict[str, str] | None):
-    async with httpx.AsyncClient(headers=headers or {}, timeout=httpx.Timeout(MCP_TIMEOUT, read=MCP_TIMEOUT)) as client, \
+async def _call_mcp(url: str, tool: str | None, args: dict | None, headers: dict[str, str] | None, timeout: float):
+    async with httpx.AsyncClient(headers=headers or {}, timeout=httpx.Timeout(timeout, read=timeout)) as client, \
             streamable_http_client(url, http_client=client) as (read, write, _):
         async with ClientSession(read, write) as session:
             await session.initialize()

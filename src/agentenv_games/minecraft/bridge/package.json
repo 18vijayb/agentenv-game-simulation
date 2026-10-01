@@ -1,0 +1,15 @@
+{
+  "name": "agentenv-games-minecraft-bridge",
+  "private": true,
+  "description": "Mineflayer bots behind a small local HTTP API, for the agentenv-games Minecraft env server.",
+  "main": "bridge.js",
+  "dependencies": {
+    "canvas": "3.2.3",
+    "mineflayer": "4.39.0",
+    "mineflayer-collectblock": "1.6.0",
+    "mineflayer-pathfinder": "2.4.5",
+    "prismarine-viewer": "1.33.0",
+    "rcon-client": "4.2.5",
+    "vec3": "^0.1.10"
+  }
+}

@@ -17,6 +17,7 @@ dev = ["pytest>=8", "pytest-asyncio>=0.23"]
 
 [project.entry-points."agent_env.task_steps"]
 play_game = "agentenv_games.step:PlayGameTaskStep"
+play_world = "agentenv_games.world:PlayWorldTaskStep"
 
 [project.entry-points."agent_env.cli_plugins"]
 games = "agentenv_games.cli:games"
@@ -46,6 +47,7 @@ game-catan = "agentenv_games.bundles"
 game-catan-models = "agentenv_games.bundles"
 native-games = "agentenv_games.bundles"
 native-games-models = "agentenv_games.bundles"
+native-minecraft = "agentenv_games.bundles"
 
 [build-system]
 requires = ["hatchling"]

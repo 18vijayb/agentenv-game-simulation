@@ -29,10 +29,10 @@ class RemoteMatch:
     """The ``MatchHandle`` for a game in an env server at ``environment_url``."""
 
     def __init__(self, environment_url: str, card: dict, names: list[str], seed: int, params: dict, log: GameLog, *,
-                 mirror_every: float = 2.0, transport: httpx.AsyncBaseTransport | None = None):
+                 mirror_every: float = 2.0, timeout: float = 60, transport: httpx.AsyncBaseTransport | None = None):
         self.url = environment_url.rstrip("/") + control_endpoint(card)
         self.names, self.seed, self.params, self.log = names, seed, params, log
-        self.mirror_every, self._transport = mirror_every, transport
+        self.mirror_every, self.timeout, self._transport = mirror_every, timeout, transport
         self.token: str | None = None
         self.seat_tokens: list[str] = []
         self.info: dict = {}
@@ -41,7 +41,7 @@ class RemoteMatch:
 
     async def _call(self, op: str, **params) -> dict:
         body = {"op": op, **params} if op == "start" else {"op": op, "control_token": self.token, **params}
-        async with httpx.AsyncClient(transport=self._transport, timeout=60) as client:
+        async with httpx.AsyncClient(transport=self._transport, timeout=self.timeout) as client:
             resp = await client.post(self.url, json=body)
         if resp.status_code != 200:
             raise RuntimeError(f"env control {op} failed: HTTP {resp.status_code} {resp.text[:300]}")
