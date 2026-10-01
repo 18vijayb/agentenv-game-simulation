@@ -1,10 +1,12 @@
-"""UNO: classic one-round UNO with the Wild +4 challenge rule, so bluffing is part of the game."""
+"""UNO: classic one-round UNO with the Wild +4 challenge rule, so bluffing is part of the game. ``svg.py`` draws the table."""
 
 from __future__ import annotations
 
 from collections import Counter
 
-from agentenv_games import Game, Move, Result, Turn
+from agentenv_games import Game, Move, Result, Turn, image
+
+from .svg import render
 
 COLORS = ("red", "green", "blue", "yellow")
 DOT = {"red": "🔴", "green": "🟢", "blue": "🔵", "yellow": "🟡"}
@@ -331,6 +333,7 @@ form alliances against whoever is about to go out."""
             "Discard pile": len(self.discard),
             "Cards in hand": {self.names[s]: len(self.hands[s]) for s in range(self.n)},
             "Last play": self.last,
+            "Table": image(render(self, spectator), self._alt(spectator)),
         }
         if spectator:
             out["Attacks on the leader"] = {self.names[s]: f"{st['attacks_on_leader']} of {st['attacks']}" for s, st in enumerate(self.stats)}
@@ -338,6 +341,14 @@ form alliances against whoever is about to go out."""
             out["Mistakes"] = {self.names[s]: st["forgot_uno"] + st["unforced_draws"] + st["wasted_wilds"] + st["kept_playable"]
                                for s, st in enumerate(self.stats)}
         return out
+
+    def _alt(self, spectator: bool) -> str:
+        """The table in words, for the log and for anyone who cannot see the picture."""
+        top = show(self.top) + (f", colour {self.color}" if self.top in WILDS else "")
+        counts = ", ".join(f"{self.names[s]} {len(self.hands[s])}" + (" (UNO)" if len(self.hands[s]) == 1 else "") for s in range(self.n))
+        who = "game over" if self.winner is not None else f"to play: {self.names[self.seat]}"
+        hands = ("; hands: " + "; ".join(f"{self.names[s]}: {' '.join(show(c) for c in self.hands[s]) or 'none'}" for s in range(self.n))) if spectator else ""
+        return f"UNO table, turn {self.turn_no}: top card {top}, {self._dir_word()}, {who}. Cards: {counts}{hands}."
 
     def players(self, spectator: bool) -> list[dict]:
         rows = []
