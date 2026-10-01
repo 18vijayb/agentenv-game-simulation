@@ -1,0 +1,55 @@
+{
+ "game_id": "game-2-4trq6hj9",
+ "status": "finished",
+ "players": [
+  {
+   "seat": 0,
+   "name": "Grok 4.20",
+   "kind": "model",
+   "model": "xai/grok-4.20-0309-reasoning"
+  },
+  {
+   "seat": 1,
+   "name": "Kimi K3",
+   "kind": "model",
+   "model": "fireworks_ai/kimi-k3"
+  },
+  {
+   "seat": 2,
+   "name": "Qwen3 235B",
+   "kind": "model",
+   "model": "bedrock/qwen.qwen3-235b-a22b-2507-v1:0"
+  },
+  {
+   "seat": 3,
+   "name": "DeepSeek V4 Pro",
+   "kind": "model",
+   "model": "azure_ai/DeepSeek-V4-Pro"
+  },
+  {
+   "seat": 4,
+   "name": "Claude Opus 5.5",
+   "kind": "model",
+   "model": "anthropic/claude-opus-5-5"
+  },
+  {
+   "seat": 5,
+   "name": "GPT-5.4",
+   "kind": "model",
+   "model": "openai/gpt-5.4"
+  },
+  {
+   "seat": 6,
+   "name": "Gemini 3.1 Pro",
+   "kind": "model",
+   "model": "gemini/gemini-3.1-pro-preview"
+  }
+ ],
+ "started_at": "2026-10-01T02:50:21.946+00:00",
+ "updated_at": "2026-10-01T03:25:44.673+00:00",
+ "winner": "liberal",
+ "reason": "five liberal policies were enacted",
+ "events": 572,
+ "instance_id": "@local/agentenv-secret-hitler/secret-hitler-models/game-2-4trq6hj9",
+ "rounds": 11
+}
