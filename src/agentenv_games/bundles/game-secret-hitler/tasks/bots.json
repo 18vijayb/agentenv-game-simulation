@@ -1,0 +1,37 @@
+[
+  {
+    "id": "game",
+    "type": "play_game",
+    "game": "secret_hitler",
+    "seats": [
+      {
+        "name": "Ada",
+        "bot": true
+      },
+      {
+        "name": "Boris",
+        "bot": true
+      },
+      {
+        "name": "Cleo",
+        "bot": true
+      },
+      {
+        "name": "Dmitri",
+        "bot": true
+      },
+      {
+        "name": "Esme",
+        "bot": true
+      },
+      {
+        "name": "Felix",
+        "bot": true
+      },
+      {
+        "name": "Greta",
+        "bot": true
+      }
+    ]
+  }
+]

@@ -5,75 +5,71 @@ import pytest
 
 from agent_env.task_step.context import DeployedAgent, TaskStepContext
 
-from agentenv_secret_hitler import step as step_module
-from agentenv_secret_hitler.agents import A2AClient
-from agentenv_secret_hitler.log import events_key, meta_key
-from agentenv_secret_hitler.step import PlaySecretHitlerTaskStep
+from agentenv_games import players as players_module
+from agentenv_games.log import events_key, meta_key
+from agentenv_games.step import PlayGameTaskStep
 
-from conftest import FakeAgent
+from helpers import harness_agent, scripted_llm
 
-BOTS = [{"name": n, "bot": "heuristic"} for n in ("Ada", "Boris", "Cleo", "Dmitri", "Esme", "Felix", "Greta")]
-
-
-def play(seats, **kw) -> PlaySecretHitlerTaskStep:
-    return PlaySecretHitlerTaskStep(id="game", version=None, seats=seats, **kw)
+BOTS7 = [{"name": n, "bot": True} for n in ("Ada", "Boris", "Cleo", "Dmitri", "Esme", "Felix", "Greta")]
 
 
-def test_preflight_names_each_problem():
-    problems = play(BOTS[:4] + [{"name": "ada", "agent_name": "a", "bot": "heuristic"}],
-                    discussion_turns=-1).preflight()
-    assert any("names must be unique, repeated: ada" in p for p in problems)
-    assert any("exactly one of agent_name, model or bot" in p for p in problems)
-    assert any("discussion_turns" in p for p in problems)
-    shared = play(BOTS[:5] + [{"name": "X", "agent_name": "a"}, {"name": "Y", "agent_name": "a"}]).preflight()
-    assert shared == ["seats: each agent seat needs its own deployed agent, shared: a"]
-    assert play(BOTS).preflight() == []
+def step(game, seats, **kw):
+    return PlayGameTaskStep(id="game", version=None, game=game, seats=seats, **kw)
 
 
-def test_the_step_round_trips_through_its_document():
-    original = play(BOTS, seed=7, discussion_turns=2, turn_timeout_seconds=90, max_retries=1)
-    copy = PlaySecretHitlerTaskStep.from_dict(original.to_dict())
-    assert copy.to_dict() == original.to_dict()
+def test_preflight_checks_the_game_and_the_seats():
+    assert step("chess", BOTS7).preflight()[0].startswith("unknown game 'chess'")
+    assert "takes 2 to 2 players" in step("prisoners_dilemma", BOTS7).preflight()[0]
+    problems = step("secret_hitler", BOTS7[:6] + [{"name": "ada", "model": "m", "bot": True}]).preflight()
+    assert any("repeated: ada" in p for p in problems) and any("exactly one of" in p for p in problems)
+    assert step("secret_hitler", BOTS7).preflight() == []
 
 
-async def test_a_bot_game_is_logged_to_the_object_store_and_summarised(store):
-    context = TaskStepContext(instance_id="@local/agentenv-secret-hitler/secret-hitler/bots-abc123")
-    context = await play(BOTS, seed=3).execute(context)
-    summary = context.metadata["secret_hitler"]
-    assert summary["game_id"] == "bots-abc123"
-    assert summary["winner"] in ("liberal", "fascist")
-    assert summary["viewer_path"] == "/secret-hitler/games/bots-abc123"
-    assert sorted(s["role"] for s in summary["seats"]).count("hitler") == 1
-    meta = json.loads(store.get(store.object_url(meta_key("bots-abc123"))))
-    events = json.loads(store.get(store.object_url(events_key("bots-abc123"))))
-    assert meta["status"] == "finished" and meta["events"] == len(events)
-    assert events[0]["k"] == "setup" and events[-1]["k"] == "end"
+def test_the_step_round_trips():
+    original = step("prisoners_dilemma", BOTS7[:2], params={"rounds": 3}, seed=9, turn_timeout_seconds=30)
+    assert PlayGameTaskStep.from_dict(original.to_dict()).to_dict() == original.to_dict()
 
 
-async def test_agent_seats_are_played_through_their_deployed_agents(store, monkeypatch):
-    fake = FakeAgent()
-    monkeypatch.setattr(step_module, "A2AClient",
-                        lambda url: A2AClient(url, poll_interval=0, transport=fake.transport()))
-    seats = [{"name": "Claude Code", "agent_name": "seat-1"}] + BOTS[1:]
-    context = TaskStepContext(instance_id="run-1", deployed_agents=[
-        DeployedAgent(agent_name="seat-1", api_url="http://seat-1.test", a2a_url="http://seat-1.test")])
-    context = await play(seats, seed=5).execute(context)
-    summary = context.metadata["secret_hitler"]
-    assert summary["seats"][0]["kind"] == "agent" and summary["seats"][0]["fallbacks"] == 0
-    assert fake.contexts == {"secret-hitler-run-1-seat1"}
+async def test_a_bot_game_is_logged_and_summarised(store):
+    context = await step("secret_hitler", BOTS7, seed=1).execute(TaskStepContext(instance_id="@local/x/y/run-abc"))
+    summary = context.metadata["game"]
+    assert summary["game_id"] == "run-abc" and summary["viewer_path"] == "/games/run-abc"
+    meta = json.loads(store.get(store.object_url(meta_key("run-abc"))))
+    events = json.loads(store.get(store.object_url(events_key("run-abc"))))
+    assert meta["status"] == "finished" and meta["title"] == "Secret Hitler" and meta["events"] == len(events)
 
 
-async def test_a_seat_without_its_deployed_agent_fails_before_the_game(store):
-    seats = [{"name": "Claude Code", "agent_name": "seat-1"}] + BOTS[1:]
+async def test_model_and_agent_seats_play_through_mcp(store, monkeypatch):
+    monkeypatch.setenv("LITELLM_BASE_URL", "http://llm.test")
+    monkeypatch.setenv("LITELLM_API_KEY", "sk-test")
+    original = players_module.ChatEndpoint.__init__
+    monkeypatch.setattr(players_module.ChatEndpoint, "__init__",
+                        lambda self, *a, **kw: original(self, *a, **{**kw, "transport": scripted_llm(), "backoff": 0}))
+    registered: dict = {}
+    agent_init = players_module.AgentPlayer.__init__
+    monkeypatch.setattr(players_module.AgentPlayer, "__init__",
+                        lambda self, *a, **kw: agent_init(self, *a, **{**kw, "transport": harness_agent(registered),
+                                                                        "poll_interval": 0}))
+    seats = [{"name": "Model", "model": "test/model"}, {"name": "Harness", "agent_name": "seat-2"}]
+    context = TaskStepContext(instance_id="run-mcp", deployed_agents=[
+        DeployedAgent(agent_name="seat-2", api_url="http://agent.test", a2a_url="http://agent.test")])
+    context = await step("prisoners_dilemma", seats, params={"rounds": 2}).execute(context)
+    summary = context.metadata["game"]
+    assert [s["stand_ins"] for s in summary["seats"]] == [0, 0]
+    assert summary["seats"][0]["tool_calls"] >= 3 and registered["url"].endswith("/mcp")
+
+
+async def test_an_agent_seat_without_its_deployed_agent_fails_up_front(store):
     with pytest.raises(RuntimeError, match="no deployed agent named 'seat-1'"):
-        await play(seats).execute(TaskStepContext(instance_id="run-2"))
+        await step("prisoners_dilemma", [{"name": "A", "agent_name": "seat-1"}, {"name": "B", "bot": True}]).execute(
+            TaskStepContext(instance_id="run-x"))
 
 
-@pytest.mark.parametrize("bundle, task", [("secret-hitler", "bots.json"), ("secret-hitler-agents", "agents.json")])
-def test_the_shipped_bundles_build_valid_steps(bundle, task):
-    path = resources.files("agentenv_secret_hitler").joinpath("bundles", bundle, "tasks", task)
-    steps = json.loads(path.read_text())
-    game = next(s for s in steps if s["type"] == "play_secret_hitler")
-    assert PlaySecretHitlerTaskStep.from_dict(game).preflight() == []
-    deployed = {s["agent_name"] for s in steps if s["type"] == "deploy_agent"}
-    assert {s["agent_name"] for s in game["seats"] if "agent_name" in s} == deployed
+@pytest.mark.parametrize("bundle", ["game-prisoners-dilemma", "game-secret-hitler", "game-secret-hitler-models",
+                                    "game-prisoners-dilemma-models"])
+def test_the_shipped_bundles_are_valid(bundle):
+    folder = resources.files("agentenv_games").joinpath("bundles", bundle, "tasks")
+    for task in folder.iterdir():
+        for s in json.loads(task.read_text()):
+            assert PlayGameTaskStep.from_dict(s).preflight() == []

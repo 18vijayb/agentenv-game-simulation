@@ -1,0 +1,20 @@
+[
+  {
+    "id": "game",
+    "type": "play_game",
+    "game": "prisoners_dilemma",
+    "params": {
+      "rounds": 10
+    },
+    "seats": [
+      {
+        "name": "Ada",
+        "bot": true
+      },
+      {
+        "name": "Boris",
+        "bot": true
+      }
+    ]
+  }
+]

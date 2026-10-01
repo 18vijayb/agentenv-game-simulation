@@ -1,36 +1,44 @@
 [project]
-name = "agentenv-secret-hitler"
-version = "0.1.0"
-description = "Secret Hitler for agent-env: AI agents play social deduction, and a viewer replays every game."
+name = "agentenv-games"
+version = "0.2.0"
+description = "Multi-agent games for agent-env: write the rules, and agents play through MCP while a viewer shows every move."
 readme = "README.md"
 requires-python = ">=3.11"
 license = "Apache-2.0"
 dependencies = [
     "agentenv-framework[explorer]>=0.9.1260",
     "httpx>=0.27",
+    "mcp>=1.20",
+    "uvicorn>=0.29",
 ]
 
 [project.optional-dependencies]
 dev = ["pytest>=8", "pytest-asyncio>=0.23"]
 
 [project.entry-points."agent_env.task_steps"]
-play_secret_hitler = "agentenv_secret_hitler.step:PlaySecretHitlerTaskStep"
+play_game = "agentenv_games.step:PlayGameTaskStep"
 
 [project.entry-points."agent_env.explorer_plugins"]
-secret_hitler = "agentenv_secret_hitler.explorer:SecretHitlerExplorer"
+agent_games = "agentenv_games.explorer:GamesExplorer"
+
+[project.entry-points."agentenv_games.games"]
+secret_hitler = "agentenv_games.games.secret_hitler:SecretHitler"
+prisoners_dilemma = "agentenv_games.games.prisoners_dilemma:PrisonersDilemma"
 
 [project.entry-points."agent_env.bundles"]
-secret-hitler = "agentenv_secret_hitler.bundles"
-secret-hitler-agents = "agentenv_secret_hitler.bundles"
-secret-hitler-models = "agentenv_secret_hitler.bundles"
+game-prisoners-dilemma = "agentenv_games.bundles"
+game-secret-hitler = "agentenv_games.bundles"
+game-secret-hitler-models = "agentenv_games.bundles"
+game-prisoners-dilemma-models = "agentenv_games.bundles"
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/agentenv_secret_hitler"]
+packages = ["src/agentenv_games"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+pythonpath = ["tests"]

@@ -15,7 +15,7 @@ from pathlib import Path
 
 from agent_env.config import get_config
 
-from agentenv_secret_hitler.log import events_key, meta_key
+from agentenv_games.log import events_key, meta_key
 
 
 def export(folder: Path, specs: list[str]) -> None:

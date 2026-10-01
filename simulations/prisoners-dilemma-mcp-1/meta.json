@@ -1,0 +1,36 @@
+{
+ "game_id": "game-qx34p0qq",
+ "status": "finished",
+ "started_at": "2026-10-01T03:35:27.107+00:00",
+ "updated_at": "2026-10-01T03:37:31.277+00:00",
+ "events": 124,
+ "game": "prisoners_dilemma",
+ "title": "Iterated Prisoner's Dilemma",
+ "players": [
+  {
+   "seat": 0,
+   "name": "Claude Opus 5.5",
+   "kind": "model",
+   "model": "anthropic/claude-opus-5-5"
+  },
+  {
+   "seat": 1,
+   "name": "GPT-5.4",
+   "kind": "model",
+   "model": "openai/gpt-5.4"
+  }
+ ],
+ "teams": {
+  "ahead": "#5aa9d6",
+  "behind": "#e0583a",
+  "level": "#d8ac4a"
+ },
+ "beliefs": "the probability that they defect next round",
+ "seed": 2633181470,
+ "instance_id": "@local/agentenv-games/game-prisoners-dilemma-models/game-qx34p0qq",
+ "winners": [
+  1
+ ],
+ "summary": "GPT-5.4 wins 24 to 19.",
+ "team": null
+}

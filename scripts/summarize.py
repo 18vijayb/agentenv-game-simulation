@@ -2,8 +2,8 @@
 
     python scripts/summarize.py simulations/
 
-Each game is a folder holding the ``meta.json`` and ``events.json`` the plugin writes to the object
-store; ``export_games.py`` copies them out.
+Each game is a folder holding the ``meta.json`` and ``events.json`` agentenv-games writes;
+``games.py export`` copies them out of the object store.
 """
 
 from __future__ import annotations
@@ -14,160 +14,95 @@ from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
 
-CARD = {"L": "liberal", "F": "fascist"}
-ROLE = {"liberal": "Liberal", "fascist": "Fascist", "hitler": "Hitler"}
-
-
-def load(folder: Path) -> tuple[dict, list[dict]]:
-    return json.loads((folder / "meta.json").read_text()), json.loads((folder / "events.json").read_text())
+NARRATION_SKIP = {"setup", "intro", "turn", "move", "think", "beliefs", "stand_in", "end"}
 
 
 def minutes(meta: dict) -> float:
-    start = datetime.fromisoformat(meta["started_at"])
-    end = datetime.fromisoformat(meta["updated_at"])
-    return (end - start).total_seconds() / 60
-
-
-def claim_text(e: dict, names: list[str]) -> str:
-    office, n = e["office"], e["claimed"]
-    if office == "president":
-        return f"drew {n} liberal, {3 - n} fascist"
-    if office == "chancellor":
-        return f"received {n} liberal, {2 - n} fascist"
-    if office == "investigation":
-        return f"{names[e['target']]} is {n}"
-    return f"next three hold {n} liberal"
-
-
-def actual_text(e: dict) -> str:
-    a = e["secret"]["actual"]
-    if e["office"] == "president":
-        return f"{a} liberal, {3 - a} fascist"
-    if e["office"] == "chancellor":
-        return f"{a} liberal, {2 - a} fascist"
-    if e["office"] == "investigation":
-        return str(a)
-    return f"{a} liberal"
+    return (datetime.fromisoformat(meta["updated_at"]) - datetime.fromisoformat(meta["started_at"])).total_seconds() / 60
 
 
 def summarize(folder: Path) -> dict:
-    meta, events = load(folder)
-    players = meta["players"]
-    names = [p["name"] for p in players]
-    end = events[-1]
-    roles = {int(s): r for s, r in end.get("roles", {}).items()}
-    lies = Counter(e["actor"] for e in events if e["k"] == "claim" and e["secret"]["lie"])
-    claims = Counter(e["actor"] for e in events if e["k"] == "claim")
-    fallbacks = Counter(e["actor"] for e in events if e["k"] == "fallback")
-    dead = set(end["state"]["dead"])
-    winner = end.get("winner")
-    winning_side = {"liberal": {"liberal"}, "fascist": {"fascist", "hitler"}}.get(winner, set())
+    meta = json.loads((folder / "meta.json").read_text())
+    events = json.loads((folder / "events.json").read_text())
+    names = [p["name"] for p in meta["players"]]
+    final = events[-1]["state"].get("spectator_players") or [{} for _ in names]
+    moves = Counter(e["actor"] for e in events if e["k"] == "move")
+    claims = Counter(e["actor"] for e in events if e["k"] == "move" and e.get("secret"))
+    lies = Counter(e["actor"] for e in events if e["k"] == "move" and (e.get("secret") or {}).get("lie"))
+    stand_ins = Counter(e["actor"] for e in events if e["k"] == "stand_in")
+    winners = set(meta.get("winners") or [])
 
-    lines = [f"# {folder.name}", ""]
-    title = {"liberal": "The liberals win", "fascist": "The fascists win"}.get(winner, "No winner")
-    lines += [f"**{title}**: {end.get('reason')}. {end['state']['round']} rounds, "
-              f"{end['state']['liberal']} liberal and {end['state']['fascist']} fascist policies, "
-              f"{minutes(meta):.0f} minutes.", ""]
-    lines += ["| Seat | Player | Model | Role | Claims | Lies | Bot stand-ins | Survived |",
-              "|---|---|---|---|---|---|---|---|"]
-    for p in players:
+    lines = [f"# {folder.name}: {meta.get('title', meta.get('game'))}", "",
+             f"**{meta.get('summary', meta['status'])}** {len(events)} events, {minutes(meta):.0f} minutes.", "",
+             "| Seat | Player | Plays as | Role | Moves | Claims | Lies | Stand-ins | Won |", "|---|---|---|---|---|---|---|---|---|"]
+    for p in meta["players"]:
         s = p["seat"]
-        model = p.get("model") or p.get("agent_name") or "bot"
-        lines.append(f"| {s + 1} | {p['name']} | `{model}` | {ROLE.get(roles.get(s), '?')} | {claims[s]} | "
-                     f"{lies[s]} | {fallbacks[s]} | {'no' if s in dead else 'yes'} |")
+        who = f"`{p['model']}`" if p.get("model") else (f"agent `{p['agent_name']}`" if p.get("agent_name") else "bot")
+        role = final[s].get("role", "–") + (" (out)" if final[s].get("out") else "")
+        lines.append(f"| {s + 1} | {p['name']} | {who} | {role} | {moves[s]} | {claims[s]} | {lies[s]} | {stand_ins[s]} | "
+                     f"{'yes' if s in winners else 'no'} |")
 
-    lines += ["", "## Round by round", ""]
-    by_round: dict[int, list[dict]] = defaultdict(list)
+    lines += ["", "## What happened", ""]
     for e in events:
-        by_round[e["state"]["round"]].append(e)
-    for rnd in sorted(r for r in by_round if r):
-        evs = by_round[rnd]
-        nom = next((e for e in evs if e["k"] == "nom"), None)
-        if not nom:
+        if e["vis"] != "public":
             continue
-        vote = next((e for e in evs if e["k"] == "vote"), None)
-        parts = [f"**Round {rnd}.** {names[nom['president']]} nominates {names[nom['nominee']]}"
-                 + (" (special election)" if nom.get("special") else "")]
-        if vote:
-            ja = sum(v == "ja" for v in vote["votes"].values())
-            parts.append(f"vote {'passes' if vote['passed'] else 'fails'} {ja}-{len(vote['votes']) - ja}")
-        for e in evs:
-            if e["k"] == "enact":
-                parts.append(f"{names[e['chancellor']]} enacts **{CARD[e['card']]}**")
-            elif e["k"] == "chaos":
-                parts.append(f"three failed votes enact **{CARD[e['card']]}**")
-            elif e["k"] == "claim":
-                mark = " **(lie)**" if e["secret"]["lie"] else ""
-                parts.append(f"{names[e['actor']]} claims {claim_text(e, names)}{mark}")
-            elif e["k"] == "power" and e["kind"] in ("investigate", "special_election", "execute"):
-                verb = {"investigate": "investigates", "special_election": "hands the presidency to", "execute": "executes"}[e["kind"]]
-                parts.append(f"{names[e['president']]} {verb} {names[e['target']]}")
-            elif e["k"] == "execution":
-                parts.append(f"{names[e['target']]} was {'Hitler' if e['was_hitler'] else 'not Hitler'}")
-            elif e["k"] == "hitler_check":
-                parts.append(f"{names[e['seat']]} is confirmed not Hitler")
-        lines.append("; ".join(parts) + ".")
-        lines.append("")
-
-    lie_events = [e for e in events if e["k"] == "claim" and e["secret"]["lie"]]
+        if e["k"] == "move" and e.get("secret"):
+            mark = " **(lie)**" if e["secret"]["lie"] else ""
+            lines.append(f"- {e['text']}{mark}")
+        elif e["k"] not in NARRATION_SKIP:
+            lines.append(f"- {e['text']}")
+    lie_events = [e for e in events if e["k"] == "move" and (e.get("secret") or {}).get("lie")]
     if lie_events:
-        lines += ["## Every lie", ""]
+        lines += ["", "## Every lie", ""]
         for e in lie_events:
             thought = next((t for t in reversed(events[:e["seq"]]) if t["k"] == "think" and t["actor"] == e["actor"]), None)
-            lines.append(f"- **{names[e['actor']]}** ({ROLE[roles[e['actor']]]}, round {e['state']['round']}) "
-                         f"claimed {claim_text(e, names)}; really {actual_text(e)}. "
-                         f"Said: “{e['text']}”")
+            lines.append(f"- **{names[e['actor']]}** ({final[e['actor']].get('role', '?')}) claimed {e['action']!r}; "
+                         f"the truth was {e['secret']['truth']!r}. Said: “{e['say']}”")
             if thought:
                 lines.append(f"  - Its reason: “{thought['text']}”")
-        lines.append("")
+    if stand_ins:
+        lines += ["", "## Stand-ins", ""]
+        lines += [f"- {e['text']}" for e in events if e["k"] == "stand_in"]
 
     beliefs: dict[int, dict] = {}
     for e in events:
         if e["k"] == "beliefs":
             beliefs[e["actor"]] = {int(t): p for t, p in e["beliefs"].items()}
-    on_team, on_lib = [], []
-    for o, row in beliefs.items():
-        if roles.get(o) != "liberal":
-            continue
-        for t, p in row.items():
-            (on_team if roles.get(t) != "liberal" else on_lib).append(p)
-    if on_team and on_lib:
-        lines += ["## Final read", "",
-                  f"Liberals' last stated suspicion of the fascist team averaged **{sum(on_team) / len(on_team):.0%}**, "
-                  f"and of each other **{sum(on_lib) / len(on_lib):.0%}**.", ""]
-
+    teams = [final[s].get("team") for s in range(len(names))]
+    if beliefs and any(teams):
+        same, other = [], []
+        for o, row in beliefs.items():
+            for t, p in row.items():
+                (same if teams[o] == teams[t] else other).append(p)
+        if same and other:
+            lines += ["", "## Final read", "",
+                      f"On their last stated beliefs ({meta.get('beliefs')}), players gave members of the other team "
+                      f"**{sum(other) / len(other):.0%}** on average and their own team **{sum(same) / len(same):.0%}**."]
     (folder / "summary.md").write_text("\n".join(lines).rstrip() + "\n")
-    return {"game": folder.name, "winner": winner, "reason": end.get("reason"), "rounds": end["state"]["round"],
-            "minutes": minutes(meta), "players": players, "roles": roles, "lies": lies, "claims": claims,
-            "fallbacks": fallbacks, "winning_side": winning_side}
+    return {"folder": folder.name, "meta": meta, "lies": lies, "claims": claims, "stand_ins": stand_ins,
+            "winners": winners, "final": final, "minutes": minutes(meta)}
 
 
 def index(root: Path, games: list[dict]) -> None:
-    lines = ["# Simulations", "",
-             "| Game | Winner | How | Rounds | Minutes | Lies told |", "|---|---|---|---|---|---|"]
+    lines = ["# Simulations", "", "| Game | Kind | Result | Minutes | Lies | Stand-ins |", "|---|---|---|---|---|---|"]
     for g in games:
-        lines.append(f"| [{g['game']}]({g['game']}/summary.md) | {g['winner']} | {g['reason']} | {g['rounds']} | "
-                     f"{g['minutes']:.0f} | {sum(g['lies'].values())} |")
-    per: dict[str, dict] = defaultdict(lambda: Counter())
+        m = g["meta"]
+        lines.append(f"| [{g['folder']}]({g['folder']}/summary.md) | {m.get('title')} | {m.get('summary')} | "
+                     f"{g['minutes']:.0f} | {sum(g['lies'].values())} | {sum(g['stand_ins'].values())} |")
+    per: dict[str, Counter] = defaultdict(Counter)
     for g in games:
-        for p in g["players"]:
+        for p in g["meta"]["players"]:
             s, row = p["seat"], per[p["name"]]
-            role = g["roles"].get(s)
             row["games"] += 1
-            row[role] += 1
-            row["wins"] += role in g["winning_side"]
+            row["wins"] += s in g["winners"]
             row["claims"] += g["claims"][s]
             row["lies"] += g["lies"][s]
-            row["fallbacks"] += g["fallbacks"][s]
-            if role != "liberal":
-                row["fascist_claims"] += g["claims"][s]
-                row["fascist_lies"] += g["lies"][s]
-    lines += ["", "## By player", "",
-              "| Player | Games | Liberal | Fascist | Hitler | Wins | Lies / claims | Lies as fascist team | Bot stand-ins |",
-              "|---|---|---|---|---|---|---|---|---|"]
+            row["stand_ins"] += g["stand_ins"][s]
+            row[f"role:{g['final'][s].get('role', '–')}"] += 1
+    lines += ["", "## By player", "", "| Player | Games | Wins | Roles | Lies / claims | Stand-ins |", "|---|---|---|---|---|---|"]
     for name, row in sorted(per.items(), key=lambda kv: (-kv[1]["wins"], kv[0])):
-        lines.append(f"| {name} | {row['games']} | {row['liberal']} | {row['fascist']} | {row['hitler']} | {row['wins']} | "
-                     f"{row['lies']} / {row['claims']} | {row['fascist_lies']} / {row['fascist_claims']} | {row['fallbacks']} |")
+        roles = ", ".join(f"{k[5:]} {v}" for k, v in sorted(row.items()) if k.startswith("role:"))
+        lines.append(f"| {name} | {row['games']} | {row['wins']} | {roles} | {row['lies']} / {row['claims']} | {row['stand_ins']} |")
     (root / "README.md").write_text("\n".join(lines) + "\n")
 
 

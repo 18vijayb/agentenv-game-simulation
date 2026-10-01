@@ -1,101 +1,131 @@
 # agentenv-game-simulation
 
-AI agents and models play Secret Hitler in [agent-env](https://github.com/scaleapi/agentenv-framework), and a
-viewer in the agent-env explorer replays every game: the table, the policy cards, what each player
-claimed against what they really held, their private reasoning, and who suspected whom.
+Multi-agent games for [agent-env](https://github.com/scaleapi/agentenv-framework). You write a
+game's rules as a small Python class. Agents and models play it through an MCP server, and the
+agent-env explorer shows every game live or as a replay: the game state on the left, and on the
+right the log of what each player said, did and privately thought.
 
-This repo is the `agentenv-secret-hitler` agent-env plugin, plus [`simulations/`](simulations/):
-real games between seven frontier models, with a summary of each game and the full event logs.
-
-The plugin adds a `play_secret_hitler` task step, an explorer plugin that serves the viewer at
-`/secret-hitler`, and three bundles.
+This repo is the `agentenv-games` plugin, with two games (Secret Hitler and the iterated Prisoner's
+Dilemma), plus [`simulations/`](simulations/): games played between frontier models, each with a
+summary and its full event log.
 
 ## Quick start
 
-Install it into the environment agent-env runs in:
+```bash
+agent-env plugin add 'agentenv-games @ git+https://github.com/18vijayb/agentenv-game-simulation'
+agent-env run game-secret-hitler       # seven bots; needs no model, Docker or configuration
+agent-env up --no-bootstrap            # needs a .agentenv/config.toml; an empty one means local defaults
+open http://localhost:8234/games
+```
+
+With a model endpoint configured (`[model]` in the config, or `LITELLM_BASE_URL` and
+`LITELLM_API_KEY`), models play:
 
 ```bash
-agent-env plugin add 'agentenv-secret-hitler @ git+https://github.com/18vijayb/agentenv-game-simulation'
+agent-env run game-prisoners-dilemma-models   # Claude Opus 5.5 against GPT-5.4, about 2 minutes
+agent-env run game-secret-hitler-models       # seven models, 30 to 60 minutes
 ```
 
-Play a game with seven bots (no Docker, model or configuration needed), then open the viewer:
+The model ids in those bundles are LiteLLM proxy ids; change them to what your endpoint serves. To
+browse the recorded games in your own explorer, run `python scripts/games.py load simulations/`.
 
-```bash
-agent-env run secret-hitler
-agent-env up --no-bootstrap        # needs a .agentenv/config.toml; an empty file means local defaults
-open http://localhost:8234/secret-hitler
+## Writing a game
+
+A game is a `Game` subclass that keeps its state on `self`. The framework calls `setup` once, then
+loops: `turns()` says who must act and what they may choose, each of those players answers through
+its MCP tools, and `play(moves)` applies the answers. This is the whole of a working game:
+
+```python
+from agentenv_games import Game, Result, Turn
+
+
+class Coin(Game):
+    name, title = "coin", "Coin toss"
+    rules = "Call heads or tails. The coin always lands heads."
+    min_players = max_players = 1
+
+    def setup(self):
+        self.call = None
+
+    def turns(self):
+        return [] if self.call else [Turn(0, "Heads or tails?", choices=("heads", "tails"))]
+
+    def play(self, moves):
+        self.call = moves[0].action
+        self.log.event(f"It landed heads; {self.names[0]} called {self.call}.")
+
+    def result(self):
+        if self.call is not None:
+            return Result(winners=(0,) if self.call == "heads" else (), summary=f"Called {self.call}.")
 ```
 
-`agent-env run secret-hitler-models --task game-1` plays seven models against each other through the
-model endpoint (`[model]` in the config, or `LITELLM_BASE_URL` and `LITELLM_API_KEY`). The model ids
-in that bundle are LiteLLM proxy ids; change them to what your endpoint serves. A game takes 30 to 60
-minutes.
+Register it in your package's `pyproject.toml`, and `play_game` can run it:
 
-`agent-env run secret-hitler-agents` seats three A2A agents next to four bots. It deploys the default
-A2A agent, so it also needs a model endpoint.
-
-To replay the recorded games in your own explorer, load them into the local store:
-
-```bash
-python scripts/games.py load simulations/
+```toml
+[project.entry-points."agentenv_games.games"]
+coin = "my_games.coin:Coin"
 ```
 
-## Seating your own players
+| Part | What it does |
+|---|---|
+| `Turn(seat, prompt, choices=... or number=(lo, hi), speak=..., private=..., truth=...)` | One decision. `choices` lists the legal actions, `number` bounds an integer, neither makes it a speaking turn. `speak` is `"required"`, `"optional"` or `"none"`. A `private` action is seen only by the player who made it. `truth` marks a claim: the framework compares the action with it and flags lies to spectators. Return several turns to have them answered at once, as in a vote. |
+| `play(moves)` | Gets a `Move` per seat (`action`, `say`, `reasoning`, `beliefs`). The framework already logs each move, its speech and its reasoning; the game narrates consequences with `self.log.event(text, seen_by=[seats])`, where `seen_by` makes an event private. |
+| `intro(seat)` / `view(seat)` | What a seat is told once (its identity and secret role), and what it may see right now (its hand, its investigation results). Never put another seat's secrets here. |
+| `board(spectator)` / `players(spectator)` | The viewer's state panel. Board values can be scalars, lists, nested dicts, or `{"value": n, "max": m}`, which draws as a meter. Each player can have a `role`, a `team` (coloured by the class's `teams`), `tags` and `out`. With `spectator=True` you may include hidden information; the viewer shows it only when hidden information is switched on. |
+| `beliefs` | Optional. A phrase such as `"the probability that they are on the fascist team"`; players then report a number per opponent each turn, and the viewer adds a beliefs heatmap. |
+| `bot(turn)` | The move a stand-in makes. Random and legal by default; a game can make it smarter. |
 
-A game is a task. A seat is a model (called directly through the model endpoint, no sandbox), a
-deployed A2A agent such as Claude Code or Grok Build (one `deploy_agent` step per seat), or a bot.
+## How players play
 
-```json
-[
-  {"id": "claude", "type": "deploy_agent", "a2a_agent_id": "claude-code", "agent_name": "claude", "depends_on": []},
-  {"id": "grok", "type": "deploy_agent", "a2a_agent_id": "grok-build", "agent_name": "grok", "depends_on": []},
-  {"id": "game", "type": "play_secret_hitler", "depends_on": ["claude", "grok"], "seats": [
-    {"name": "Claude Code", "agent_name": "claude"},
-    {"name": "Grok Build", "agent_name": "grok"},
-    {"name": "GPT-5.4", "model": "openai/gpt-5.4"},
-    {"name": "Ada", "bot": "heuristic"},
-    {"name": "Boris", "bot": "heuristic"}
-  ]}
-]
-```
+Every game runs an MCP server for its length, with one endpoint per seat, so a seat's tools only
+ever see that seat's information:
 
-| Field | Default | Meaning |
+| Tool | Returns |
+|---|---|
+| `get_rules` | The rules, the seat's identity and secret role, and how to play |
+| `get_turn` | Whether it is your turn, what you may do, what you can see, and what happened since you last looked |
+| `take_action(action, say, reasoning, beliefs)` | `Accepted.`, or why the move is not legal, so the player can try again |
+| `read_log(since)` | Everything this seat has seen |
+
+A seat in `play_game` is one of:
+
+- **`{"name": "GPT-5.4", "model": "openai/gpt-5.4"}`**: a model that plays by calling those tools
+  through function calling, keeping one conversation all game. `model_params` passes extra request
+  fields such as `reasoning_effort`, and `max_tokens` sets the completion limit.
+- **`{"name": "Claude Code", "agent_name": "claude"}`**: a deployed A2A agent (from a `deploy_agent`
+  step). It receives its seat's MCP URL through the agent's standard `urn:agentenv:mcp-config/v1`
+  extension, then a short message each turn telling it to use the tools. This is how a native
+  harness such as Claude Code, Codex or Gemini CLI plays. Agents in Docker sandboxes need the server
+  reachable from the container: set `mcp_host: "0.0.0.0"` and `mcp_advertise_host:
+  "host.docker.internal"`.
+- **`{"name": "Ada", "bot": true}`**: the game's own bot.
+
+A player that does not make a legal move within `turn_timeout_seconds` (default 600), or whose model
+call fails (a provider's content filter included), gets a stand-in for that one move, and the log
+says so. A stuck player is abandoned at the deadline rather than waited on, so a game always
+finishes. The step records a summary in `context.metadata["game"]`: winners, the viewer path, and
+per seat its stand-ins, lies and tool calls.
+
+| `play_game` field | Default | Meaning |
 |---|---|---|
-| `seats` | required | 5 to 10 seats in table order. Each has a unique `name` and exactly one of `model` (a model id; optional `max_tokens`, default 8000), `agent_name` (a deployed agent, one per seat) or `bot: "heuristic"` |
-| `seed` | random | Seeds the roles, the deck and the bots; the summary records the seed used |
-| `discussion_turns` | `1` | Times each player speaks between a nomination and its vote |
-| `turn_timeout_seconds` | `600` | How long one agent turn may take |
-| `max_retries` | `2` | Times an unusable reply is sent back with the problem before a bot decides instead |
-
-## How agents and models play
-
-Each seat gets its own conversation: an A2A context for an agent, a running chat history for a
-model. The first message explains the rules and the seat's
-secret role. Every later message carries only the events that seat saw since its last turn, the
-board, and one decision. The agent answers with one JSON object:
-
-```json
-{"action": "Grok Build", "say": "I want to test Grok.", "reasoning": "...", "beliefs": {"Grok Build": 0.6}}
-```
-
-`say` is spoken to the table. `reasoning` and `beliefs` go only to the spectator view. The game
-master runs inside the step, so no other seat's cards or roles ever reach an agent's sandbox for it
-to find. A reply that doesn't parse or isn't legal is sent back with the reason. If the player still
-can't produce a usable reply, or its A2A task or model call fails (a provider's content filter
-included), a bot makes that one decision and the viewer marks it.
-
-The step records a summary in the run's `context.metadata["secret_hitler"]`: game id, seed, winner
-and reason, rounds, the viewer path, and each seat's role, lies told and fallback count.
+| `game` | required | An installed game's `name` |
+| `seats` | required | Seats in table order, each with a unique `name` |
+| `params` | `{}` | Passed to the game, such as `{"rounds": 10}` or `{"discussion_turns": 1}` |
+| `seed` | random | Seeds the game and its bots; the summary records the seed used |
+| `turn_timeout_seconds` | `600` | How long one player may take over one move |
+| `mcp_host`, `mcp_advertise_host` | `127.0.0.1` | Where the game's MCP server listens, and the host players are given |
 
 ## The event log
 
-Each game is written to the configured object store under `secret-hitler/games/<game_id>/`, as
-`meta.json` and `events.json`. The log is rewritten at most once a second, and before every agent
-turn, so the viewer can follow a game live. Every event has `seq`, `ts`, `k` (its kind) and
-`state`, the board after it. A `private` event lists the seats that saw it in `seen_by`; an empty
-list means spectators only. `secret` holds spectator-only fields on a public event, such as a
-claim's `actual` value and `lie` flag. The explorer serves it at
-`/api/v1/secret-hitler/games/<game_id>?since=<seq>`.
+Each game is written to the configured object store under `agent-games/games/<game_id>/` as
+`meta.json` and `events.json`, rewritten at most once a second and before each wait on players, so
+the viewer can follow it live. Every event has `seq`, `ts`, `k` (its kind), `vis` and `state` (both
+boards and the player list after it). A private event lists the seats that saw it in `seen_by`; an
+empty list means spectators only. `secret` holds spectator-only fields on a public event, such as a
+claim's `truth` and `lie`. The explorer serves a game at `/api/v1/games/<game_id>?since=<seq>`.
+
+`scripts/summarize.py simulations/` writes a Markdown summary of each exported game and a results
+index; `scripts/games.py export` and `load` move games between the object store and a folder.
 
 ## Development
 

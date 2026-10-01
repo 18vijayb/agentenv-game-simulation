@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Game replay</title>
+<style>
+@font-face { font-family: "Big Shoulders Display"; src: url("/games/static/big-shoulders-display.woff2") format("woff2"); font-weight: 100 900; font-display: swap; }
+@font-face { font-family: "Literata"; src: url("/games/static/literata.woff2") format("woff2"); font-weight: 200 900; font-display: swap; }
+@font-face { font-family: "Literata"; src: url("/games/static/literata-italic.woff2") format("woff2"); font-weight: 200 900; font-style: italic; font-display: swap; }
+:root {
+  --ground: #161e26; --panel: #1e2b35; --edge: #2c3d4a; --raised: #26343f;
+  --ink: #ebe4d2; --muted: #8d9aa5; --faint: #56636e;
+  --gold: #d8ac4a; --red: #e0583a; --blue: #5aa9d6; --paper: #efe6cf; --paper-ink: #2a2118;
+  --display: "Big Shoulders Display", "Oswald", "Arial Narrow", Impact, sans-serif;
+  --text: "Literata", Georgia, "Times New Roman", serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--text); font-size: 15px; line-height: 1.5; }
+body { padding: 0 16px 16px; min-height: 100vh; display: flex; flex-direction: column; }
+button, select { font: inherit; color: inherit; }
+a { color: var(--ink); }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+[hidden] { display: none !important; }
+
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 22px; padding-block: 14px 12px; }
+.bar h1 { font-family: var(--display); font-weight: 800; font-size: 30px; line-height: 1; margin: 0; }
+.bar .crumb { font-family: var(--text); font-size: 13px; color: var(--muted); text-decoration: none; }
+.bar .meta { color: var(--muted); font-size: 13px; }
+.live { font-size: 12px; padding: 1px 9px; border-radius: 10px; background: var(--red); color: #2a0d06; font-weight: 600; }
+.bar .spacer { flex: 1; }
+.switch { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; font-size: 14px; background: none; border: 0; padding: 4px 0; }
+.switch .track { width: 38px; height: 22px; border-radius: 11px; background: var(--edge); position: relative; transition: background .2s; }
+.switch .track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: var(--ink); transition: transform .2s; }
+.switch[aria-pressed="true"] .track { background: var(--red); }
+.switch[aria-pressed="true"] .track::after { transform: translateX(16px); }
+
+.stage { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 16px; min-height: 0; }
+.pane { background: var(--panel); border: 1px solid var(--edge); border-radius: 14px; min-width: 0; display: flex; flex-direction: column; min-height: 0; max-height: calc(100vh - 150px); }
+.phead { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--edge); flex-wrap: wrap; }
+.phead h2 { font-family: var(--display); font-weight: 700; font-size: 20px; margin: 0 auto 0 0; letter-spacing: .02em; }
+.scroll { overflow-y: auto; padding: 14px; flex: 1; }
+.seg { display: inline-flex; background: var(--ground); border-radius: 8px; padding: 2px; }
+.seg button { background: none; border: 0; padding: 4px 10px; border-radius: 6px; font-size: 13px; color: var(--muted); cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--edge); color: var(--ink); }
+.chip { font-size: 12px; background: var(--gold); color: #2a2008; border: 0; border-radius: 10px; padding: 1px 9px; cursor: pointer; }
+
+/* players */
+.players { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.player { text-align: left; background: var(--raised); border: 1px solid var(--edge); border-left: 4px solid var(--team, var(--edge)); border-radius: 10px; padding: 8px 10px; cursor: pointer; display: grid; gap: 3px; position: relative; transition: box-shadow .2s, opacity .2s; }
+.player .nm { font-weight: 600; font-size: 14px; line-height: 1.2; }
+.player .who { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.player .tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
+.tag { font-size: 11px; line-height: 17px; padding: 0 7px; border-radius: 8px; background: var(--ground); color: var(--ink); }
+.tag.role { color: #10151a; font-weight: 600; background: var(--team, var(--muted)); }
+.tag.gold { background: var(--gold); color: #2a2008; }
+.player.out { opacity: .45; }
+.player.out .nm { text-decoration: line-through; }
+.player.speaking { box-shadow: 0 0 0 2px var(--gold), 0 0 18px -2px color-mix(in oklab, var(--gold) 70%, transparent); }
+.player.focus { outline: 2px solid var(--ink); outline-offset: 1px; }
+.player .thinking { position: absolute; top: 8px; right: 10px; display: inline-flex; gap: 3px; }
+.player .thinking i { width: 5px; height: 5px; border-radius: 50%; background: var(--gold); animation: blink 1.2s infinite; }
+.player .thinking i:nth-child(2) { animation-delay: .2s; } .player .thinking i:nth-child(3) { animation-delay: .4s; }
+@keyframes blink { 0%, 100% { opacity: .2; } 50% { opacity: 1; } }
+
+/* board */
+.section { margin-top: 18px; }
+.section > h3 { font-family: var(--display); font-weight: 700; font-size: 17px; letter-spacing: .02em; margin: 0 0 8px; color: var(--ink); }
+.kv { display: grid; grid-template-columns: minmax(110px, max-content) 1fr; gap: 6px 14px; align-items: center; }
+.kv > .k { color: var(--muted); font-size: 13px; }
+.kv > .v { font-size: 14px; min-width: 0; }
+.kv > .v .kv { background: var(--raised); border-radius: 8px; padding: 8px 10px; }
+.meter { display: inline-flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+.meter i { width: 18px; height: 24px; border-radius: 3px; border: 1px dashed color-mix(in oklab, var(--ink) 30%, transparent); display: inline-block; }
+.meter i.on { background: var(--paper); border: 0; border-top: 6px solid var(--gold); }
+.meter.many i { width: 10px; height: 14px; border-top-width: 3px; }
+.meter b { margin-left: 6px; font-family: var(--display); font-size: 16px; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.chips span { background: var(--raised); border-radius: 6px; padding: 1px 7px; font-size: 13px; }
+.danger { color: var(--red); }
+.secretrow > .k::after { content: " · hidden"; color: var(--red); }
+
+/* beliefs */
+.heat table { border-collapse: separate; border-spacing: 3px; }
+.heat th { font-family: var(--display); font-weight: 700; font-size: 14px; padding: 2px 4px; color: var(--muted); }
+.heat th.rowh { text-align: right; font-family: var(--text); font-weight: 600; font-size: 13px; color: var(--ink); white-space: nowrap; }
+.heat td { width: 46px; height: 34px; text-align: center; border-radius: 5px; font-size: 12px; color: #fff; text-shadow: 0 1px 1px rgba(0,0,0,.4); font-variant-numeric: tabular-nums; }
+.heat td.none { color: var(--faint); text-shadow: none; }
+.heatnote { color: var(--muted); font-size: 13px; margin-top: 10px; max-width: 60ch; }
+
+/* log */
+.log { display: flex; flex-direction: column; gap: 10px; }
+.entry { max-width: 68ch; }
+.entry .head { font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.entry .head .kind { font-weight: 400; font-size: 11px; color: var(--muted); background: var(--ground); padding: 0 6px; border-radius: 7px; }
+.act { font-weight: 600; font-size: 11px; background: var(--paper); color: var(--paper-ink); padding: 0 7px; border-radius: 4px; }
+.entry .kind { font-weight: 400; font-size: 11px; color: var(--muted); background: var(--ground); padding: 0 6px; border-radius: 7px; }
+.entry .body { font-size: 14.5px; line-height: 1.55; white-space: pre-wrap; }
+.entry.say .body { background: var(--raised); padding: 7px 11px; border-radius: 4px 12px 12px 12px; margin-top: 3px; display: inline-block; }
+.entry.think .body { color: var(--muted); font-style: italic; border-left: 2px dashed var(--faint); padding-left: 10px; margin-top: 2px; }
+.entry.think .head { color: var(--muted); font-weight: 400; }
+.entry.action { font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.entry.action b { color: var(--ink); font-weight: 600; }
+.entry.sys { color: var(--muted); font-size: 13.5px; padding: 6px 0; border-top: 1px solid var(--edge); }
+.entry.private { border-left: 2px solid var(--red); padding-left: 10px; }
+.entry.private .tagp { font-size: 11px; color: var(--red); margin-right: 6px; }
+.entry.warn { border-left: 2px solid var(--gold); padding-left: 10px; color: var(--muted); font-size: 13px; }
+.entry.endgame { background: color-mix(in oklab, var(--gold) 18%, var(--panel)); padding: 12px 14px; border-radius: 10px; }
+.entry.endgame .big { font-family: var(--display); font-weight: 800; font-size: 24px; line-height: 1.15; }
+.stamp { font-family: var(--display); font-weight: 800; font-size: 15px; letter-spacing: .06em; padding: 0 6px; border: 2px solid; border-radius: 4px; transform: rotate(-8deg); display: inline-block; margin-left: 6px; }
+.stamp.lie { color: var(--red); }
+.stamp.true { color: var(--blue); }
+.stamp.fresh { animation: stamp .35s cubic-bezier(.3,1.6,.5,1); }
+@keyframes stamp { from { transform: rotate(-8deg) scale(2.2); opacity: 0; } }
+.waiting { color: var(--muted); font-size: 13px; font-style: italic; }
+
+/* timeline */
+.timeline { display: flex; align-items: center; gap: 10px; padding-top: 14px; flex-wrap: wrap; }
+.ctrl { background: var(--panel); border: 1px solid var(--edge); border-radius: 8px; width: 38px; height: 34px; cursor: pointer; display: grid; place-items: center; font-size: 14px; }
+.ctrl.play { width: 50px; background: var(--ink); color: var(--ground); border-color: var(--ink); }
+.speed { background: var(--panel); border: 1px solid var(--edge); border-radius: 8px; height: 34px; padding: 0 8px; font-size: 13px; }
+.scrub { flex: 1; min-width: 220px; position: relative; height: 34px; }
+.scrub input { position: absolute; inset: 0; width: 100%; margin: 0; opacity: 0; cursor: pointer; z-index: 2; }
+.scrub .rail { position: absolute; left: 0; right: 0; top: 50%; height: 4px; transform: translateY(-50%); background: var(--edge); border-radius: 2px; }
+.scrub .fill { position: absolute; left: 0; top: 50%; height: 4px; transform: translateY(-50%); background: var(--muted); border-radius: 2px; }
+.scrub .knob { position: absolute; top: 50%; width: 14px; height: 14px; border-radius: 50%; background: var(--ink); transform: translate(-50%, -50%); z-index: 1; }
+.scrub input:focus-visible ~ .knob { outline: 2px solid var(--gold); outline-offset: 2px; }
+.mark { position: absolute; top: 50%; pointer-events: none; }
+.mark.lie { width: 9px; height: 9px; background: var(--red); transform: translate(-50%, -190%) rotate(45deg); }
+.mark.standin { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); transform: translate(-50%, 120%); }
+.mark.event { width: 2px; height: 10px; background: var(--faint); transform: translate(-50%, -50%); }
+.pos { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; min-width: 64px; text-align: right; }
+.keys { font-size: 12px; color: var(--faint); width: 100%; }
+.notice { margin: 15vh auto; max-width: 48ch; text-align: center; color: var(--muted); }
+.notice b { display: block; font-family: var(--display); font-size: 28px; color: var(--ink); margin-bottom: 6px; }
+
+@media (max-width: 920px) {
+  .stage { grid-template-columns: minmax(0, 1fr); }
+  .pane { max-height: none; }
+  .pane.right { max-height: 75vh; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<header class="bar">
+  <h1 id="title">Game</h1>
+  <a class="crumb" href="/games">All games</a>
+  <span class="meta" id="gameMeta"></span>
+  <span class="live" id="live" hidden>Live</span>
+  <span class="spacer"></span>
+  <button class="switch" id="spoilers" aria-pressed="true"><span class="track" aria-hidden="true"></span><span>Show hidden information</span></button>
+</header>
+
+<div class="notice" id="notice" hidden></div>
+
+<main class="stage" id="stage" hidden>
+  <section class="pane left">
+    <div class="phead">
+      <h2>Game state</h2>
+      <div class="seg" role="group" aria-label="State view" id="stateTabs">
+        <button aria-pressed="true" data-tab="state">Board</button>
+        <button aria-pressed="false" data-tab="beliefs" id="beliefsTab" hidden>Beliefs</button>
+      </div>
+    </div>
+    <div class="scroll">
+      <div class="players" id="players"></div>
+      <div id="board"></div>
+      <div id="beliefs" class="heat" hidden></div>
+    </div>
+  </section>
+  <section class="pane right">
+    <div class="phead">
+      <h2>Log</h2>
+      <button class="chip" id="focusChip" hidden></button>
+      <div class="seg" role="group" aria-label="Log filter">
+        <button aria-pressed="true" data-filter="all">Everything</button>
+        <button aria-pressed="false" data-filter="public">What players saw</button>
+      </div>
+    </div>
+    <div class="scroll" id="logScroll"><div class="log" id="log" aria-live="polite"></div></div>
+  </section>
+</main>
+
+<footer class="timeline" id="timeline" hidden>
+  <button class="ctrl" id="restart" aria-label="Back to start">⏮</button>
+  <button class="ctrl" id="back" aria-label="Previous event">◀</button>
+  <button class="ctrl play" id="play" aria-label="Play">▶</button>
+  <button class="ctrl" id="fwd" aria-label="Next event">▶︎▶︎</button>
+  <select class="speed" id="speed" aria-label="Playback speed"><option value="1">1x</option><option value="2" selected>2x</option><option value="4">4x</option><option value="8">8x</option></select>
+  <div class="scrub"><div class="rail"></div><div class="fill" id="fill"></div><div id="marks"></div>
+    <input type="range" id="range" min="0" value="0" aria-label="Timeline"><div class="knob" id="knob"></div></div>
+  <span class="pos" id="pos"></span>
+  <span class="keys">Space plays or pauses, arrow keys step, H toggles hidden information, click a player to follow them.</span>
+</footer>
+
+<script>
+const GAME_ID = decodeURIComponent(location.pathname.split("/").filter(Boolean).pop());
+const API = `/api/v1/games/${encodeURIComponent(GAME_ID)}`;
+const $ = id => document.getElementById(id);
+const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const PALETTE = ["#5aa9d6", "#e0583a", "#d8ac4a", "#8fc28a", "#b48ad8", "#e08ab4", "#6fc7c0", "#c9a27a"];
+const QUIET = new Set(["turn", "beliefs", "setup"]);
+
+let META = null, PLAYERS = [], E = [], BELIEFS = [];
+const ui = { i: 0, playing: false, spoilers: true, filter: "all", focus: null, tab: "state", timer: null, follow: true };
+const nm = s => PLAYERS[s]?.name ?? `Seat ${Number(s) + 1}`;
+const teamColor = team => {
+  if (!team) return null;
+  if (META.teams && META.teams[team]) return META.teams[team];
+  let h = 0; for (const c of team) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  return PALETTE[h % PALETTE.length];
+};
+const seatLabel = p => p.kind === "model" ? p.model.split("/").pop() : p.kind === "agent_name" ? `agent ${p.agent_name}` : "bot";
+const hidden = e => e.vis === "private";
+const isStop = e => !QUIET.has(e.k) && (ui.spoilers || !hidden(e));
+
+function derive(from) {
+  let prev = from > 0 ? BELIEFS[from - 1] : {};
+  for (let i = from; i < E.length; i++) {
+    const e = E[i];
+    BELIEFS[i] = e.k === "beliefs" ? { ...prev, [e.actor]: e.beliefs } : prev;
+    prev = BELIEFS[i];
+  }
+}
+
+/* ---------- left: players and board ---------- */
+function renderPlayers(e) {
+  const st = e.state || {};
+  const rows = (ui.spoilers ? st.spectator_players : st.players) || [];
+  const speaking = (e.k === "move" && e.say) || e.k === "think" ? e.actor : null;
+  const pending = new Set(st.pending || []);
+  $("players").innerHTML = PLAYERS.map((p, s) => {
+    const r = rows[s] || {};
+    const color = teamColor(r.team);
+    const tags = [r.role ? `<span class="tag role">${esc(r.role)}</span>` : ""]
+      .concat((r.tags || []).map(t => `<span class="tag ${/^(President|Chancellor|Leader|Captain)$/.test(t) ? "gold" : ""}">${esc(t)}</span>`)).join("");
+    const cls = ["player", r.out ? "out" : "", speaking === s ? "speaking" : "", ui.focus === s ? "focus" : ""].join(" ");
+    return `<button class="${cls}" data-seat="${s}" style="${color ? `--team:${color}` : ""}" aria-label="Follow ${esc(p.name)}">
+      ${pending.has(s) ? `<span class="thinking" title="Thinking"><i></i><i></i><i></i></span>` : ""}
+      <span class="nm">${esc(p.name)}</span><span class="who" title="${esc(p.model || p.agent_name || "")}">${esc(seatLabel(p))}</span>
+      <span class="tags">${tags}</span></button>`;
+  }).join("");
+  $("players").querySelectorAll(".player").forEach(b => b.onclick = () => {
+    const s = Number(b.dataset.seat); ui.focus = ui.focus === s ? null : s; render();
+  });
+}
+
+function value(v) {
+  if (v && typeof v === "object" && !Array.isArray(v) && "value" in v && "max" in v) {
+    const many = v.max > 12;
+    const pips = Array.from({ length: Math.min(v.max, 40) }, (_, k) => `<i class="${k < v.value ? "on" : ""}"></i>`).join("");
+    return `<span class="meter ${many ? "many" : ""}">${pips}<b>${esc(v.value)} / ${esc(v.max)}</b></span>`;
+  }
+  if (Array.isArray(v)) return v.length ? `<span class="chips">${v.map(x => `<span>${esc(typeof x === "object" ? JSON.stringify(x) : x)}</span>`).join("")}</span>` : `<span style="color:var(--faint)">none</span>`;
+  if (v && typeof v === "object") return kv(v);
+  return esc(v);
+}
+function kv(obj, secretKeys = new Set()) {
+  return `<div class="kv">${Object.entries(obj).map(([k, v]) =>
+    `<div class="k ${secretKeys.has(k) ? "danger" : ""}">${esc(k)}${secretKeys.has(k) ? " (hidden)" : ""}</div><div class="v ${/danger|warning/i.test(k) ? "danger" : ""}">${value(v)}</div>`).join("")}</div>`;
+}
+function renderBoard(e) {
+  const st = e.state || {};
+  const board = (ui.spoilers ? st.spectator : st.board) || {};
+  const pub = st.board || {};
+  const secretKeys = new Set(ui.spoilers ? Object.keys(board).filter(k => !(k in pub)) : []);
+  $("board").innerHTML = Object.keys(board).length ? `<div class="section"><h3>Board</h3>${kv(board, secretKeys)}</div>` : "";
+}
+
+function renderBeliefs() {
+  const v = $("beliefs");
+  if (!ui.spoilers) { v.innerHTML = `<p class="heatnote">Beliefs are private. Turn on hidden information to see them.</p>`; return; }
+  const b = BELIEFS[ui.i] || {};
+  const head = PLAYERS.map(p => `<th title="${esc(p.name)}">${esc(p.name.slice(0, 3))}</th>`).join("");
+  const rows = PLAYERS.map((o, os) => `<tr><th class="rowh">${esc(o.name)}</th>${PLAYERS.map((t, ts) => {
+    if (os === ts) return `<td class="none">·</td>`;
+    const p = (b[os] || {})[ts];
+    if (p === undefined) return `<td class="none">–</td>`;
+    const pct = Math.round(p * 100);
+    return `<td style="background:color-mix(in oklab, var(--red) ${pct}%, #2f6f96)" title="${esc(o.name)} on ${esc(t.name)}: ${pct}%">${pct}</td>`;
+  }).join("")}</tr>`).join("");
+  v.innerHTML = `<div class="section"><h3>Beliefs</h3><table><thead><tr><th></th>${head}</tr></thead><tbody>${rows}</tbody></table>
+    <p class="heatnote">Each row is a player's latest stated estimate of ${esc(META.beliefs)} for each other player.</p></div>`;
+}
+
+/* ---------- right: the log ---------- */
+function roleBadge(s) {
+  if (!ui.spoilers) return "";
+  const r = ((E[ui.i].state || {}).spectator_players || [])[s] || {};
+  return r.role ? `<span class="tag role" style="--team:${teamColor(r.team) || "var(--muted)"}">${esc(r.role)}</span>` : "";
+}
+function entryHTML(e, current) {
+  const priv = hidden(e) ? `<span class="tagp">${(e.seen_by || []).length ? `seen by ${esc(e.seen_by.map(nm).join(", "))}` : "spectators only"}</span>` : "";
+  switch (e.k) {
+    case "move": {
+      const lie = e.secret && ui.spoilers ? `<span class="stamp ${e.secret.lie ? "lie" : "true"} ${current ? "fresh" : ""}">${e.secret.lie ? "Lie" : "True"}</span>` : "";
+      const act = e.action !== null && e.action !== undefined ? `<span class="act">${esc(e.action)}</span>` : "";
+      const standin = e.stand_in ? `<span class="kind">stand-in</span>` : "";
+      if (e.say) return `<div class="entry say ${hidden(e) ? "private" : ""}"><div class="head">${esc(nm(e.actor))}${roleBadge(e.actor)}<span class="kind">${esc(e.turn)}</span>${act}${lie}${standin}</div><div class="body">${esc(e.say)}</div></div>`;
+      return `<div class="entry action ${hidden(e) ? "private" : ""}">${priv}<b>${esc(nm(e.actor))}</b> ${esc(e.turn)} ${act}${lie}${standin}</div>`;
+    }
+    case "think": return `<div class="entry think"><div class="head">${esc(nm(e.actor))} thinks</div><div class="body">${esc(e.text)}</div></div>`;
+    case "stand_in": return `<div class="entry warn">${esc(e.text)}</div>`;
+    case "intro": return `<div class="entry private"><span class="tagp">seen by ${esc(nm(e.actor))}</span>${esc(e.text)}</div>`;
+    case "end": return `<div class="entry endgame"><div class="big">${esc(e.summary)}</div></div>`;
+    default: return `<div class="entry sys ${hidden(e) ? "private" : ""}">${priv}${esc(e.text)}</div>`;
+  }
+}
+function involves(e, s) {
+  return e.actor === s || (e.seen_by || []).includes(s) || (e.text || "").includes(nm(s));
+}
+function renderLog() {
+  const parts = [];
+  for (let k = 0; k <= ui.i; k++) {
+    const e = E[k];
+    if (QUIET.has(e.k)) continue;
+    if ((ui.filter === "public" || !ui.spoilers) && hidden(e)) continue;
+    if (ui.focus !== null && !involves(e, ui.focus) && e.k !== "end") continue;
+    parts.push(entryHTML(e, k === ui.i));
+  }
+  const pending = (E[ui.i].state || {}).pending || [];
+  if (META.status === "running" && ui.i === E.length - 1 && pending.length) parts.push(`<div class="waiting">Waiting on ${esc(pending.map(nm).join(", "))}…</div>`);
+  $("log").innerHTML = parts.join("");
+  const sc = $("logScroll"); sc.scrollTop = sc.scrollHeight;
+  $("focusChip").hidden = ui.focus === null;
+  if (ui.focus !== null) $("focusChip").textContent = `Following ${nm(ui.focus)} ✕`;
+}
+
+function renderMarks() {
+  const n = Math.max(1, E.length - 1);
+  $("marks").innerHTML = E.map((e, i) => {
+    const x = (i / n) * 100;
+    if (e.k === "move" && e.secret && e.secret.lie && ui.spoilers) return `<span class="mark lie" style="left:${x}%"></span>`;
+    if (e.k === "stand_in" && ui.spoilers) return `<span class="mark standin" style="left:${x}%"></span>`;
+    if (!QUIET.has(e.k) && e.k !== "move" && e.k !== "think" && e.vis === "public" && e.k !== "intro") return `<span class="mark event" style="left:${x}%"></span>`;
+    return "";
+  }).join("");
+}
+
+function render() {
+  if (!E.length) return;
+  const e = E[ui.i];
+  renderPlayers(e);
+  renderBoard(e);
+  if (META.beliefs) renderBeliefs();
+  renderLog();
+  const pct = E.length > 1 ? (ui.i / (E.length - 1)) * 100 : 100;
+  $("fill").style.width = pct + "%"; $("knob").style.left = pct + "%";
+  $("range").max = E.length - 1; $("range").value = ui.i;
+  $("pos").textContent = `${ui.i + 1} of ${E.length}`;
+  $("play").textContent = ui.playing ? "❚❚" : "▶";
+  $("play").setAttribute("aria-label", ui.playing ? "Pause" : "Play");
+  $("live").hidden = META.status !== "running";
+}
+
+/* ---------- playback ---------- */
+function nextStop(from, dir) {
+  for (let k = from + dir; k >= 0 && k < E.length; k += dir) if (isStop(E[k])) return k;
+  return dir > 0 ? E.length - 1 : 0;
+}
+function delayFor(e) {
+  const len = ((e.say || e.text) || "").length;
+  const base = e.k === "move" && e.say ? 900 + len * 22 : e.k === "think" ? 700 + len * 16 : e.k === "end" ? 2000 : 1100;
+  return base / Number($("speed").value);
+}
+function tick() {
+  if (!ui.playing) return;
+  if (ui.i >= E.length - 1) { ui.playing = META.status === "running"; ui.follow = true; render(); if (ui.playing) ui.timer = setTimeout(tick, 1000); return; }
+  ui.i = nextStop(ui.i, 1); render();
+  ui.timer = setTimeout(tick, delayFor(E[ui.i]));
+}
+function setPlaying(p) {
+  ui.playing = p; clearTimeout(ui.timer);
+  if (p) { if (ui.i >= E.length - 1 && META.status !== "running") ui.i = 0; render(); ui.timer = setTimeout(tick, delayFor(E[ui.i])); }
+  else render();
+}
+const step = dir => { setPlaying(false); ui.i = nextStop(ui.i, dir); ui.follow = ui.i === E.length - 1; render(); };
+$("play").onclick = () => setPlaying(!ui.playing);
+$("back").onclick = () => step(-1);
+$("fwd").onclick = () => step(1);
+$("restart").onclick = () => { setPlaying(false); ui.i = 0; ui.follow = false; render(); };
+$("range").oninput = ev => { setPlaying(false); ui.i = Number(ev.target.value); ui.follow = ui.i === E.length - 1; render(); };
+$("spoilers").onclick = () => { ui.spoilers = !ui.spoilers; $("spoilers").setAttribute("aria-pressed", ui.spoilers); renderMarks(); render(); };
+$("focusChip").onclick = () => { ui.focus = null; render(); };
+document.querySelectorAll("[data-filter]").forEach(b => b.onclick = () => {
+  ui.filter = b.dataset.filter;
+  document.querySelectorAll("[data-filter]").forEach(x => x.setAttribute("aria-pressed", x === b));
+  render();
+});
+document.querySelectorAll("[data-tab]").forEach(b => b.onclick = () => {
+  ui.tab = b.dataset.tab;
+  document.querySelectorAll("[data-tab]").forEach(x => x.setAttribute("aria-pressed", x === b));
+  $("board").hidden = ui.tab !== "state"; $("players").hidden = false; $("beliefs").hidden = ui.tab !== "beliefs";
+});
+document.addEventListener("keydown", ev => {
+  if (ev.target.tagName === "SELECT" || ev.target.tagName === "INPUT") return;
+  if (ev.key === " ") { ev.preventDefault(); setPlaying(!ui.playing); }
+  else if (ev.key === "ArrowRight") { ev.preventDefault(); step(1); }
+  else if (ev.key === "ArrowLeft") { ev.preventDefault(); step(-1); }
+  else if (ev.key.toLowerCase() === "h") $("spoilers").click();
+});
+
+/* ---------- loading and live updates ---------- */
+function notice(title, html) { $("notice").innerHTML = `<b>${esc(title)}</b>${html}`; $("notice").hidden = false; }
+async function fetchGame(since) {
+  const r = await fetch(`${API}?since=${since}`);
+  if (r.status === 404) return null;
+  if (!r.ok) throw new Error(`${r.status} ${r.statusText}`);
+  return r.json();
+}
+function updateMeta() {
+  const ai = PLAYERS.filter(p => p.kind !== "bot").length;
+  const status = META.status === "running" ? "in progress" : META.status;
+  $("title").textContent = META.title || META.game;
+  document.title = `${META.title || META.game}: ${GAME_ID}`;
+  $("gameMeta").textContent = `${GAME_ID}, ${PLAYERS.length} players (${ai} AI, ${PLAYERS.length - ai} bots), ${status}.`;
+}
+async function poll() {
+  try {
+    const data = await fetchGame(E.length);
+    if (data) {
+      META = data.meta;
+      const atEnd = ui.i >= E.length - 1;
+      if (data.events.length) {
+        const from = E.length; E.push(...data.events); derive(from); renderMarks();
+        if (ui.follow && atEnd && !ui.playing) ui.i = E.length - 1;
+      }
+      render(); updateMeta();
+    }
+  } catch (err) { console.warn("poll failed", err); }
+  if (META.status === "running") setTimeout(poll, 1500);
+}
+(async function start() {
+  let data;
+  try { data = await fetchGame(0); }
+  catch (err) { notice("Couldn't load this game", `<p>The explorer answered ${esc(err.message)}. Check that <code>agent-env up</code> is running.</p>`); return; }
+  if (!data) { notice("No game with this id", `<p>It may still be starting. <a href="/games">See all games</a>.</p>`); return; }
+  META = data.meta; PLAYERS = META.players; E = data.events; BELIEFS = [];
+  if (!E.length) { notice("The game is starting", "<p>Reload in a moment.</p>"); setTimeout(() => location.reload(), 2000); return; }
+  derive(0);
+  $("beliefsTab").hidden = !META.beliefs;
+  $("stage").hidden = false; $("timeline").hidden = false;
+  const deep = /e=(\d+)/.exec(location.hash);
+  ui.i = deep ? Math.min(E.length - 1, Number(deep[1])) : (META.status === "running" ? E.length - 1 : 0);
+  if (/tab=beliefs/.test(location.hash) && META.beliefs) $("beliefsTab").click();
+  renderMarks(); render(); updateMeta();
+  if (META.status === "running") setTimeout(poll, 1500);
+})();
+</script>
+</body>
+</html>
