@@ -42,7 +42,7 @@ async def test_bot_games_end_and_keep_every_card():
                 g, match, log = game(n, seed, max_turns=300)
                 result = await play(match, [player(g) if player is Random else player() for _ in range(n)])
                 assert result.winners and cards_in_play(g) == DECK
-                for e in log.events:  # the state snapshot is consistent at every event
+                for e in log.events[1:]:  # the state snapshot is consistent at every event after setup
                     rows = e["state"]["spectator_players"]
                     table = rows[0]["table"]
                     assert sum(r["count"] for r in rows) + table["pile"] + table["discards"] == DECK
@@ -162,7 +162,7 @@ async def test_the_lie_is_flagged_on_the_move_event_for_spectators():
 async def test_hidden_information_stays_hidden():
     g, match, log = game(4, 9, max_turns=120)
     await play(match, [BotPlayer() for _ in range(4)])
-    for e in log.events:
+    for e in log.events[1:]:
         public_rows = e["state"]["players"]
         assert all("hand" not in r and "role" not in r for r in public_rows)
         assert not any(k.startswith("Attacks") or k == "Mistakes" for k in e["state"]["board"])

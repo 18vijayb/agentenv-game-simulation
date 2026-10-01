@@ -100,8 +100,9 @@ class LiarsDice(Game):
    liberals"), make it a turn whose action is the claim and set `truth` to the real value. The
    framework flags lies to spectators, and the summaries count them. When the claim is implied by a
    move rather than being the move (UNO's Wild +4 asserts "I hold none of the current colour"),
-   override `secret(turn, move)` to return `{"truth": ..., "lie": bool}` and the same flagging applies. A bet, a bid or an estimate is
-   not a claim: it says what a player wants, not what they saw, so leave `truth` unset.
+   override `secret(turn, move)` to return `{"truth": ..., "lie": bool}` and the same flagging
+   applies. A bet, a bid or an estimate is not a claim: it says what a player wants, not what they
+   saw, so leave `truth` unset.
 7. **Narrate consequences, not moves.** The framework already logs every move, its speech and its
    private reasoning. Use `self.log.event(...)` for what follows from moves (a card revealed, a player
    out, a pot won), and `describe()` when a move needs better wording than "chose 'raise' 250".
