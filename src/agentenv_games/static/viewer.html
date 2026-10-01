@@ -36,7 +36,11 @@ a { color: var(--ink); }
 .switch[aria-pressed="true"] .track { background: var(--red); }
 .switch[aria-pressed="true"] .track::after { transform: translateX(16px); }
 
-.stage { flex: 1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: 16px; min-height: 0; }
+.stage { flex: 1; display: grid; grid-template-columns: minmax(0, var(--left, 1fr)) 16px minmax(0, var(--right, 1.15fr)); min-height: 0; }
+.splitter { cursor: col-resize; display: flex; justify-content: center; touch-action: none; }
+.splitter::after { content: ""; width: 4px; border-radius: 2px; background: var(--edge); margin: 40px 0; transition: background .15s; }
+.splitter:hover::after, .splitter:focus-visible::after, .splitter.dragging::after { background: var(--gold); }
+.splitter:focus-visible { outline: none; }
 .pane { background: var(--panel); border: 1px solid var(--edge); border-radius: 14px; min-width: 0; display: flex; flex-direction: column; min-height: 0; max-height: calc(100vh - 150px); }
 .phead { display: flex; align-items: center; gap: 8px; padding: 12px 14px; border-bottom: 1px solid var(--edge); flex-wrap: wrap; }
 .phead h2 { font-family: var(--display); font-weight: 700; font-size: 20px; margin: 0 auto 0 0; letter-spacing: .02em; }
@@ -79,6 +83,8 @@ a { color: var(--ink); }
 .meter i.on { background: var(--paper); border: 0; border-top: 6px solid var(--gold); }
 .meter.many i { width: 10px; height: 14px; border-top-width: 3px; }
 .meter b { margin-left: 6px; font-family: var(--display); font-size: 16px; }
+.kv > .pic { grid-column: 1 / -1; }
+.kv > .pic img { display: block; width: 100%; height: auto; border-radius: 10px; }
 .chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .chips span { background: var(--raised); border-radius: 6px; padding: 1px 7px; font-size: 13px; }
 .danger { color: var(--red); }
@@ -139,7 +145,8 @@ a { color: var(--ink); }
 .notice b { display: block; font-family: var(--display); font-size: 28px; color: var(--ink); margin-bottom: 6px; }
 
 @media (max-width: 920px) {
-  .stage { grid-template-columns: minmax(0, 1fr); }
+  .stage { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .splitter { display: none; }
   .pane { max-height: none; }
   .pane.right { max-height: 75vh; }
 }
@@ -173,6 +180,7 @@ a { color: var(--ink); }
       <div id="beliefs" class="heat" hidden></div>
     </div>
   </section>
+  <div class="splitter" id="splitter" role="separator" aria-orientation="vertical" aria-label="Resize the panels" tabindex="0"></div>
   <section class="pane right">
     <div class="phead">
       <h2>Log</h2>
@@ -207,6 +215,7 @@ const PALETTE = ["#5aa9d6", "#e0583a", "#d8ac4a", "#8fc28a", "#b48ad8", "#e08ab4
 const QUIET = new Set(["turn", "beliefs", "setup"]);
 
 let META = null, PLAYERS = [], E = [], BELIEFS = [];
+const PICTURES = {};
 const ui = { i: 0, playing: false, spoilers: true, filter: "all", focus: null, tab: "state", timer: null, follow: true };
 const nm = s => PLAYERS[s]?.name ?? `Seat ${Number(s) + 1}`;
 const teamColor = team => {
@@ -219,10 +228,23 @@ const seatLabel = p => p.kind === "model" ? p.model.split("/").pop() : p.kind ==
 const hidden = e => e.vis === "private";
 const isStop = e => !QUIET.has(e.k) && (ui.spoilers || !hidden(e));
 
+const isPicture = v => v && typeof v === "object" && !Array.isArray(v) && ("image" in v || "image_ref" in v);
+function collectPictures(e) {
+  for (const board of [e.state?.board, e.state?.spectator])
+    for (const v of Object.values(board || {}))
+      if (isPicture(v) && typeof v.image === "string" && v.image_ref) PICTURES[v.image_ref] = v.image;
+}
+function picture(v) {
+  const src = typeof v.image === "string" ? v.image : PICTURES[v.image_ref];
+  if (!src || !/^data:image\/(svg\+xml|png|jpeg|webp|gif)[;,]/.test(src)) return `<span style="color:var(--faint)">${esc(v.alt || "picture unavailable")}</span>`;
+  return `<img src="${esc(src)}" alt="${esc(v.alt || "")}">`;
+}
+
 function derive(from) {
   let prev = from > 0 ? BELIEFS[from - 1] : {};
   for (let i = from; i < E.length; i++) {
     const e = E[i];
+    collectPictures(e);
     BELIEFS[i] = e.k === "beliefs" ? { ...prev, [e.actor]: e.beliefs } : prev;
     prev = BELIEFS[i];
   }
@@ -252,6 +274,7 @@ function renderPlayers(e) {
 }
 
 function value(v) {
+  if (isPicture(v)) return picture(v);
   if (v && typeof v === "object" && !Array.isArray(v) && "value" in v && "max" in v) {
     const many = v.max > 12;
     const pips = Array.from({ length: Math.min(v.max, 40) }, (_, k) => `<i class="${k < v.value ? "on" : ""}"></i>`).join("");
@@ -262,7 +285,7 @@ function value(v) {
   return esc(v);
 }
 function kv(obj, secretKeys = new Set()) {
-  return `<div class="kv">${Object.entries(obj).map(([k, v]) =>
+  return `<div class="kv">${Object.entries(obj).map(([k, v]) => isPicture(v) ? `<div class="pic">${picture(v)}</div>` :
     `<div class="k ${secretKeys.has(k) ? "danger" : ""}">${esc(k)}${secretKeys.has(k) ? " (hidden)" : ""}</div><div class="v ${/danger|warning/i.test(k) ? "danger" : ""}">${value(v)}</div>`).join("")}</div>`;
 }
 function renderBoard(e) {
@@ -406,6 +429,35 @@ document.addEventListener("keydown", ev => {
   else if (ev.key === "ArrowLeft") { ev.preventDefault(); step(-1); }
   else if (ev.key.toLowerCase() === "h") $("spoilers").click();
 });
+
+/* ---------- resizing the panels ---------- */
+const SPLIT_KEY = "agent-games.split";
+function setSplit(fraction, save = true) {
+  if (!Number.isFinite(fraction)) return;
+  const f = Math.min(0.8, Math.max(0.25, fraction));
+  $("stage").style.setProperty("--left", `${f}fr`);
+  $("stage").style.setProperty("--right", `${1 - f}fr`);
+  $("splitter").setAttribute("aria-valuenow", String(Math.round(f * 100)));
+  if (save) localStorage.setItem(SPLIT_KEY, String(f));
+}
+{
+  const saved = Number(localStorage.getItem(SPLIT_KEY));
+  if (saved) setSplit(saved, false);
+  const bar = $("splitter");
+  const at = x => { const r = $("stage").getBoundingClientRect(); return (x - r.left) / r.width; };
+  bar.addEventListener("pointerdown", ev => {
+    ev.preventDefault(); bar.setPointerCapture(ev.pointerId); bar.classList.add("dragging");
+    const move = e => setSplit(at(e.clientX));
+    const up = () => { bar.classList.remove("dragging"); bar.removeEventListener("pointermove", move); bar.removeEventListener("pointerup", up); };
+    bar.addEventListener("pointermove", move); bar.addEventListener("pointerup", up);
+  });
+  bar.addEventListener("dblclick", () => { localStorage.removeItem(SPLIT_KEY); $("stage").style.removeProperty("--left"); $("stage").style.removeProperty("--right"); });
+  bar.addEventListener("keydown", ev => {
+    const now = Number(localStorage.getItem(SPLIT_KEY)) || 1 / 2.15;
+    if (ev.key === "ArrowLeft") { ev.preventDefault(); ev.stopPropagation(); setSplit(now - 0.05); }
+    if (ev.key === "ArrowRight") { ev.preventDefault(); ev.stopPropagation(); setSplit(now + 0.05); }
+  });
+}
 
 /* ---------- loading and live updates ---------- */
 function notice(title, html) { $("notice").innerHTML = `<b>${esc(title)}</b>${html}`; $("notice").hidden = false; }

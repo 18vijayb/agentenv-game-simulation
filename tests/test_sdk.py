@@ -118,3 +118,37 @@ async def test_a_game_may_declare_a_claim_implied_by_a_move():
     await play(match, [BotPlayer()])
     move = next(e for e in log.events if e["k"] == "move")
     assert move["secret"] == {"truth": "no ace", "lie": True} and move["vis"] == "public"
+
+
+OFFER = {"type": "object", "required": ["give"], "additionalProperties": False,
+         "properties": {"give": {"type": "object", "minProperties": 1,
+                                 "properties": {"wool": {"type": "integer", "minimum": 1}}, "additionalProperties": False},
+                        "to": {"type": "array", "items": {"type": "string", "enum": ["B", "C"]}, "uniqueItems": True}}}
+
+
+def test_a_choice_can_take_args_checked_against_a_schema():
+    turn = Turn(0, "", choices=("pass", "offer"), args={"offer": OFFER})
+    assert turn.parse_args("pass", {"anything": 1}) is None
+    assert turn.parse_args("offer", {"give": {"wool": 2}, "to": ["B"]}) == {"give": {"wool": 2}, "to": ["B"]}
+    assert turn.parse_args("offer", '{"give": {"wool": 1}}') == {"give": {"wool": 1}}
+    for bad, why in (({}, 'needs "give"'), ({"give": {}}, "at least 1 field"), ({"give": {"wool": 0}}, "at least 1"),
+                     ({"give": {"ore": 1}}, "unknown fields"), ({"give": {"wool": 1}, "to": ["B", "B"]}, "repeat"),
+                     ({"give": {"wool": 1}, "to": ["Z"]}, "one of"), ({"give": {"wool": True}}, "an integer"),
+                     ("{not json", "not valid JSON")):
+        with pytest.raises(ValueError, match=why):
+            turn.parse_args("offer", bad)
+    assert '"offer" also needs "args", an object matching this JSON Schema' in turn.spec()
+
+
+def test_args_must_name_offered_choices_and_not_also_take_an_amount():
+    with pytest.raises(ValueError, match="args name choices"):
+        Turn(0, "", choices=("a",), args={"b": {}})
+    with pytest.raises(ValueError, match="amount or args"):
+        Turn(0, "", choices=("a",), amounts={"a": (1, 2)}, args={"a": {}})
+
+
+def test_the_default_stand_in_avoids_choices_that_need_args():
+    game = PrisonersDilemma()
+    game.bind(["A", "B"], random.Random(0), None, {})
+    turn = Turn(0, "", choices=("offer", "pass"), args={"offer": OFFER})
+    assert all(game.bot(turn).action == "pass" for _ in range(20))

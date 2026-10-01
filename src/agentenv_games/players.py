@@ -23,6 +23,7 @@ FIRST = ("The game is starting and you are one of the players. You play only thr
          "Call get_rules first, then get_turn, then take_action.")
 YOUR_TURN = "It is your turn. Call get_turn to see what happened and what you may do, then take_action."
 NUDGE = "You have not taken your action yet. Call take_action now with your decision."
+TRIMMED = " Your earliest turns were dropped from this conversation to keep it short; read_log has the whole game."
 SYSTEM = ("You are a player in a multiplayer game. Everything happens through the tools you are given: read with "
           "get_turn and read_log, act with take_action. Play to win under the rules, in your own voice.")
 
@@ -95,12 +96,19 @@ def openai_tools(tools) -> list[dict]:
 
 
 class ModelPlayer:
-    """A model that plays its seat by calling the seat's MCP tools, keeping one conversation all game."""
+    """A model that plays its seat by calling the seat's MCP tools, keeping one conversation all game.
+    With ``history_turns`` it keeps only the first turn (which read the rules) and the last that many,
+    the current one included, dropping whole turns so no tool call loses its result; each ``get_turn``
+    still brings the full view."""
 
     def __init__(self, mcp_url: str, chat: ChatEndpoint, *, headers: dict[str, str] | None = None,
-                 max_tool_calls: int = 10, max_nudges: int = 2):
+                 max_tool_calls: int = 10, max_nudges: int = 2, history_turns: int | None = None):
+        if history_turns is not None and history_turns < 1:
+            raise ValueError("history_turns must be at least 1")
         self.mcp_url, self.chat, self.headers = mcp_url, chat, headers
         self.max_tool_calls, self.max_nudges = max_tool_calls, max_nudges
+        self.history_turns = history_turns
+        self.turn_starts: list[int] = []
         self.messages: list[dict] = [{"role": "system", "content": SYSTEM}]
         self.tools: list[dict] = []
         self.tool_calls = 0
@@ -114,7 +122,10 @@ class ModelPlayer:
 
     async def play(self, seat: int, match: MatchHandle) -> None:
         self._repair()
-        self.messages.append({"role": "user", "content": FIRST if len(self.messages) == 1 else YOUR_TURN})
+        trimmed = self._trim()
+        self.turn_starts.append(len(self.messages))
+        opening = FIRST if len(self.messages) == 1 else YOUR_TURN + (TRIMMED if trimmed else "")
+        self.messages.append({"role": "user", "content": opening})
         calls = nudges = 0
         accepted = False
         while not accepted:
@@ -136,6 +147,21 @@ class ModelPlayer:
                 accepted = accepted or ((call.get("function") or {}).get("name") == "take_action" and result == "Accepted.")
             if calls >= self.max_tool_calls and not accepted:
                 raise PlayerFailed(f"{self.chat.model}: {calls} tool calls without a legal take_action")
+
+    def _trim(self) -> bool:
+        """Before a turn starts, drop whole earlier turns so the first turn and the last ``history_turns``,
+        counting the one starting, remain."""
+        if self.history_turns is None:
+            return False
+        starts, prior = self.turn_starts, self.history_turns - 1
+        if len(starts) <= prior + 1:
+            return False
+        head_end = starts[1]
+        cut = starts[-prior] if prior else len(self.messages)
+        dropped = cut - head_end
+        self.messages = self.messages[:head_end] + self.messages[cut:]
+        self.turn_starts = [starts[0]] + ([i - dropped for i in starts[-prior:]] if prior else [])
+        return True
 
     def _repair(self) -> None:
         """Answer any tool call an abandoned turn left open, which chat APIs reject."""

@@ -8,6 +8,7 @@ the runner sees one interface: ``begin`` and ``complete`` open each batch of tur
 
 from __future__ import annotations
 
+import json
 import random
 from typing import Protocol
 
@@ -80,7 +81,7 @@ class Match:
                          text=f"A stand-in moved for {self.game.names[seat]}: {error}")
         move = self.game.bot(turn)
         if not stand_in:
-            move = Move(action=move.action, amount=move.amount, say=move.say)
+            move = Move(action=move.action, amount=move.amount, say=move.say, args=move.args)
         self.table.record(seat, move)
 
     def _open(self) -> list[int]:
@@ -104,6 +105,8 @@ class Match:
         parts = [f"{name} {described}"] if described else []
         if move.action is not None and not described:
             chosen = f"{move.action} {move.amount}" if move.amount is not None else repr(move.action)
+            if move.args is not None:
+                chosen += f" {json.dumps(move.args)}"
             parts.append(f"{name} chose {chosen}" + (" (secret)" if turn.private else ""))
         if move.say:
             parts.append(f'{name} says: "{move.say}"')
@@ -115,7 +118,7 @@ class Match:
         self.log.add("move", seen_by=[turn.seat] if turn.private else None, secret=secret,
                      text=". ".join(parts) if parts else f"{name} passed.", actor=turn.seat, turn=turn.kind,
                      prompt=turn.prompt, action=move.action, amount=move.amount, say=move.say,
-                     stand_in=move.stand_in, described=described)
+                     stand_in=move.stand_in, described=described, **({"args": move.args} if move.args is not None else {}))
 
 
 class LocalMatch:

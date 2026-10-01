@@ -77,14 +77,17 @@ class Table:
 
     def _parse(self, turn: Turn, raw: dict) -> Move:
         action, amount = turn.parse(raw.get("action"), raw.get("amount"))
+        args = turn.parse_args(action, raw.get("args"))
         say = str(raw.get("say") or "").strip()[:MAX_SAY] or None
         if turn.speak == "required" and not say:
             raise ValueError('"say" is required this turn: tell the table something')
         if turn.speak == "none":
             say = None
         reasoning = str(raw.get("reasoning") or "").strip()[:MAX_REASONING]
-        return Move(action=action, amount=amount, say=say, reasoning=reasoning,
-                    beliefs=self._beliefs(turn.seat, raw.get("beliefs")))
+        move = Move(action=action, amount=amount, say=say, reasoning=reasoning,
+                    beliefs=self._beliefs(turn.seat, raw.get("beliefs")), args=args)
+        self.game.validate(turn, move)
+        return move
 
     def _beliefs(self, seat: int, raw: Any) -> dict[int, float]:
         if not isinstance(raw, dict) or not self.game.beliefs:
@@ -120,12 +123,17 @@ class Table:
             out.update(your_turn=True, decision=turn.prompt, action=turn.spec(),
                        say={"required": "required", "optional": "optional", "none": "not allowed; this decision is secret"}[turn.speak])
         out["you_see"] = self.game.view(seat)
-        out["board"] = self.game.board(False)
+        out["board"] = as_text(self.game.board(False))
         return out
 
     def history(self, seat: int, since: int = 0) -> list[str]:
         return [f"[{e['seq']}] {e['text']}" for e in self.log.visible_to(seat, since)
                 if e.get("text") and e["k"] not in ("think", "turn")]
+
+
+def as_text(board: dict) -> dict:
+    """The board as a player is given it: each picture replaced by its alt text."""
+    return {k: (v.get("alt") or "(a picture)") if isinstance(v, dict) and "image" in v else v for k, v in board.items()}
 
 
 def _seat_server(table: Table, seat: int, game_name: str, advertise: str) -> FastMCP:
@@ -148,13 +156,13 @@ def _seat_server(table: Table, seat: int, game_name: str, advertise: str) -> Fas
 
     @mcp.tool()
     def take_action(action: str = "", amount: int = 0, say: str = "", reasoning: str = "",
-                    beliefs: dict[str, float] | None = None) -> str:
+                    beliefs: dict[str, float] | None = None, args: dict[str, Any] | None = None) -> str:
         """Make your decision for this turn. action: your choice, as get_turn describes it (empty for a speech-only turn).
         amount: for a choice get_turn says needs an amount, that integer; otherwise leave it 0. say: what you tell all
         players, if anything. reasoning: why you chose this, in a sentence or two (never shown to other players).
-        beliefs: optional, see get_rules."""
+        beliefs: optional, see get_rules. args: for a choice get_turn says needs args, that object; otherwise omit it."""
         return table.submit(seat, {"action": action, "amount": amount, "say": say, "reasoning": reasoning,
-                                   "beliefs": beliefs})
+                                   "beliefs": beliefs, "args": args})
 
     @mcp.tool()
     def read_log(since: int = 0) -> list[str]:
