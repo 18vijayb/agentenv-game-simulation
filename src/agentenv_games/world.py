@@ -17,11 +17,12 @@ import time
 import uuid
 from typing import Any, ClassVar, Optional
 
+import httpx
 from agent_env.config import get_config
 from agent_env.task_step.context import TaskStepContext
 from agent_env.task_step.task_step import TaskStepDependency
 
-from .log import GameLog
+from .log import GameLog, video_key
 from .players import AgentPlayer, ChatEndpoint, call_mcp, openai_tools
 from .remote import RemoteMatch
 from .runner import PlayerFailed
@@ -180,8 +181,10 @@ class PlayWorldTaskStep(PlayGameTaskStep):
             deadline = time.monotonic() + self.seconds
             runs = [asyncio.create_task(p.run(deadline)) for p in players]
             failures = await self._until_done(world, runs, deadline)
-            await world._call("finish")
+            finished = await world._call("finish")
             result = await world.result()
+            if finished.get("recording"):
+                await self._save_recording(deployed.environment_url, world, sink, log, finished["recording"])
         except BaseException as e:
             log.finish("failed", error=f"{type(e).__name__}: {e}"[:500])
             raise
@@ -195,6 +198,22 @@ class PlayWorldTaskStep(PlayGameTaskStep):
                       for r, p in zip(roster, players)],
         }
         return context
+
+    async def _save_recording(self, environment_url: str, world: RemoteMatch, sink: ObjectStoreSink, log: GameLog,
+                              recording: dict) -> None:
+        """Copy the env's video into the store beside the log; the viewer plays it in step with the events."""
+        url = environment_url.rstrip("/") + "/recording"
+        try:
+            async with httpx.AsyncClient(timeout=httpx.Timeout(60, read=600)) as client:
+                resp = await client.get(url, params={"control_token": world.token})
+                resp.raise_for_status()
+        except httpx.HTTPError as e:
+            logger.warning("could not fetch the session's recording: %s", e)
+            return
+        sink.store.put(video_key(log.game_id), resp.content, recording.get("content_type", "video/webm"),
+                       allow_overwrite=True)
+        log.meta["video"] = {"started_at": recording["started_at"], "bytes": len(resp.content),
+                             "content_type": recording.get("content_type", "video/webm")}
 
     async def _world_players(self, deployed, deployed_agents, world: RemoteMatch) -> list:
         endpoint = None

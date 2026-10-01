@@ -16,6 +16,7 @@ const RCON_PASSWORD = process.env.RCON_PASSWORD || 'agentenv'
 const PORT = Number(process.env.BRIDGE_PORT || 3100)
 const ACTION_TIMEOUT_MS = Number(process.env.ACTION_TIMEOUT_MS || 100000)
 const AIR = new Set(['air', 'cave_air', 'void_air'])
+const CAMERA_NAME = process.env.CAMERA_NAME || 'Camera'
 
 const bots = new Map() // username -> {bot, action, viewerPort}
 const chat = [] // every chat line any bot heard, once
@@ -77,7 +78,7 @@ function observe (bot) {
   const blocks = Object.entries(seen).sort((a, b) => a[1].distance - b[1].distance).slice(0, 25)
     .map(([name, s]) => ({ name, count: s.count, nearest: s.nearest, distance: Math.round(s.distance) }))
   const entities = Object.values(bot.entities)
-    .filter(e => e !== bot.entity && e.position.distanceTo(here) < 32 && (e.type === 'player' || e.type === 'mob' || e.type === 'animal' || e.type === 'hostile'))
+    .filter(e => e !== bot.entity && e.username !== CAMERA_NAME && e.position.distanceTo(here) < 32 && (e.type === 'player' || e.type === 'mob' || e.type === 'animal' || e.type === 'hostile'))
     .map(e => ({ name: e.username || e.name, kind: e.type, at: pos(e.position), distance: Math.round(e.position.distanceTo(here)) }))
     .sort((a, b) => a.distance - b.distance).slice(0, 12)
   return {
@@ -317,6 +318,144 @@ function spawn (username, viewerPort) {
   })
 }
 
+// ---- the camera: an invisible spectator bot, and a view on CAMERA_PORT that films from a pose the director picks ----
+const CAMERA_PORT = Number(process.env.CAMERA_PORT || 3099)
+const CHASE = 5
+let camera = null
+
+function angles (from, to) {
+  const d = to.minus(from)
+  return { yaw: Math.atan2(-d.x, -d.z), pitch: Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)) }
+}
+
+function clearOf (bot, p) {
+  // lift a camera point out of any block it would sit inside
+  let q = p.clone()
+  for (let i = 0; i < 16; i++) {
+    const b = bot.blockAt(q.floored())
+    if (!b || b.boundingBox !== 'block') return q
+    q = q.offset(0, 1, 0)
+  }
+  return q
+}
+
+// the chase positions to try, in order: [turn from the current side (radians), distance, height]
+const SHOTS = [[0, CHASE, 2], [0, CHASE, 4], [0.7, CHASE, 2.5], [-0.7, CHASE, 2.5], [0, CHASE - 1.5, 6],
+  [1.4, CHASE, 3], [-1.4, CHASE, 3], [0, 3, 8], [Math.PI, CHASE, 3]]
+
+function sees (bot, from, to) {
+  // nothing solid (leaves included) on the line from the camera to its target, nor at the camera itself
+  const d = to.minus(from)
+  const n = Math.ceil(d.norm() * 2)
+  for (let i = 0; i < n; i++) {
+    const b = bot.blockAt(from.plus(d.scaled(i / n)).floored())
+    if (b && b.boundingBox === 'block') return false
+  }
+  return true
+}
+
+function wrap (a) { return Math.atan2(Math.sin(a), Math.cos(a)) }
+
+function aim () {
+  // where the shot wants the camera: behind and above its player, or circling everyone
+  const { shot, pose } = camera
+  const entry = shot.mode === 'follow' && bots.get(shot.target)
+  if (entry && entry.bot.entity) {
+    const e = entry.bot.entity
+    const head = e.position.offset(0, 1.6, 0)
+    let back = pose && !camera.cut ? pose.pos.minus(head) : new Vec3(Math.sin(e.yaw), 0, Math.cos(e.yaw))
+    back = new Vec3(back.x, 0, back.z)
+    if (back.norm() < 0.1) back = new Vec3(0, 0, 1)
+    back = back.scaled(1 / back.norm())
+    let pos = null
+    for (const [turn, dist, up] of SHOTS) {
+      const dir = new Vec3(back.x * Math.cos(turn) - back.z * Math.sin(turn), 0, back.x * Math.sin(turn) + back.z * Math.cos(turn))
+      const p = head.plus(dir.scaled(dist)).offset(0, up, 0)
+      if (sees(camera.bot, p, head)) { pos = p; break }
+    }
+    pos = pos || clearOf(camera.bot, head.plus(back.scaled(3)).offset(0, 8, 0))
+    return { pos, ...angles(pos, head) }
+  }
+  const ents = [...bots.values()].map(b => b.bot.entity).filter(Boolean)
+  if (!ents.length) return pose
+  const c = ents.reduce((a, e) => a.plus(e.position), new Vec3(0, 0, 0)).scaled(1 / ents.length)
+  const r = Math.max(4, ...ents.map(e => e.position.distanceTo(c))) * 1.2 + 9
+  const a = Date.now() / 20000 * 2 * Math.PI
+  const pos = clearOf(camera.bot, c.offset(Math.sin(a) * r, r * 0.5, Math.cos(a) * r))
+  return { pos, ...angles(pos, c.offset(0, 1, 0)) }
+}
+
+function frame () {
+  const want = aim()
+  if (!want) return
+  const p = camera.pose
+  if (!p || camera.cut) {
+    camera.pose = want
+  } else {
+    const k = 0.12
+    camera.pose = {
+      pos: p.pos.plus(want.pos.minus(p.pos).scaled(k)),
+      yaw: p.yaw + wrap(want.yaw - p.yaw) * k,
+      pitch: p.pitch + (want.pitch - p.pitch) * k
+    }
+  }
+  camera.cut = false
+  const { pos, yaw, pitch } = camera.pose
+  for (const s of camera.sockets) {
+    s.emit('position', { pos, yaw, pitch })
+    s.worldView.updatePosition(pos)
+  }
+}
+
+async function follow () {
+  // keep the spectator itself near the shot, so the server sends the chunks it films
+  if (!camera.pose) return
+  const at = camera.bot.entity.position
+  const p = camera.pose.pos
+  if (at.distanceTo(p) > 24) await command(`tp ${camera.bot.username} ${p.x.toFixed(1)} ${p.y.toFixed(1)} ${p.z.toFixed(1)}`)
+}
+
+function startCamera (username) {
+  return new Promise((resolve, reject) => {
+    const bot = mineflayer.createBot({ host: MC_HOST, port: MC_PORT, username, version: MC_VERSION, auth: 'offline' })
+    bot.once('kicked', reason => reject(new Error(`camera kicked: ${JSON.stringify(reason)}`)))
+    bot.once('error', reject)
+    bot.once('spawn', async () => {
+      await command(`gamemode spectator ${username}`)
+      bot.physicsEnabled = false
+      camera = { bot, shot: { mode: 'wide' }, pose: null, cut: true, sockets: [] }
+      const express = require('express')
+      const { WorldView } = require('prismarine-viewer/viewer')
+      const { setupRoutes } = require('prismarine-viewer/lib/common')
+      const app = express()
+      const server = require('http').createServer(app)
+      const io = require('socket.io')(server, { path: '/socket.io' })
+      setupRoutes(app, '')
+      io.on('connection', socket => {
+        socket.emit('version', bot.version)
+        const at = (camera.pose && camera.pose.pos) || bot.entity.position
+        socket.worldView = new WorldView(bot.world, 6, at, socket)
+        socket.worldView.init(at)
+        socket.worldView.listenToBot(bot)
+        camera.sockets.push(socket)
+        socket.on('disconnect', () => {
+          socket.worldView.removeListenersFromBot(bot)
+          camera.sockets.splice(camera.sockets.indexOf(socket), 1)
+        })
+      })
+      server.listen(CAMERA_PORT, () => console.log(`camera view on *:${CAMERA_PORT}`))
+      setInterval(frame, 50)
+      setInterval(() => { follow().catch(e => console.error(`camera follow: ${e.message}`)) }, 2000)
+      resolve()
+    })
+  })
+}
+
+function setShot (shot) {
+  if (shot.mode !== camera.shot.mode || shot.target !== camera.shot.target) camera.cut = true
+  camera.shot = { mode: shot.mode === 'follow' ? 'follow' : 'wide', target: shot.target }
+}
+
 function state () {
   const out = {}
   for (const [name, e] of bots) {
@@ -371,8 +510,19 @@ http.createServer(async (req, res) => {
         return reply(res, 200, { error: e.message })
       }
     }
+    if (req.method === 'POST' && url.pathname === '/camera') {
+      if (camera) return reply(res, 409, { error: 'the camera is already running' })
+      await startCamera(CAMERA_NAME)
+      return reply(res, 200, { ok: true, port: CAMERA_PORT })
+    }
+    if (req.method === 'POST' && url.pathname === '/camera/shot') {
+      if (!camera) return reply(res, 409, { error: 'no camera' })
+      setShot(await body(req))
+      return reply(res, 200, { ok: true })
+    }
     if (req.method === 'POST' && url.pathname === '/quit') {
       for (const e of bots.values()) e.bot.quit()
+      if (camera) camera.bot.quit()
       return reply(res, 200, { ok: true })
     }
     reply(res, 404, { error: 'not found' })

@@ -15,10 +15,15 @@ import asyncio
 import contextlib
 import re
 import secrets
+import signal
+import sys
 import time
+from pathlib import Path
 
 import httpx
 from agentenv_protocol import AgentEnvEnvironment, extension, reset_data, tool
+from starlette.requests import Request
+from starlette.responses import FileResponse, JSONResponse, Response
 
 from ..log import GameLog
 from ..remote import CONTROL_URI
@@ -28,6 +33,9 @@ SEAT_HEADER = "x-agent-games-seat"
 VIEWER_BASE_PORT = 3000
 HOST_VIEWER_PORT = 8300  # where `agent-env games minecraft watch` forwards the views
 ACTION_TIMEOUT = 150
+CAMERA_NAME = "Camera"
+CAMERA_URL = "http://127.0.0.1:3099"
+RECORDING = Path("/tmp/recording.webm")
 TITLE = "Minecraft"
 DEFAULT_GOAL = ("By the end, every player holds their own stone pickaxe, so help each other. Wood comes from logs, "
                 "planks from logs, sticks from planks; a crafting table lets you craft tools; a wooden pickaxe mines "
@@ -91,11 +99,42 @@ def describe(op: str, args: dict) -> str:
     return ""
 
 
+class Director:
+    """Picks the camera's shot from who acted last: follow the newest actor for at least ``MIN_SHOT``
+    seconds, hand over to another active player after ``MAX_FOLLOW``, and cut to a wide shot of everyone
+    when nobody has acted for ``QUIET`` seconds or every ``WIDE_EVERY`` seconds, for ``WIDE_FOR``."""
+
+    MIN_SHOT, MAX_FOLLOW, QUIET, WIDE_EVERY, WIDE_FOR = 8.0, 20.0, 12.0, 45.0, 6.0
+
+    def __init__(self, now: float):
+        self.shot: tuple[str, int | None] = ("wide", None)
+        self.since = self.last_wide = now
+
+    def pick(self, now: float, acted: dict[int, float]) -> tuple[str, int | None]:
+        age = now - self.since
+        if age < (self.WIDE_FOR if self.shot[0] == "wide" else self.MIN_SHOT):
+            return self.shot
+        recent = [s for t, s in sorted((t, s) for s, t in acted.items() if now - t <= self.QUIET)]
+        if not recent or now - self.last_wide >= self.WIDE_EVERY:
+            shot: tuple[str, int | None] = ("wide", None)
+        elif self.shot == ("follow", recent[-1]) and age >= self.MAX_FOLLOW:
+            others = [s for s in recent if s != recent[-1]]
+            shot = ("follow", others[-1]) if others else ("wide", None)
+        else:
+            shot = ("follow", recent[-1])
+        if shot != self.shot:
+            self.shot, self.since = shot, now
+            if shot[0] == "wide":
+                self.last_wide = now
+        return self.shot
+
+
 class MinecraftEnvironment(AgentEnvEnvironment):
     def __init__(self, bridge: str = BRIDGE) -> None:
         self.bridge = bridge
         self._reset()
         self.create_app()
+        self.mcp.custom_route("/recording", methods=["GET"])(self._recording)
 
     def _reset(self) -> None:
         self.names: list[str] = []
@@ -111,6 +150,11 @@ class MinecraftEnvironment(AgentEnvEnvironment):
         self.last_seen: dict[int, int] = {}
         self.finished: dict | None = None
         self.poller: asyncio.Task | None = None
+        self.acted: dict[int, float] = {}
+        self.busy: set[int] = set()
+        self.director: asyncio.Task | None = None
+        self.recorder: asyncio.subprocess.Process | None = None
+        self.recording: dict | None = None
 
     # ---- bridge --------------------------------------------------------------------------------
 
@@ -208,6 +252,15 @@ class MinecraftEnvironment(AgentEnvEnvironment):
         filters refuse on a tool that also carries free text."""
         seat = self._seat()
         args = {k: v for k, v in args.items() if v not in (None, "")}
+        self.acted[seat] = time.monotonic()
+        self.busy.add(seat)
+        try:
+            return await self._run_action(seat, op, args, intent)
+        finally:
+            self.busy.discard(seat)
+            self.acted[seat] = time.monotonic()
+
+    async def _run_action(self, seat: int, op: str, args: dict, intent: str) -> str:
         if op == "chat":
             self.log.add("move", actor=seat, turn="chat", action=None, say=args.get("message", ""),
                          reasoning=intent or None)
@@ -304,9 +357,12 @@ class MinecraftEnvironment(AgentEnvEnvironment):
             return {"done": self.done() or self.finished is not None, "progress": self.progress(),
                     "seconds_left": self.time_left()}
         if op == "finish":
-            return self.finished or self._finish()
+            if self.finished is None:
+                self._finish()
+            await self._stop_recording()
+            return {**self.finished, "recording": self.recording}
         if op == "result":
-            return self.finished or {}
+            return {**self.finished, "recording": self.recording} if self.finished else {}
         raise ValueError(f"unknown op {op!r}")
 
     async def _start(self, names: list[str], seed: int, params: dict | None = None, game_id: str = "game") -> dict:
@@ -326,7 +382,7 @@ class MinecraftEnvironment(AgentEnvEnvironment):
             await asyncio.sleep(2)
         else:
             raise RuntimeError("the Minecraft server did not come up")
-        taken: set[str] = set()
+        taken: set[str] = {CAMERA_NAME.lower()}
         self.names, self.usernames = list(names), [username(n, taken) for n in names]
         for cmd in ("gamerule doDaylightCycle " + ("true" if self.params.get("daylight_cycle") else "false"),
                     "time set day", "gamerule spawnRadius 4", "gamerule announceAdvancements false"):
@@ -345,8 +401,60 @@ class MinecraftEnvironment(AgentEnvEnvironment):
         self.chat_seen = self.world.get("chat", 0)
         self.log.event(f"Goal: {self.goal} Target: {self._target_text()}. {self.seconds // 60} minutes.", kind="event")
         self.poller = asyncio.get_running_loop().create_task(self._poll())
+        if self.params.get("record", True):
+            await self._start_recording()
         return {"control_token": self.control_token, "seat_tokens": tokens, "seats": [], "title": TITLE,
                 "teams": None, "beliefs": None, "usernames": self.usernames}
+
+    # ---- the recording ---------------------------------------------------------------------------
+
+    async def _start_recording(self) -> None:
+        """The camera bot, the director that aims it, and the recorder process filming its view."""
+        await self._bridge("POST", "/camera", {}, timeout=90)
+        for p in (RECORDING, RECORDING.with_suffix(".webm.part"), RECORDING.with_suffix(".webm.started")):
+            p.unlink(missing_ok=True)
+        self.recorder = await asyncio.create_subprocess_exec(
+            sys.executable, "-m", "agentenv_games.minecraft.recorder", CAMERA_URL, str(RECORDING))
+        self.director = asyncio.get_running_loop().create_task(self._direct())
+
+    async def _direct(self) -> None:
+        director, current = Director(time.monotonic()), None
+        while True:
+            now = time.monotonic()
+            shot = director.pick(now, {**self.acted, **{s: now for s in self.busy}})
+            if shot != current:
+                target = self.usernames[shot[1]] if shot[1] is not None else None
+                with contextlib.suppress(Exception):
+                    await self._bridge("POST", "/camera/shot", {"mode": shot[0], "target": target}, timeout=10)
+                    current = shot
+            await asyncio.sleep(1)
+
+    async def _stop_recording(self) -> None:
+        """A closing wide shot, then stop the recorder and wait for its remuxed file."""
+        if self.recorder is None:
+            return
+        if self.director is not None:
+            self.director.cancel()
+        with contextlib.suppress(Exception):
+            await self._bridge("POST", "/camera/shot", {"mode": "wide"}, timeout=10)
+        await asyncio.sleep(4)
+        recorder, self.recorder = self.recorder, None
+        if recorder.returncode is None:
+            recorder.send_signal(signal.SIGTERM)
+            with contextlib.suppress(asyncio.TimeoutError):
+                await asyncio.wait_for(recorder.wait(), 120)
+        started = RECORDING.with_suffix(".webm.started")
+        if RECORDING.exists() and started.exists():
+            self.recording = {"started_at": started.read_text().strip(), "bytes": RECORDING.stat().st_size,
+                              "content_type": "video/webm"}
+
+    async def _recording(self, request: Request) -> Response:
+        token = request.query_params.get("control_token", "")
+        if self.control_token is None or not secrets.compare_digest(token, self.control_token):
+            return JSONResponse({"error": "control token required"}, status_code=403)
+        if self.recording is None:
+            return JSONResponse({"error": "no recording; finish the session first"}, status_code=404)
+        return FileResponse(RECORDING, media_type="video/webm")
 
     def _finish(self) -> dict:
         names = ", ".join(self.names)
@@ -368,8 +476,11 @@ class MinecraftEnvironment(AgentEnvEnvironment):
     async def reset(self) -> None:
         with contextlib.suppress(Exception):
             await self._bridge("POST", "/quit", {})
-        if self.poller is not None:
-            self.poller.cancel()
+        for task in (self.poller, self.director):
+            if task is not None:
+                task.cancel()
+        if self.recorder is not None and self.recorder.returncode is None:
+            self.recorder.kill()
         self._reset()
 
 

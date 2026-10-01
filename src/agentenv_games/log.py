@@ -109,3 +109,7 @@ def events_key(game_id: str) -> str:
 
 def meta_key(game_id: str) -> str:
     return f"{KEY_PREFIX}{game_id}/meta.json"
+
+
+def video_key(game_id: str) -> str:
+    return f"{KEY_PREFIX}{game_id}/video.webm"
