@@ -5,8 +5,9 @@ game's rules as a small Python class. Agents and models play it through an MCP s
 agent-env explorer shows every game live or as a replay: the game state on the left, and on the
 right the log of what each player said, did and privately thought.
 
-This repo is the `agentenv-games` plugin, with five games (Secret Hitler, no-limit Texas Hold'em,
-Liar's Dice, the iterated Prisoner's Dilemma and UNO with the Wild +4 challenge rule), plus [`simulations/`](simulations/): games played between
+This repo is the `agentenv-games` plugin, with six games (Secret Hitler, no-limit Texas Hold'em,
+Liar's Dice, the iterated Prisoner's Dilemma, UNO with the Wild +4 challenge rule and CATAN, the base game
+with trading and a drawn board), plus [`simulations/`](simulations/): games played between
 frontier models, each with a summary and its full event log.
 
 Adding a game? Follow [`docs/adding-a-game.md`](docs/adding-a-game.md); coding agents pick up [`AGENTS.md`](AGENTS.md) automatically.
@@ -43,6 +44,7 @@ agent-env games setup                       # build the game server image, regis
 agent-env run native-games --task texas-holdem
 agent-env run native-games --task secret-hitler
 agent-env run native-games --task liars-dice
+agent-env run native-games --task catan
 ```
 
 The tasks are identical except for one line:
@@ -112,10 +114,10 @@ coin = "my_games.coin:Coin"
 
 | Part | What it does |
 |---|---|
-| `Turn(seat, prompt, choices=... or number=(lo, hi), amounts=..., speak=..., private=..., truth=...)` | One decision. `choices` lists the legal actions, `number` bounds an integer, neither makes it a speaking turn. `amounts` gives choices that also take an integer, such as `{"raise": (40, 1000)}`; players send `take_action(action="raise", amount=250)`. `speak` is `"required"`, `"optional"` or `"none"`. A `private` action is seen only by the player who made it. `truth` marks a claim: the framework compares the action with it and flags lies to spectators. `prompt` is logged publicly, so secrets belong in `view`. Return several turns to have them answered at once, as in a vote. |
-| `play(moves)` | Gets a `Move` per seat (`action`, `amount`, `say`, `reasoning`, `beliefs`). The framework already logs each move, its speech and its reasoning; the game narrates consequences with `self.log.event(text, seen_by=[seats])`, where `seen_by` makes an event private. `describe(turn, move)` may word a move for the log, such as "calls 40 and is all-in". |
+| `Turn(seat, prompt, choices=... or number=(lo, hi), amounts=..., args=..., speak=..., private=..., truth=...)` | One decision. `choices` lists the legal actions, `number` bounds an integer, neither makes it a speaking turn. `amounts` gives choices that also take an integer, such as `{"raise": (40, 1000)}`; players send `take_action(action="raise", amount=250)`. `args` gives choices that also take an object matching a JSON Schema, such as a trade offer (`{"offer a trade": {...}}`); players send `take_action(action="offer a trade", args={...})`, the framework checks it against the schema and then calls the game's `validate(turn, move)`, which raises `ValueError` to refuse it. `speak` is `"required"`, `"optional"` or `"none"`. A `private` action is seen only by the player who made it. `truth` marks a claim: the framework compares the action with it and flags lies to spectators. `prompt` is logged publicly, so secrets belong in `view`. Return several turns to have them answered at once, as in a vote. |
+| `play(moves)` | Gets a `Move` per seat (`action`, `amount`, `args`, `say`, `reasoning`, `beliefs`). The framework already logs each move, its speech and its reasoning; the game narrates consequences with `self.log.event(text, seen_by=[seats])`, where `seen_by` makes an event private. `describe(turn, move)` may word a move for the log, such as "calls 40 and is all-in". |
 | `intro(seat)` / `view(seat)` | What a seat is told once (its identity and secret role), and what it may see right now (its hand, its investigation results). Never put another seat's secrets here. |
-| `board(spectator)` / `players(spectator)` | The viewer's state panel. Board values can be scalars, lists, nested dicts, or `{"value": n, "max": m}`, which draws as a meter. Each player can have a `role` (a badge: a secret role, or poker hole cards), a `team` (coloured by the class's `teams`), `tags` (strings, or `{"label": ..., "tone": "gold" / "red" / "blue" / "muted"}`) and `out`. With `spectator=True` you may include hidden information; the viewer shows it only when hidden information is switched on. |
+| `board(spectator)` / `players(spectator)` | The viewer's state panel. Board values can be scalars, lists, nested dicts, `{"value": n, "max": m}`, which draws as a meter, or `image(svg, alt)`, a picture drawn across the panel (CATAN's island); players are given its `alt` text, never the image. Each player can have a `role` (a badge: a secret role, or poker hole cards), a `team` (coloured by the class's `teams`), `tags` (strings, or `{"label": ..., "tone": "gold" / "red" / "blue" / "muted"}`) and `out`. With `spectator=True` you may include hidden information; the viewer shows it only when hidden information is switched on. |
 | `beliefs` | Optional. A phrase such as `"the probability that they are on the fascist team"`; players then report a number per opponent each turn, and the viewer adds a beliefs heatmap. |
 | `bot(turn)` | The move a stand-in makes. Random and legal by default; a game can make it smarter. |
 
@@ -136,7 +138,9 @@ A seat in `play_game` is one of:
 
 - **`{"name": "GPT-5.4", "model": "openai/gpt-5.4"}`**: a model that plays by calling those tools
   through function calling, keeping one conversation all game. `model_params` passes extra request
-  fields such as `reasoning_effort`, and `max_tokens` sets the completion limit.
+  fields such as `reasoning_effort`, and `max_tokens` sets the completion limit. For long games,
+  `history_turns` (say `20`) keeps only the first turn, which read the rules, and the last that many,
+  dropping older turns whole; each `get_turn` still brings the full view, and `read_log` the history.
 - **`{"name": "Claude Code", "agent_name": "claude"}`**: a deployed A2A agent (from a `deploy_agent`
   step). It receives its seat's MCP URL through the agent's standard `urn:agentenv:mcp-config/v1`
   extension, then a short message each turn telling it to use the tools. This is how a native
@@ -167,7 +171,10 @@ Each game is written to the configured object store under `agent-games/games/<ga
 the viewer can follow it live. Every event has `seq`, `ts`, `k` (its kind), `vis` and `state` (both
 boards and the player list after it). A private event lists the seats that saw it in `seen_by`; an
 empty list means spectators only. `secret` holds spectator-only fields on a public event, such as a
-claim's `truth` and `lie`. The explorer serves a game at `/api/v1/games/<game_id>?since=<seq>`.
+claim's `truth` and `lie`. A board picture is stored once: the first event to carry it holds the
+data and an `image_ref`, later events the `image_ref` alone, so a reader resolves it from an earlier event
+(the viewer always reads a game from the start). The explorer serves a game at
+`/api/v1/games/<game_id>?since=<seq>`.
 
 [`video/`](video/) turns a game's log into a narrated episode with voiced thoughts; see its README.
 

@@ -1,0 +1,38 @@
+[
+  {
+    "id": "env",
+    "type": "deploy_env",
+    "env_id": "agent-games/catan",
+    "sandbox_type": "local",
+    "ttl_seconds": 7200
+  },
+  {
+    "id": "game",
+    "type": "play_game",
+    "env_step_id": "env",
+    "depends_on": [
+      "env"
+    ],
+    "params": {
+      "max_turns": 300
+    },
+    "seats": [
+      {
+        "name": "Ada",
+        "bot": true
+      },
+      {
+        "name": "Boris",
+        "bot": true
+      },
+      {
+        "name": "Cleo",
+        "bot": true
+      },
+      {
+        "name": "Dmitri",
+        "bot": true
+      }
+    ]
+  }
+]

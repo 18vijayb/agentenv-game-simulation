@@ -68,9 +68,10 @@ class LiarsDice(Game):
     # optional
     def intro(self, seat): ...              # told once, privately: identity, secret role, what they know
     def view(self, seat): ...               # what this seat may see right now (its hand, its role)
-    def board(self, spectator): ...         # the viewer's state panel
+    def board(self, spectator): ...         # the viewer's state panel; image(svg, alt) draws a picture
     def players(self, spectator): ...       # per seat: role, team, tags, out
     def describe(self, turn, move): ...     # how the log words a move, e.g. "bids five 3s"
+    def validate(self, turn, move): ...     # raise ValueError to refuse a move's args before it is accepted
     def bot(self, turn): ...                # a legal, sensible move for bot seats and stand-ins
 ```
 
@@ -94,8 +95,13 @@ class LiarsDice(Game):
    its moves. A secret action is `private=True` and must have `speak="none"`. An action with two
    numbers, such as a dice bid of "four 5s", becomes one choice per value of the second number, each
    with an amount range for the first: Liar's Dice offers `"fives"` with amounts 4 to 15. Say so in
-   the turn's prompt, since that is where models learn the encoding. An action with free-form parts
-   (a trade offer, a set of cards to discard) becomes a short series of turns.
+   the turn's prompt, since that is where models learn the encoding. An action with structured free-form
+   parts, such as a trade offer, is one choice with `args={"offer a trade": <JSON Schema>}`, sent as
+   `take_action(action="offer a trade", args={...})`: the framework checks the schema, and the game's
+   `validate(turn, move)` raises `ValueError` for anything the rules still forbid (cards the player
+   does not hold), so the player is told and asks again. List such choices last. A choice made of
+   repeated simple picks, such as which cards to discard, stays a short series of one-pick turns
+   (CATAN's discard after a 7).
 6. **Mark claims with `truth`.** When a player tells the table something checkable ("I drew two
    liberals"), make it a turn whose action is the claim and set `truth` to the real value. The
    framework flags lies to spectators, and the summaries count them. When the claim is implied by a

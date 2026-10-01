@@ -13,10 +13,12 @@ from __future__ import annotations
 import os
 import secrets
 from importlib.metadata import entry_points
+from typing import Any
 
 from agentenv_protocol import AgentEnvEnvironment, extension, reset_data, tool
 
 from . import GAMES_GROUP, Game
+from .games.catan import Catan
 from .games.holdem import TexasHoldem
 from .games.liars_dice import LiarsDice
 from .games.prisoners_dilemma import PrisonersDilemma
@@ -27,7 +29,7 @@ from .match import Match
 
 SEAT_HEADER = "x-agent-games-seat"
 CONTROL_URI = "urn:agentenv-games:control/v1"
-BUILT_IN: dict[str, type[Game]] = {g.name: g for g in (SecretHitler, TexasHoldem, PrisonersDilemma, Uno, LiarsDice)}
+BUILT_IN: dict[str, type[Game]] = {g.name: g for g in (SecretHitler, TexasHoldem, PrisonersDilemma, Uno, LiarsDice, Catan)}
 _TOKEN = {"control_token": {"type": "string"}}
 CONTROL_OPS = [
     ("start", {"names": {"type": "array", "items": {"type": "string"}}, "seed": {"type": "integer"},
@@ -84,14 +86,14 @@ class GameEnvironment(AgentEnvEnvironment):
 
     @tool(name="take_action")
     def take_action(self, action: str = "", amount: int = 0, say: str = "", reasoning: str = "",
-                    beliefs: dict[str, float] | None = None) -> str:
+                    beliefs: dict[str, float] | None = None, args: dict[str, Any] | None = None) -> str:
         """Make your decision for this turn. action: your choice, as get_turn describes it (empty for a speech-only turn).
         amount: for a choice get_turn says needs an amount, that integer; otherwise leave it 0. say: what you tell all
         players, if anything. reasoning: why you chose this, in a sentence or two (never shown to other players).
-        beliefs: optional, see get_rules."""
+        beliefs: optional, see get_rules. args: for a choice get_turn says needs args, that object; otherwise omit it."""
         seat = self._seat()
         return self.match.table.submit(seat, {"action": action, "amount": amount, "say": say,
-                                                      "reasoning": reasoning, "beliefs": beliefs})
+                                                      "reasoning": reasoning, "beliefs": beliefs, "args": args})
 
     @tool(name="read_log")
     def read_log(self, since: int = 0) -> list[str]:

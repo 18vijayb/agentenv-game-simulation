@@ -183,7 +183,7 @@ class PlayGameTaskStep(TaskStep):
             if "model" in seat:
                 chat = ChatEndpoint(*endpoint, seat["model"], max_tokens=seat.get("max_tokens", 8000),
                                     params=seat.get("model_params"))
-                players.append(ModelPlayer(seat_url(i), chat))
+                players.append(ModelPlayer(seat_url(i), chat, history_turns=seat.get("history_turns")))
             elif "agent_name" in seat:
                 agent = deployed_agents[seat["agent_name"]]
                 url = seat_url(i)

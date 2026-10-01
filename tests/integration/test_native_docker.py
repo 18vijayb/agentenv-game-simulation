@@ -31,7 +31,8 @@ pytestmark = [pytest.mark.integration,
 
 
 @pytest.mark.parametrize("task, game", [("texas-holdem", "texas_holdem"), ("secret-hitler", "secret_hitler"),
-                                        ("uno", "uno"), ("liars-dice", "liars_dice")])
+                                        ("uno", "uno"), ("liars-dice", "liars_dice"),
+                                        ("catan", "catan")])
 def test_a_native_game_deploys_plays_and_tears_down(tmp_path, task, game):
     config = tmp_path / ".agentenv" / "config.toml"
     config.parent.mkdir()

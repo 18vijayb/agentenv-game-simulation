@@ -1,4 +1,5 @@
 import dataclasses
+import itertools
 import json
 import re
 
@@ -62,10 +63,12 @@ def first_amount(turn: dict, action: str) -> int:
 
 def scripted_llm(*, say="I have nothing to hide.", stall=False, filtered=False):
     """An OpenAI-compatible endpoint that plays by tool calls: get_rules, get_turn, then take_action."""
+    ids = itertools.count()
+
     def tool_call(messages, name, args):
         return httpx.Response(200, json={"choices": [{"finish_reason": "tool_calls", "message": {
             "role": "assistant", "content": None,
-            "tool_calls": [{"id": f"call{len(messages)}", "type": "function",
+            "tool_calls": [{"id": f"call{next(ids)}", "type": "function",
                             "function": {"name": name, "arguments": json.dumps(args)}}]}}]})
 
     def handle(request: httpx.Request) -> httpx.Response:

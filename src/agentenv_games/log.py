@@ -2,13 +2,16 @@
 
 An event is ``public`` (every seat sees it) or ``private`` (only ``seen_by``; empty means spectators
 only). ``secret`` holds spectator-only fields on a public event, such as whether a claim was a lie.
-Each event carries ``state``: both boards and the player list after it, so the viewer folds nothing.
+Each event carries ``state``: both boards and the player list after it, so the viewer folds nothing. A
+board picture (an ``image`` value) is stored once: the first event to carry it holds the data and an
+``image_ref``, later ones the ``image_ref`` alone, which a reader resolves from the earlier event.
 Kinds the framework writes: ``setup``, ``turn``, ``move``, ``think``, ``beliefs``, ``stand_in``,
 ``end``; a game's own narration is ``event`` unless it names another kind.
 """
 
 from __future__ import annotations
 
+import hashlib
 import re
 import time
 from collections.abc import Callable
@@ -39,6 +42,7 @@ class GameLog:
                                      "updated_at": now(), "events": 0, **meta}
         self._sink, self._state = sink, state
         self._min_interval, self._written, self._dirty = min_interval, float("-inf"), False
+        self._pictures: set[str] = set()
 
     def add(self, k: str, *, seen_by: list[int] | None = None, secret: dict | None = None, **payload: Any) -> dict:
         event = {"seq": len(self.events), "ts": now(), "k": k,
@@ -47,13 +51,28 @@ class GameLog:
             event["seen_by"] = sorted(seen_by)
         if secret:
             event["secret"] = secret
-        event["state"] = self._state()
+        event["state"] = self._dedupe(self._state())
         self.events.append(event)
         self.meta.update(events=len(self.events), updated_at=event["ts"])
         self._dirty = True
         if time.monotonic() - self._written >= self._min_interval:
             self.flush()
         return event
+
+    def _dedupe(self, state: dict) -> dict:
+        for key in ("board", "spectator"):
+            if isinstance(state.get(key), dict):
+                state[key] = {k: self._picture(v) for k, v in state[key].items()}
+        return state
+
+    def _picture(self, value: Any) -> Any:
+        if not (isinstance(value, dict) and isinstance(value.get("image"), str)):
+            return value
+        ref = hashlib.sha256(value["image"].encode()).hexdigest()[:16]
+        if ref in self._pictures:
+            return {**{k: v for k, v in value.items() if k != "image"}, "image_ref": ref}
+        self._pictures.add(ref)
+        return {**value, "image_ref": ref}
 
     def event(self, text: str, *, seen_by: list[int] | None = None, secret: dict | None = None,
               kind: str = "event", **data: Any) -> dict:

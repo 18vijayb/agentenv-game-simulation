@@ -1,0 +1,1 @@
+Four models play CATAN (base game) through the game's MCP tools via the `[model]` endpoint, keeping the last 20 turns of their conversations. A game takes one to two hours. The ids are LiteLLM proxy ids; change them to what your endpoint serves.

@@ -2,11 +2,12 @@
 
 from importlib.metadata import entry_points
 
-from .sdk import Game, Move, Narrator, Result, Turn
+from .sdk import Game, Move, Narrator, Result, Turn, check_schema, image
 
 GAMES_GROUP = "agentenv_games.games"
 
-__all__ = ["GAMES_GROUP", "Game", "Move", "Narrator", "Result", "Turn", "available_games", "load_game"]
+__all__ = ["GAMES_GROUP", "Game", "Move", "Narrator", "Result", "Turn", "available_games", "check_schema", "image",
+           "load_game"]
 
 
 def available_games() -> dict[str, str]:

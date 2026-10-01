@@ -83,3 +83,23 @@ def test_a_conversation_left_mid_tool_call_is_repaired():
                         {"role": "tool", "tool_call_id": "a", "content": "ok"}]
     player._repair()
     assert [m.get("tool_call_id") for m in player.messages if m["role"] == "tool"] == ["b", "a"]
+
+
+async def test_history_turns_keeps_the_rules_and_the_last_turns_without_breaking_tool_pairs():
+    import pytest
+    from agentenv_games.players import FIRST, TRIMMED
+
+    game, match, log = setup_game(PrisonersDilemma, ["A", "B"], params={"rounds": 8})
+    async with McpServer(match.table, game.name) as server:
+        player = ModelPlayer(server.url(0), ChatEndpoint("http://llm.test", "sk-test", "test/model", backoff=0,
+                                                         transport=scripted_llm()), history_turns=2)
+        await play(match, [player, BotPlayer()])
+    assert not [e for e in log.events if e["k"] == "stand_in"]
+    users = [m["content"] for m in player.messages if m["role"] == "user"]
+    assert users[0] == FIRST and len(player.turn_starts) == 3 and TRIMMED in users[-1]
+    called = {c["id"] for m in player.messages for c in m.get("tool_calls") or []}
+    answered = [m["tool_call_id"] for m in player.messages if m["role"] == "tool"]
+    assert set(answered) == called and len(answered) == len(set(answered))
+    assert any("Prisoner" in m["content"] for m in player.messages if m["role"] == "tool")
+    with pytest.raises(ValueError, match="at least 1"):
+        ModelPlayer("http://x", None, history_turns=0)
