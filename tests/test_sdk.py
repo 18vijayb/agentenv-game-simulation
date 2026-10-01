@@ -69,3 +69,16 @@ async def test_a_minimal_game_runs_end_to_end():
     result = await play(match, [BotPlayer()])
     assert result.summary.startswith("called ")
     assert [e["k"] for e in log.events] == ["setup", "intro", "turn", "move", "event", "end"]
+
+
+def test_every_installed_game_is_in_the_env_image_and_has_bundles():
+    from importlib import resources
+
+    from agentenv_games.envserver import BUILT_IN
+
+    assert set(available_games()) == set(BUILT_IN), "register a new game in pyproject.toml and envserver.BUILT_IN"
+    for name, cls in BUILT_IN.items():
+        assert cls.name == name and cls.title and cls.rules
+    bundles = {p.name for p in resources.files("agentenv_games").joinpath("bundles").iterdir()}
+    for name in BUILT_IN:
+        assert f"game-{name.replace('_', '-')}" in bundles, f"add a bots bundle game-{name.replace('_', '-')}"

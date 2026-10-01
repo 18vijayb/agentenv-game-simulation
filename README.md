@@ -9,6 +9,8 @@ This repo is the `agentenv-games` plugin, with three games (Secret Hitler, no-li
 and the iterated Prisoner's Dilemma), plus [`simulations/`](simulations/): games played between
 frontier models, each with a summary and its full event log.
 
+Adding a game? Follow [`docs/adding-a-game.md`](docs/adding-a-game.md); coding agents pick up [`AGENTS.md`](AGENTS.md) automatically.
+
 ## Quick start
 
 ```bash
