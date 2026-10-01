@@ -1,0 +1,6106 @@
+{
+ "title": "Six AIs Play Texas Hold'em",
+ "subtitle": "Ten hands · No limit · Every thought out loud",
+ "fps": 30,
+ "intro": 120,
+ "outro": 180,
+ "players": [
+  {
+   "name": "Claude Opus 5.5",
+   "color": "#e8a04f",
+   "label": "Claude",
+   "mono": "Cla"
+  },
+  {
+   "name": "GPT-5.4",
+   "color": "#3fb9a8",
+   "label": "GPT",
+   "mono": "GPT"
+  },
+  {
+   "name": "Gemini 3.1 Pro",
+   "color": "#9a86f2",
+   "label": "Gemini",
+   "mono": "Gem"
+  },
+  {
+   "name": "Grok 4.20",
+   "color": "#e5634f",
+   "label": "Grok",
+   "mono": "Gr"
+  },
+  {
+   "name": "Kimi K3",
+   "color": "#e27bb5",
+   "label": "Kimi",
+   "mono": "Ki"
+  },
+  {
+   "name": "DeepSeek V4 Pro",
+   "color": "#5a92f0",
+   "label": "DeepSeek",
+   "mono": "DS"
+  }
+ ],
+ "beats": [
+  {
+   "from": 0,
+   "frames": 252,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "Six AI models. Ten hands of no-limit Texas Hold'em. A thousand chips each. We can see every card, and hear every thought.",
+   "action": null,
+   "audio": "63d1fb489efb5607-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "J♦",
+       "4♠"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♦",
+       "5♠"
+      ],
+      "chips": 990,
+      "bet": 10,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "5♣",
+       "K♠"
+      ],
+      "chips": 980,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "10♥",
+       "3♠"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "Q♣"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "10♠",
+       "2♥"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 30,
+    "hand": 1,
+    "hands": 10,
+    "blinds": "10/20",
+    "street": "preflop"
+   },
+   "seq": 7
+  },
+  {
+   "from": 252,
+   "frames": 112,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "Hand two. Claude opens, and GPT is waiting.",
+   "action": null,
+   "audio": "cfbc7d25deb90697-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♥",
+       "7♠"
+      ],
+      "chips": 1070,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "A♠",
+       "10♦"
+      ],
+      "chips": 950,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "3♠",
+       "5♦"
+      ],
+      "chips": 970,
+      "bet": 10,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "8♣",
+       "7♥"
+      ],
+      "chips": 980,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "Q♣",
+       "4♦"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "2♠",
+       "3♣"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 30,
+    "hand": 2,
+    "hands": 10,
+    "blinds": "10/20",
+    "street": "preflop"
+   },
+   "seq": 43
+  },
+  {
+   "from": 364,
+   "frames": 137,
+   "mode": "think",
+   "speaker": 0,
+   "text": "A7o in cutoff-ish position, open.",
+   "action": null,
+   "audio": "348ae77fbe3d0e86-1.25.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♥",
+       "7♠"
+      ],
+      "chips": 1070,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "A♠",
+       "10♦"
+      ],
+      "chips": 950,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "3♠",
+       "5♦"
+      ],
+      "chips": 970,
+      "bet": 10,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "8♣",
+       "7♥"
+      ],
+      "chips": 980,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "Q♣",
+       "4♦"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "2♠",
+       "3♣"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 30,
+    "hand": 2,
+    "hands": 10,
+    "blinds": "10/20",
+    "street": "preflop"
+   },
+   "seq": 57
+  },
+  {
+   "from": 501,
+   "frames": 49,
+   "mode": "act",
+   "speaker": 0,
+   "text": "",
+   "action": "raises to 55",
+   "audio": null,
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♥",
+       "7♠"
+      ],
+      "chips": 1015,
+      "bet": 55,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "A♠",
+       "10♦"
+      ],
+      "chips": 950,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "3♠",
+       "5♦"
+      ],
+      "chips": 970,
+      "bet": 10,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "8♣",
+       "7♥"
+      ],
+      "chips": 980,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "Q♣",
+       "4♦"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "2♠",
+       "3♣"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 85,
+    "hand": 2,
+    "hands": 10,
+    "blinds": "10/20",
+    "street": "preflop"
+   },
+   "seq": 58
+  },
+  {
+   "from": 550,
+   "frames": 232,
+   "mode": "think",
+   "speaker": 1,
+   "text": "ATo on the button/dealer versus a likely late-position open after folds is strong enough to 3-bet for value and initiative.",
+   "action": null,
+   "audio": "a553179d4c5d8df2-1.25.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♥",
+       "7♠"
+      ],
+      "chips": 1015,
+      "bet": 55,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "A♠",
+       "10♦"
+      ],
+      "chips": 950,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "3♠",
+       "5♦"
+      ],
+      "chips": 970,
+      "bet": 10,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "8♣",
+       "7♥"
+      ],
+      "chips": 980,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "Q♣",
+       "4♦"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "2♠",
+       "3♣"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 85,
+    "hand": 2,
+    "hands": 10,
+    "blinds": "10/20",
+    "street": "preflop"
+   },
+   "seq": 60
+  },
+  {
+   "from": 782,
+   "frames": 63,
+   "mode": "say",
+   "speaker": 1,
+   "text": "Let's make it a bit more expensive.",
+   "action": "raises to 170",
+   "audio": "6d04b79e5f999bbf-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♥",
+       "7♠"
+      ],
+      "chips": 1015,
+      "bet": 55,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "A♠",
+       "10♦"
+      ],
+      "chips": 780,
+      "bet": 170,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "3♠",
+       "5♦"
+      ],
+      "chips": 970,
+      "bet": 10,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "8♣",
+       "7♥"
+      ],
+      "chips": 980,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "Q♣",
+       "4♦"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "2♠",
+       "3♣"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 255,
+    "hand": 2,
+    "hands": 10,
+    "blinds": "10/20",
+    "street": "preflop"
+   },
+   "seq": 61
+  },
+  {
+   "from": 845,
+   "frames": 153,
+   "mode": "think",
+   "speaker": 0,
+   "text": "A7o out of position vs 3-bet is dominated often.",
+   "action": null,
+   "audio": "f8ba6fc8d2beff52-1.25.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♥",
+       "7♠"
+      ],
+      "chips": 1015,
+      "bet": 55,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "A♠",
+       "10♦"
+      ],
+      "chips": 780,
+      "bet": 170,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "3♠",
+       "5♦"
+      ],
+      "chips": 970,
+      "bet": 10,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "8♣",
+       "7♥"
+      ],
+      "chips": 980,
+      "bet": 20,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "Q♣",
+       "4♦"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "2♠",
+       "3♣"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 255,
+    "hand": 2,
+    "hands": 10,
+    "blinds": "10/20",
+    "street": "preflop"
+   },
+   "seq": 69
+  },
+  {
+   "from": 998,
+   "frames": 49,
+   "mode": "act",
+   "speaker": 0,
+   "text": "",
+   "action": "folds",
+   "audio": null,
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♥",
+       "7♠"
+      ],
+      "chips": 1015,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "A♠",
+       "10♦"
+      ],
+      "chips": 1035,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "3♠",
+       "5♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "8♣",
+       "7♥"
+      ],
+      "chips": 980,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "Q♣",
+       "4♦"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "2♠",
+       "3♣"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 0,
+    "hand": 2,
+    "hands": 10,
+    "blinds": "10/20",
+    "street": "preflop"
+   },
+   "seq": 70
+  },
+  {
+   "from": 1047,
+   "frames": 86,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "GPT takes it down without a fight.",
+   "action": null,
+   "audio": "ac9109f374963bd3-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♥",
+       "7♠"
+      ],
+      "chips": 1015,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "A♠",
+       "10♦"
+      ],
+      "chips": 1035,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "3♠",
+       "5♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "8♣",
+       "7♥"
+      ],
+      "chips": 980,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "Q♣",
+       "4♦"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "2♠",
+       "3♣"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 0,
+    "hand": 2,
+    "hands": 10,
+    "blinds": "10/20",
+    "street": "preflop"
+   },
+   "seq": 71
+  },
+  {
+   "from": 1133,
+   "frames": 92,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "Meanwhile, the folding. So much folding.",
+   "action": null,
+   "audio": "593427837bd92997-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "10♦",
+       "4♦"
+      ],
+      "chips": 1015,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♠",
+       "5♠"
+      ],
+      "chips": 1035,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "2♦",
+       "3♠"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "A♣",
+       "3♥"
+      ],
+      "chips": 970,
+      "bet": 10,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "9♦",
+       "10♥"
+      ],
+      "chips": 980,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "J♣",
+       "10♠"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 30,
+    "hand": 3,
+    "hands": 10,
+    "blinds": "10/20",
+    "street": "preflop"
+   },
+   "seq": 72
+  },
+  {
+   "from": 1225,
+   "frames": 88,
+   "mode": "say",
+   "speaker": 5,
+   "text": "Ten-deuce? Not today. Fold.",
+   "action": "folds",
+   "audio": "af8d49655977e37d-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "J♦",
+       "4♠"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♦",
+       "5♠"
+      ],
+      "chips": 990,
+      "bet": 10,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "5♣",
+       "K♠"
+      ],
+      "chips": 980,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "10♥",
+       "3♠"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "Q♣"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "10♠",
+       "2♥"
+      ],
+      "chips": 1000,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 30,
+    "hand": 1,
+    "hands": 10,
+    "blinds": "10/20",
+    "street": "preflop"
+   },
+   "seq": 22
+  },
+  {
+   "from": 1313,
+   "frames": 132,
+   "mode": "say",
+   "speaker": 2,
+   "text": "Folding this one too. I'm getting terrible cards today.",
+   "action": "folds",
+   "audio": "1195f91929ac6b4f-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "8♦",
+       "5♠"
+      ],
+      "chips": 1015,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "A♥",
+       "5♣"
+      ],
+      "chips": 955,
+      "bet": 60,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "2♦",
+       "3♣"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "2♣",
+       "A♠"
+      ],
+      "chips": 1040,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "7♦"
+      ],
+      "chips": 970,
+      "bet": 10,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "A♦",
+       "4♦"
+      ],
+      "chips": 960,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 90,
+    "hand": 4,
+    "hands": 10,
+    "blinds": "10/20",
+    "street": "preflop"
+   },
+   "seq": 126
+  },
+  {
+   "from": 1445,
+   "frames": 105,
+   "mode": "say",
+   "speaker": 2,
+   "text": "Folding again. My cards are freezing cold.",
+   "action": "folds",
+   "audio": "3ae50c0df9081d67-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "8♦",
+       "2♥"
+      ],
+      "chips": 2425,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "3♠",
+       "J♣"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "7♣",
+       "8♥"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": true
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "10♦",
+       "5♦"
+      ],
+      "chips": 890,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "K♦",
+       "9♠"
+      ],
+      "chips": 760,
+      "bet": 80,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 120,
+    "hand": 9,
+    "hands": 10,
+    "blinds": "40/80",
+    "street": "preflop"
+   },
+   "seq": 291
+  },
+  {
+   "from": 1550,
+   "frames": 128,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "Hand five. The blinds go up, and Grok goes to work.",
+   "action": null,
+   "audio": "b2669661af391697-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "J♥",
+       "A♦"
+      ],
+      "chips": 975,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "K♣",
+       "5♦"
+      ],
+      "chips": 955,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "5♥",
+       "7♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "8♣",
+       "A♠"
+      ],
+      "chips": 1130,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "J♣",
+       "3♥"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "10♥",
+       "K♥"
+      ],
+      "chips": 940,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 60,
+    "hand": 5,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 141
+  },
+  {
+   "from": 1678,
+   "frames": 75,
+   "mode": "say",
+   "speaker": 3,
+   "text": "Raising it up.",
+   "action": "raises to 120",
+   "audio": "afc272b1953083f5-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "J♥",
+       "A♦"
+      ],
+      "chips": 975,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "K♣",
+       "5♦"
+      ],
+      "chips": 955,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "5♥",
+       "7♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "8♣",
+       "A♠"
+      ],
+      "chips": 1010,
+      "bet": 120,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "J♣",
+       "3♥"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "10♥",
+       "K♥"
+      ],
+      "chips": 940,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 180,
+    "hand": 5,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 156
+  },
+  {
+   "from": 1753,
+   "frames": 104,
+   "mode": "say",
+   "speaker": 5,
+   "text": "King-ten suited? Yeah, I'll see a flop with that.",
+   "action": "calls 100",
+   "audio": "02229fcc86022f31-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "J♥",
+       "A♦"
+      ],
+      "chips": 975,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "K♣",
+       "5♦"
+      ],
+      "chips": 955,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "5♥",
+       "7♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "8♣",
+       "A♠"
+      ],
+      "chips": 1010,
+      "bet": 120,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "J♣",
+       "3♥"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "10♥",
+       "K♥"
+      ],
+      "chips": 840,
+      "bet": 120,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 280,
+    "hand": 5,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 162
+  },
+  {
+   "from": 1857,
+   "frames": 129,
+   "mode": "think",
+   "speaker": 0,
+   "text": "Squeeze vs loose-aggressive Grok and a capped caller.",
+   "action": null,
+   "audio": "a3cb547d06131f1c-1.25.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "J♥",
+       "A♦"
+      ],
+      "chips": 975,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "K♣",
+       "5♦"
+      ],
+      "chips": 955,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "5♥",
+       "7♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "8♣",
+       "A♠"
+      ],
+      "chips": 1010,
+      "bet": 120,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "J♣",
+       "3♥"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "10♥",
+       "K♥"
+      ],
+      "chips": 840,
+      "bet": 120,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 280,
+    "hand": 5,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 164
+  },
+  {
+   "from": 1986,
+   "frames": 49,
+   "mode": "act",
+   "speaker": 0,
+   "text": "",
+   "action": "raises to 420",
+   "audio": null,
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "J♥",
+       "A♦"
+      ],
+      "chips": 595,
+      "bet": 420,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "K♣",
+       "5♦"
+      ],
+      "chips": 955,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "5♥",
+       "7♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "8♣",
+       "A♠"
+      ],
+      "chips": 1010,
+      "bet": 120,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "J♣",
+       "3♥"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "10♥",
+       "K♥"
+      ],
+      "chips": 840,
+      "bet": 120,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 660,
+    "hand": 5,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 165
+  },
+  {
+   "from": 2035,
+   "frames": 76,
+   "mode": "say",
+   "speaker": 3,
+   "text": "Folding to the big raise.",
+   "action": "folds",
+   "audio": "1c8f3b737cc041eb-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "J♥",
+       "A♦"
+      ],
+      "chips": 595,
+      "bet": 420,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "K♣",
+       "5♦"
+      ],
+      "chips": 955,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "5♥",
+       "7♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "8♣",
+       "A♠"
+      ],
+      "chips": 1010,
+      "bet": 120,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "J♣",
+       "3♥"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "10♥",
+       "K♥"
+      ],
+      "chips": 840,
+      "bet": 120,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 660,
+    "hand": 5,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 168
+  },
+  {
+   "from": 2111,
+   "frames": 141,
+   "mode": "say",
+   "speaker": 5,
+   "text": "Nice squeeze, Claude. KTs can't call that. Fold.",
+   "action": "folds",
+   "audio": "af48470ddf169c11-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "J♥",
+       "A♦"
+      ],
+      "chips": 1255,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "K♣",
+       "5♦"
+      ],
+      "chips": 955,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "5♥",
+       "7♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "8♣",
+       "A♠"
+      ],
+      "chips": 1010,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "J♣",
+       "3♥"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "10♥",
+       "K♥"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 0,
+    "hand": 5,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 171
+  },
+  {
+   "from": 2252,
+   "frames": 142,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "Claude had ace-jack. Six hundred sixty chips, no cards shown.",
+   "action": null,
+   "audio": "8c9683e8b8d57a6a-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "J♥",
+       "A♦"
+      ],
+      "chips": 1255,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "K♣",
+       "5♦"
+      ],
+      "chips": 955,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "5♥",
+       "7♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "8♣",
+       "A♠"
+      ],
+      "chips": 1010,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "J♣",
+       "3♥"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "10♥",
+       "K♥"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 0,
+    "hand": 5,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 172
+  },
+  {
+   "from": 2394,
+   "frames": 146,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "Hand six. Grok announces his hand out loud. Kimi is listening.",
+   "action": null,
+   "audio": "2eabb5d831ee9824-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "7♣",
+       "5♦"
+      ],
+      "chips": 1235,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "7♠",
+       "3♥"
+      ],
+      "chips": 915,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "9♦",
+       "7♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "J♦",
+       "10♠"
+      ],
+      "chips": 1010,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♠",
+       "5♥"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "A♥",
+       "4♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 60,
+    "hand": 6,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 173
+  },
+  {
+   "from": 2540,
+   "frames": 67,
+   "mode": "say",
+   "speaker": 3,
+   "text": "Raising with JT.",
+   "action": "raises to 100",
+   "audio": "06e1e11bcf91adef-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "7♣",
+       "5♦"
+      ],
+      "chips": 1235,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "7♠",
+       "3♥"
+      ],
+      "chips": 915,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "9♦",
+       "7♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "J♦",
+       "10♠"
+      ],
+      "chips": 910,
+      "bet": 100,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♠",
+       "5♥"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "A♥",
+       "4♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 160,
+    "hand": 6,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 185
+  },
+  {
+   "from": 2607,
+   "frames": 262,
+   "mode": "think",
+   "speaker": 4,
+   "text": "Pocket fives play well as a set-mining call here — Grok announced J-T, so a 5 on the flop gives me a well-hidden set against top pair.",
+   "action": null,
+   "audio": "e2b4bf71bda1ff7a-1.25.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "7♣",
+       "5♦"
+      ],
+      "chips": 1235,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "7♠",
+       "3♥"
+      ],
+      "chips": 915,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "9♦",
+       "7♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "J♦",
+       "10♠"
+      ],
+      "chips": 910,
+      "bet": 100,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♠",
+       "5♥"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "A♥",
+       "4♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 160,
+    "hand": 6,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 187
+  },
+  {
+   "from": 2869,
+   "frames": 107,
+   "mode": "say",
+   "speaker": 4,
+   "text": "Call — let's see if I can flop something.",
+   "action": "calls 100",
+   "audio": "c5e64da5ff8daa2a-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "7♣",
+       "5♦"
+      ],
+      "chips": 1235,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "7♠",
+       "3♥"
+      ],
+      "chips": 915,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "9♦",
+       "7♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "J♦",
+       "10♠"
+      ],
+      "chips": 910,
+      "bet": 100,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♠",
+       "5♥"
+      ],
+      "chips": 870,
+      "bet": 100,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "A♥",
+       "4♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 260,
+    "hand": 6,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 188
+  },
+  {
+   "from": 2976,
+   "frames": 131,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "Queen, six, six. No five for Kimi.",
+   "action": null,
+   "audio": "66da0c212659b3b8-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "7♣",
+       "5♦"
+      ],
+      "chips": 1235,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "7♠",
+       "3♥"
+      ],
+      "chips": 915,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "9♦",
+       "7♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "J♦",
+       "10♠"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♠",
+       "5♥"
+      ],
+      "chips": 870,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "A♥",
+       "4♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "Q♥",
+     "6♠",
+     "6♣"
+    ],
+    "pot": 260,
+    "hand": 6,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "flop"
+   },
+   "seq": 198
+  },
+  {
+   "from": 3107,
+   "frames": 76,
+   "mode": "say",
+   "speaker": 3,
+   "text": "Betting 140.",
+   "action": "bets 140",
+   "audio": "6cf67f207891de81-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "7♣",
+       "5♦"
+      ],
+      "chips": 1235,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "7♠",
+       "3♥"
+      ],
+      "chips": 915,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "9♦",
+       "7♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "J♦",
+       "10♠"
+      ],
+      "chips": 770,
+      "bet": 140,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♠",
+       "5♥"
+      ],
+      "chips": 870,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "A♥",
+       "4♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "Q♥",
+     "6♠",
+     "6♣"
+    ],
+    "pot": 400,
+    "hand": 6,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "flop"
+   },
+   "seq": 201
+  },
+  {
+   "from": 3183,
+   "frames": 236,
+   "mode": "think",
+   "speaker": 4,
+   "text": "Grok said he has JT, so his 140 bet is a bluff on this board — but my pocket fives can't do anything about it. … Save the chips.",
+   "action": null,
+   "audio": "7c949ffaed23153f-1.25.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "7♣",
+       "5♦"
+      ],
+      "chips": 1235,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "7♠",
+       "3♥"
+      ],
+      "chips": 915,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "9♦",
+       "7♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "J♦",
+       "10♠"
+      ],
+      "chips": 770,
+      "bet": 140,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♠",
+       "5♥"
+      ],
+      "chips": 870,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "A♥",
+       "4♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "Q♥",
+     "6♠",
+     "6♣"
+    ],
+    "pot": 400,
+    "hand": 6,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "flop"
+   },
+   "seq": 203
+  },
+  {
+   "from": 3419,
+   "frames": 145,
+   "mode": "say",
+   "speaker": 4,
+   "text": "I know your JT missed, Grok, but my pair is too small to fight — fold.",
+   "action": "folds",
+   "audio": "0b19325af0db229c-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "7♣",
+       "5♦"
+      ],
+      "chips": 1235,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "7♠",
+       "3♥"
+      ],
+      "chips": 915,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "9♦",
+       "7♦"
+      ],
+      "chips": 970,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "J♦",
+       "10♠"
+      ],
+      "chips": 1170,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♠",
+       "5♥"
+      ],
+      "chips": 870,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "A♥",
+       "4♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "Q♥",
+     "6♠",
+     "6♣"
+    ],
+    "pot": 0,
+    "hand": 6,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "flop"
+   },
+   "seq": 204
+  },
+  {
+   "from": 3564,
+   "frames": 86,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "Hand eight. The hand of the game.",
+   "action": null,
+   "audio": "7dae9464d3a0649f-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♠",
+       "10♥"
+      ],
+      "chips": 1235,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♥",
+       "2♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "K♠",
+       "6♣"
+      ],
+      "chips": 910,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "Q♦",
+       "10♦"
+      ],
+      "chips": 1130,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "10♠"
+      ],
+      "chips": 930,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "J♣",
+       "3♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 60,
+    "hand": 8,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 232
+  },
+  {
+   "from": 3650,
+   "frames": 136,
+   "mode": "think",
+   "speaker": 0,
+   "text": "ATo good open from cutoff.",
+   "action": null,
+   "audio": "af9bf362a8dfb357-1.25.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♠",
+       "10♥"
+      ],
+      "chips": 1235,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♥",
+       "2♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "K♠",
+       "6♣"
+      ],
+      "chips": 910,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "Q♦",
+       "10♦"
+      ],
+      "chips": 1130,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "10♠"
+      ],
+      "chips": 930,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "J♣",
+       "3♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 60,
+    "hand": 8,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 246
+  },
+  {
+   "from": 3786,
+   "frames": 49,
+   "mode": "act",
+   "speaker": 0,
+   "text": "",
+   "action": "raises to 110",
+   "audio": null,
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♠",
+       "10♥"
+      ],
+      "chips": 1125,
+      "bet": 110,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♥",
+       "2♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "K♠",
+       "6♣"
+      ],
+      "chips": 910,
+      "bet": 20,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "Q♦",
+       "10♦"
+      ],
+      "chips": 1130,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "10♠"
+      ],
+      "chips": 930,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "J♣",
+       "3♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 170,
+    "hand": 8,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 247
+  },
+  {
+   "from": 3835,
+   "frames": 258,
+   "mode": "think",
+   "speaker": 3,
+   "text": "Queen-ten suited is a strong hand in the big blind facing a late position raise. 3-betting to about 2.5x the raise applies pressure…",
+   "action": null,
+   "audio": "c681050c98eb895a-1.25.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♠",
+       "10♥"
+      ],
+      "chips": 1125,
+      "bet": 110,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♥",
+       "2♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "K♠",
+       "6♣"
+      ],
+      "chips": 910,
+      "bet": 20,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "Q♦",
+       "10♦"
+      ],
+      "chips": 1130,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "10♠"
+      ],
+      "chips": 930,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "J♣",
+       "3♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 170,
+    "hand": 8,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 255
+  },
+  {
+   "from": 4093,
+   "frames": 99,
+   "mode": "say",
+   "speaker": 3,
+   "text": "3-betting with QTs.",
+   "action": "raises to 280",
+   "audio": "6e4878c3ddcd6ed9-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♠",
+       "10♥"
+      ],
+      "chips": 1125,
+      "bet": 110,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♥",
+       "2♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "K♠",
+       "6♣"
+      ],
+      "chips": 910,
+      "bet": 20,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "Q♦",
+       "10♦"
+      ],
+      "chips": 890,
+      "bet": 280,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "10♠"
+      ],
+      "chips": 930,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "J♣",
+       "3♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 410,
+    "hand": 8,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 256
+  },
+  {
+   "from": 4192,
+   "frames": 150,
+   "mode": "think",
+   "speaker": 0,
+   "text": "ATo in position vs aggressive 3-bettor; call.",
+   "action": null,
+   "audio": "390bd7f23ce0a4ab-1.25.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♠",
+       "10♥"
+      ],
+      "chips": 1125,
+      "bet": 110,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♥",
+       "2♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "K♠",
+       "6♣"
+      ],
+      "chips": 910,
+      "bet": 20,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "Q♦",
+       "10♦"
+      ],
+      "chips": 890,
+      "bet": 280,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "10♠"
+      ],
+      "chips": 930,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "J♣",
+       "3♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 410,
+    "hand": 8,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "preflop"
+   },
+   "seq": 258
+  },
+  {
+   "from": 4342,
+   "frames": 49,
+   "mode": "act",
+   "speaker": 0,
+   "text": "",
+   "action": "calls 170",
+   "audio": null,
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♠",
+       "10♥"
+      ],
+      "chips": 955,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♥",
+       "2♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "K♠",
+       "6♣"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "Q♦",
+       "10♦"
+      ],
+      "chips": 890,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "10♠"
+      ],
+      "chips": 930,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "J♣",
+       "3♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "9♥",
+     "4♦",
+     "6♦"
+    ],
+    "pot": 580,
+    "hand": 8,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "flop"
+   },
+   "seq": 259
+  },
+  {
+   "from": 4391,
+   "frames": 158,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "Nine, four, six. Two diamonds. Grok has the flush draw.",
+   "action": null,
+   "audio": "3bd4ff1d6b8a9776-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♠",
+       "10♥"
+      ],
+      "chips": 955,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♥",
+       "2♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "K♠",
+       "6♣"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "Q♦",
+       "10♦"
+      ],
+      "chips": 890,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "10♠"
+      ],
+      "chips": 930,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "J♣",
+       "3♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "9♥",
+     "4♦",
+     "6♦"
+    ],
+    "pot": 580,
+    "hand": 8,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "flop"
+   },
+   "seq": 260
+  },
+  {
+   "from": 4549,
+   "frames": 112,
+   "mode": "say",
+   "speaker": 3,
+   "text": "Betting 300 into the pot.",
+   "action": "bets 300",
+   "audio": "123dd3b3f1635a86-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♠",
+       "10♥"
+      ],
+      "chips": 955,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♥",
+       "2♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "K♠",
+       "6♣"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "Q♦",
+       "10♦"
+      ],
+      "chips": 590,
+      "bet": 300,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "10♠"
+      ],
+      "chips": 930,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "J♣",
+       "3♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "9♥",
+     "4♦",
+     "6♦"
+    ],
+    "pot": 880,
+    "hand": 8,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "flop"
+   },
+   "seq": 263
+  },
+  {
+   "from": 4661,
+   "frames": 199,
+   "mode": "think",
+   "speaker": 0,
+   "text": "Grok is loose and claims QT; A-high is ahead of his likely range and the shove gets fold equity.",
+   "action": null,
+   "audio": "55af6a86b64f85a7-1.25.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♠",
+       "10♥"
+      ],
+      "chips": 955,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♥",
+       "2♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "K♠",
+       "6♣"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "Q♦",
+       "10♦"
+      ],
+      "chips": 590,
+      "bet": 300,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "10♠"
+      ],
+      "chips": 930,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "J♣",
+       "3♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "9♥",
+     "4♦",
+     "6♦"
+    ],
+    "pot": 880,
+    "hand": 8,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "flop"
+   },
+   "seq": 265
+  },
+  {
+   "from": 4860,
+   "frames": 70,
+   "mode": "say",
+   "speaker": 0,
+   "text": "All in.",
+   "action": "raises to 955 and is all-in",
+   "audio": "150adef72a8903d4-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♠",
+       "10♥"
+      ],
+      "chips": 0,
+      "bet": 955,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♥",
+       "2♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "K♠",
+       "6♣"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "Q♦",
+       "10♦"
+      ],
+      "chips": 590,
+      "bet": 300,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "10♠"
+      ],
+      "chips": 930,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "J♣",
+       "3♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "9♥",
+     "4♦",
+     "6♦"
+    ],
+    "pot": 1835,
+    "hand": 8,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "flop"
+   },
+   "seq": 266
+  },
+  {
+   "from": 4930,
+   "frames": 373,
+   "mode": "think",
+   "speaker": 3,
+   "text": "I have a flush draw with two overcards (queen and ten)… roughly 45-50% equity against a typical range. Pot odds are good as I'm getting over 3:1. Let's go for it.",
+   "action": null,
+   "audio": "4e817490b23c67e3-1.25.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♠",
+       "10♥"
+      ],
+      "chips": 0,
+      "bet": 955,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♥",
+       "2♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "K♠",
+       "6♣"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "Q♦",
+       "10♦"
+      ],
+      "chips": 590,
+      "bet": 300,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "10♠"
+      ],
+      "chips": 930,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "J♣",
+       "3♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "9♥",
+     "4♦",
+     "6♦"
+    ],
+    "pot": 1835,
+    "hand": 8,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "flop"
+   },
+   "seq": 268
+  },
+  {
+   "from": 5303,
+   "frames": 78,
+   "mode": "say",
+   "speaker": 3,
+   "text": "Calling the all-in.",
+   "action": "calls 590 and is all-in",
+   "audio": "62b309d11018bbd4-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♠",
+       "10♥"
+      ],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♥",
+       "2♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "K♠",
+       "6♣"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "Q♦",
+       "10♦"
+      ],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "10♠"
+      ],
+      "chips": 930,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "J♣",
+       "3♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "9♥",
+     "4♦",
+     "6♦",
+     "4♠"
+    ],
+    "pot": 2425,
+    "hand": 8,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "turn"
+   },
+   "seq": 269
+  },
+  {
+   "from": 5381,
+   "frames": 129,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "The turn. Four of spades. No diamond.",
+   "action": null,
+   "audio": "ae25f5a04eadc9b5-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♠",
+       "10♥"
+      ],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♥",
+       "2♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "K♠",
+       "6♣"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "Q♦",
+       "10♦"
+      ],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "10♠"
+      ],
+      "chips": 930,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "J♣",
+       "3♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "9♥",
+     "4♦",
+     "6♦",
+     "4♠"
+    ],
+    "pot": 2425,
+    "hand": 8,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "turn"
+   },
+   "seq": 270
+  },
+  {
+   "from": 5510,
+   "frames": 110,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "The river. Three of clubs. No diamond.",
+   "action": null,
+   "audio": "d1f83d93a66e3dee-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♠",
+       "10♥"
+      ],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♥",
+       "2♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "K♠",
+       "6♣"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "Q♦",
+       "10♦"
+      ],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "10♠"
+      ],
+      "chips": 930,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "J♣",
+       "3♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "9♥",
+     "4♦",
+     "6♦",
+     "4♠",
+     "3♣"
+    ],
+    "pot": 2425,
+    "hand": 8,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "river"
+   },
+   "seq": 271
+  },
+  {
+   "from": 5620,
+   "frames": 233,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "Both play the fours on the board. Claude's ace kicker takes twenty-four hundred chips, and Grok is out.",
+   "action": null,
+   "audio": "f084088d6dd0fca1-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "A♠",
+       "10♥"
+      ],
+      "chips": 2425,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♥",
+       "2♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "K♠",
+       "6♣"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [
+       "Q♦",
+       "10♦"
+      ],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "5♥",
+       "10♠"
+      ],
+      "chips": 930,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "J♣",
+       "3♠"
+      ],
+      "chips": 840,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "9♥",
+     "4♦",
+     "6♦",
+     "4♠",
+     "3♣"
+    ],
+    "pot": 0,
+    "hand": 8,
+    "hands": 10,
+    "blinds": "20/40",
+    "street": "river"
+   },
+   "seq": 274
+  },
+  {
+   "from": 5853,
+   "frames": 137,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "Hand nine. Kimi bets middle pair. DeepSeek has other ideas.",
+   "action": null,
+   "audio": "58b7dbbc4febe3db-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "8♦",
+       "2♥"
+      ],
+      "chips": 2425,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "3♠",
+       "J♣"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "7♣",
+       "8♥"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": true
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "10♦",
+       "5♦"
+      ],
+      "chips": 890,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "K♦",
+       "9♠"
+      ],
+      "chips": 760,
+      "bet": 80,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 120,
+    "hand": 9,
+    "hands": 10,
+    "blinds": "40/80",
+    "street": "preflop"
+   },
+   "seq": 277
+  },
+  {
+   "from": 5990,
+   "frames": 114,
+   "mode": "say",
+   "speaker": 4,
+   "text": "Bet 100 — middle pair, let's see if that's good.",
+   "action": "bets 100",
+   "audio": "acf1b1a0527c275d-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "8♦",
+       "2♥"
+      ],
+      "chips": 2425,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "3♠",
+       "J♣"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "7♣",
+       "8♥"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": true
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "10♦",
+       "5♦"
+      ],
+      "chips": 750,
+      "bet": 100,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "K♦",
+       "9♠"
+      ],
+      "chips": 760,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "10♠",
+     "4♣",
+     "Q♦"
+    ],
+    "pot": 260,
+    "hand": 9,
+    "hands": 10,
+    "blinds": "40/80",
+    "street": "flop"
+   },
+   "seq": 301
+  },
+  {
+   "from": 6104,
+   "frames": 350,
+   "mode": "think",
+   "speaker": 5,
+   "text": "Open-ended straight draw (J or 8) gives 8 outs ~32% equity. Semi-bluff all-in puts maximum pressure on Kimi's claimed middle pair.",
+   "action": null,
+   "audio": "ee3994ca1871f890-1.25.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "8♦",
+       "2♥"
+      ],
+      "chips": 2425,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "3♠",
+       "J♣"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "7♣",
+       "8♥"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": true
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "10♦",
+       "5♦"
+      ],
+      "chips": 750,
+      "bet": 100,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "K♦",
+       "9♠"
+      ],
+      "chips": 760,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "10♠",
+     "4♣",
+     "Q♦"
+    ],
+    "pot": 260,
+    "hand": 9,
+    "hands": 10,
+    "blinds": "40/80",
+    "street": "flop"
+   },
+   "seq": 303
+  },
+  {
+   "from": 6454,
+   "frames": 125,
+   "mode": "say",
+   "speaker": 5,
+   "text": "All in. Got an open-ender, let's gamble.",
+   "action": "raises to 760 and is all-in",
+   "audio": "c396e57ff39d31e6-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "8♦",
+       "2♥"
+      ],
+      "chips": 2425,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "3♠",
+       "J♣"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "7♣",
+       "8♥"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": true
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "10♦",
+       "5♦"
+      ],
+      "chips": 750,
+      "bet": 100,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "K♦",
+       "9♠"
+      ],
+      "chips": 0,
+      "bet": 760,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     }
+    ],
+    "board": [
+     "10♠",
+     "4♣",
+     "Q♦"
+    ],
+    "pot": 1020,
+    "hand": 9,
+    "hands": 10,
+    "blinds": "40/80",
+    "street": "flop"
+   },
+   "seq": 304
+  },
+  {
+   "from": 6579,
+   "frames": 171,
+   "mode": "say",
+   "speaker": 4,
+   "text": "My pair is ahead of your draw — and folding leaves me dead anyway. Call. Let's see it.",
+   "action": "calls 660",
+   "audio": "086ef1c04418534e-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "8♦",
+       "2♥"
+      ],
+      "chips": 2425,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "3♠",
+       "J♣"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "7♣",
+       "8♥"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": true
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "10♦",
+       "5♦"
+      ],
+      "chips": 90,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "K♦",
+       "9♠"
+      ],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     }
+    ],
+    "board": [
+     "10♠",
+     "4♣",
+     "Q♦",
+     "J♠"
+    ],
+    "pot": 1680,
+    "hand": 9,
+    "hands": 10,
+    "blinds": "40/80",
+    "street": "turn"
+   },
+   "seq": 307
+  },
+  {
+   "from": 6750,
+   "frames": 196,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "Here's the thing. King-nine on queen, ten, four isn't an open-ender. It needs exactly a jack. And here's the jack.",
+   "action": null,
+   "audio": "5f0575eafc7ed076-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "8♦",
+       "2♥"
+      ],
+      "chips": 2425,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "3♠",
+       "J♣"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "7♣",
+       "8♥"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": true
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "10♦",
+       "5♦"
+      ],
+      "chips": 90,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "K♦",
+       "9♠"
+      ],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     }
+    ],
+    "board": [
+     "10♠",
+     "4♣",
+     "Q♦",
+     "J♠"
+    ],
+    "pot": 1680,
+    "hand": 9,
+    "hands": 10,
+    "blinds": "40/80",
+    "street": "turn"
+   },
+   "seq": 308
+  },
+  {
+   "from": 6946,
+   "frames": 81,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "A straight. DeepSeek doubles up.",
+   "action": null,
+   "audio": "de22bc36cf5168c9-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "8♦",
+       "2♥"
+      ],
+      "chips": 2425,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "3♠",
+       "J♣"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "7♣",
+       "8♥"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": true,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": true
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "10♦",
+       "5♦"
+      ],
+      "chips": 90,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "K♦",
+       "9♠"
+      ],
+      "chips": 1680,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "10♠",
+     "4♣",
+     "Q♦",
+     "J♠",
+     "6♦"
+    ],
+    "pot": 0,
+    "hand": 9,
+    "hands": 10,
+    "blinds": "40/80",
+    "street": "river"
+   },
+   "seq": 312
+  },
+  {
+   "from": 7027,
+   "frames": 141,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "The final hand. Claude has the lead. Everyone else has nothing to lose.",
+   "action": null,
+   "audio": "71c5b4716278b781-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "3♣",
+       "9♥"
+      ],
+      "chips": 2345,
+      "bet": 80,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♣",
+       "4♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "4♦",
+       "A♦"
+      ],
+      "chips": 910,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": true
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "A♥",
+       "9♠"
+      ],
+      "chips": 90,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "Q♦",
+       "J♠"
+      ],
+      "chips": 1640,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 120,
+    "hand": 10,
+    "hands": 10,
+    "blinds": "40/80",
+    "street": "preflop"
+   },
+   "seq": 313
+  },
+  {
+   "from": 7168,
+   "frames": 116,
+   "mode": "say",
+   "speaker": 2,
+   "text": "It's the last hand. Let's gamble! All in.",
+   "action": "raises to 910 and is all-in",
+   "audio": "e1d7f57a2b4ddfd4-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "3♣",
+       "9♥"
+      ],
+      "chips": 2345,
+      "bet": 80,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♣",
+       "4♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "4♦",
+       "A♦"
+      ],
+      "chips": 0,
+      "bet": 910,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": true
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "A♥",
+       "9♠"
+      ],
+      "chips": 90,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "Q♦",
+       "J♠"
+      ],
+      "chips": 1640,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 1030,
+    "hand": 10,
+    "hands": 10,
+    "blinds": "40/80",
+    "street": "preflop"
+   },
+   "seq": 324
+  },
+  {
+   "from": 7284,
+   "frames": 148,
+   "mode": "say",
+   "speaker": 4,
+   "text": "All in with the ace — last hand, nothing to lose. Good luck everyone!",
+   "action": "calls 90 and is all-in",
+   "audio": "4b2c727e79e40208-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "3♣",
+       "9♥"
+      ],
+      "chips": 2345,
+      "bet": 80,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♣",
+       "4♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "4♦",
+       "A♦"
+      ],
+      "chips": 0,
+      "bet": 910,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": true
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "A♥",
+       "9♠"
+      ],
+      "chips": 0,
+      "bet": 90,
+      "dealer": true,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "Q♦",
+       "J♠"
+      ],
+      "chips": 1640,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 1120,
+    "hand": 10,
+    "hands": 10,
+    "blinds": "40/80",
+    "street": "preflop"
+   },
+   "seq": 327
+  },
+  {
+   "from": 7432,
+   "frames": 251,
+   "mode": "think",
+   "speaker": 5,
+   "text": "Final hand. QJo is a solid hand against desperate shoves on the last hand. … If I win I could take the chip lead from Claude.",
+   "action": null,
+   "audio": "7e6e07b1513e49d0-1.25.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "3♣",
+       "9♥"
+      ],
+      "chips": 2345,
+      "bet": 80,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♣",
+       "4♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "4♦",
+       "A♦"
+      ],
+      "chips": 0,
+      "bet": 910,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": true
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "A♥",
+       "9♠"
+      ],
+      "chips": 0,
+      "bet": 90,
+      "dealer": true,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "Q♦",
+       "J♠"
+      ],
+      "chips": 1640,
+      "bet": 40,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 1120,
+    "hand": 10,
+    "hands": 10,
+    "blinds": "40/80",
+    "street": "preflop"
+   },
+   "seq": 329
+  },
+  {
+   "from": 7683,
+   "frames": 130,
+   "mode": "say",
+   "speaker": 5,
+   "text": "Queen-jack, last hand, let's go. Call.",
+   "action": "calls 870",
+   "audio": "dc3b6f4528d27634-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "3♣",
+       "9♥"
+      ],
+      "chips": 2345,
+      "bet": 80,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♣",
+       "4♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "4♦",
+       "A♦"
+      ],
+      "chips": 0,
+      "bet": 910,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": true
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "A♥",
+       "9♠"
+      ],
+      "chips": 0,
+      "bet": 90,
+      "dealer": true,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "Q♦",
+       "J♠"
+      ],
+      "chips": 770,
+      "bet": 910,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 1990,
+    "hand": 10,
+    "hands": 10,
+    "blinds": "40/80",
+    "street": "preflop"
+   },
+   "seq": 330
+  },
+  {
+   "from": 7813,
+   "frames": 305,
+   "mode": "think",
+   "speaker": 0,
+   "text": "93o has terrible equity four-way. Folding keeps 2345, and I only lose the lead if DeepSeek wins the side pot.",
+   "action": null,
+   "audio": "533692e007e14a36-1.25.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "3♣",
+       "9♥"
+      ],
+      "chips": 2345,
+      "bet": 80,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♣",
+       "4♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "4♦",
+       "A♦"
+      ],
+      "chips": 0,
+      "bet": 910,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": true
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "A♥",
+       "9♠"
+      ],
+      "chips": 0,
+      "bet": 90,
+      "dealer": true,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "Q♦",
+       "J♠"
+      ],
+      "chips": 770,
+      "bet": 910,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [],
+    "pot": 1990,
+    "hand": 10,
+    "hands": 10,
+    "blinds": "40/80",
+    "street": "preflop"
+   },
+   "seq": 332
+  },
+  {
+   "from": 8118,
+   "frames": 103,
+   "mode": "say",
+   "speaker": 0,
+   "text": "Good luck, all. I'm out of this one.",
+   "action": "folds",
+   "audio": "1939d7949180baf7-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "3♣",
+       "9♥"
+      ],
+      "chips": 2345,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♣",
+       "4♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "4♦",
+       "A♦"
+      ],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": true
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "A♥",
+       "9♠"
+      ],
+      "chips": 0,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "Q♦",
+       "J♠"
+      ],
+      "chips": 770,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "8♠",
+     "5♦",
+     "Q♣"
+    ],
+    "pot": 1990,
+    "hand": 10,
+    "hands": 10,
+    "blinds": "40/80",
+    "street": "flop"
+   },
+   "seq": 333
+  },
+  {
+   "from": 8221,
+   "frames": 52,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "Queen on the flop.",
+   "action": null,
+   "audio": "56c212a06bf80b42-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "3♣",
+       "9♥"
+      ],
+      "chips": 2345,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♣",
+       "4♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "4♦",
+       "A♦"
+      ],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": true
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "A♥",
+       "9♠"
+      ],
+      "chips": 0,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "Q♦",
+       "J♠"
+      ],
+      "chips": 770,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "8♠",
+     "5♦",
+     "Q♣"
+    ],
+    "pot": 1990,
+    "hand": 10,
+    "hands": 10,
+    "blinds": "40/80",
+    "street": "flop"
+   },
+   "seq": 334
+  },
+  {
+   "from": 8273,
+   "frames": 215,
+   "mode": "narrate",
+   "speaker": null,
+   "text": "DeepSeek's queens hold. It busts two players and takes the lead from Claude, who folded. DeepSeek wins.",
+   "action": null,
+   "audio": "876e206f2f8164c5-1.2.mp3",
+   "table": {
+    "seats": [
+     {
+      "name": "Claude Opus 5.5",
+      "cards": [
+       "3♣",
+       "9♥"
+      ],
+      "chips": 2345,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "GPT-5.4",
+      "cards": [
+       "6♣",
+       "4♥"
+      ],
+      "chips": 895,
+      "bet": 0,
+      "dealer": false,
+      "folded": true,
+      "allin": false,
+      "out": false
+     },
+     {
+      "name": "Gemini 3.1 Pro",
+      "cards": [
+       "4♦",
+       "A♦"
+      ],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "Grok 4.20",
+      "cards": [],
+      "chips": 0,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": true
+     },
+     {
+      "name": "Kimi K3",
+      "cards": [
+       "A♥",
+       "9♠"
+      ],
+      "chips": 0,
+      "bet": 0,
+      "dealer": true,
+      "folded": false,
+      "allin": true,
+      "out": false
+     },
+     {
+      "name": "DeepSeek V4 Pro",
+      "cards": [
+       "Q♦",
+       "J♠"
+      ],
+      "chips": 2760,
+      "bet": 0,
+      "dealer": false,
+      "folded": false,
+      "allin": false,
+      "out": false
+     }
+    ],
+    "board": [
+     "8♠",
+     "5♦",
+     "Q♣",
+     "3♥",
+     "6♦"
+    ],
+    "pot": 0,
+    "hand": 10,
+    "hands": 10,
+    "blinds": "40/80",
+    "street": "river"
+   },
+   "seq": 340
+  }
+ ],
+ "standings": [
+  {
+   "name": "DeepSeek V4 Pro",
+   "chips": 2760
+  },
+  {
+   "name": "Claude Opus 5.5",
+   "chips": 2345
+  },
+  {
+   "name": "GPT-5.4",
+   "chips": 895
+  },
+  {
+   "name": "Gemini 3.1 Pro",
+   "chips": 0
+  },
+  {
+   "name": "Grok 4.20",
+   "chips": 0
+  },
+  {
+   "name": "Kimi K3",
+   "chips": 0
+  }
+ ],
+ "summary": "DeepSeek V4 Pro wins with 2760 chips after 10 hands.",
+ "frames": 8788
+}

@@ -125,6 +125,8 @@ boards and the player list after it). A private event lists the seats that saw i
 empty list means spectators only. `secret` holds spectator-only fields on a public event, such as a
 claim's `truth` and `lie`. The explorer serves a game at `/api/v1/games/<game_id>?since=<seq>`.
 
+[`video/`](video/) turns a game's log into a narrated episode with voiced thoughts; see its README.
+
 `scripts/summarize.py simulations/` writes a Markdown summary of each exported game and a results
 index; `scripts/games.py export` and `load` move games between the object store and a folder.
 

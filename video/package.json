@@ -1,0 +1,20 @@
+{
+  "name": "agentenv-games-video",
+  "private": true,
+  "description": "Renders episodes of agentenv-games from their event logs with Remotion.",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render Episode out/episode.mp4",
+    "still": "remotion still Episode"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.525",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.525"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "typescript": "^5.6.0"
+  }
+}

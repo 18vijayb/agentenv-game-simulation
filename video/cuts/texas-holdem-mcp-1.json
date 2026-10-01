@@ -1,0 +1,268 @@
+{
+ "title": "Six AIs Play Texas Hold'em",
+ "subtitle": "Ten hands · No limit · Every thought out loud",
+ "cast": {
+  "narrator": {
+   "voice": "onyx",
+   "style": "A warm, energetic televised poker commentator. Crisp, dramatic, a hint of a smile."
+  },
+  "Claude Opus 5.5": {
+   "voice": "sage",
+   "label": "Claude",
+   "color": "#e8a04f",
+   "style": "Calm, dry and economical with words, a quietly confident card player.",
+   "mono": "Cla"
+  },
+  "GPT-5.4": {
+   "voice": "cedar",
+   "label": "GPT",
+   "color": "#3fb9a8",
+   "style": "Measured, analytical and polite, like a professional explaining a hand.",
+   "mono": "GPT"
+  },
+  "Gemini 3.1 Pro": {
+   "voice": "coral",
+   "label": "Gemini",
+   "color": "#9a86f2",
+   "style": "Bright and chatty, a little self-deprecating, cheerfully unlucky.",
+   "mono": "Gem"
+  },
+  "Grok 4.20": {
+   "voice": "ash",
+   "label": "Grok",
+   "color": "#e5634f",
+   "style": "Brash and swaggering, loud, likes to push the action.",
+   "mono": "Gr"
+  },
+  "Kimi K3": {
+   "voice": "shimmer",
+   "label": "Kimi",
+   "color": "#e27bb5",
+   "style": "Sharp, thoughtful and quietly competitive, reads people closely.",
+   "mono": "Ki"
+  },
+  "DeepSeek V4 Pro": {
+   "voice": "verse",
+   "label": "DeepSeek",
+   "color": "#5a92f0",
+   "style": "Playful and casual, a gambler's grin, quick one-liners.",
+   "mono": "DS"
+  }
+ },
+ "beats": [
+  {
+   "narrate": "Six AI models. Ten hands of no-limit Texas Hold'em. A thousand chips each. We can see every card, and hear every thought.",
+   "seq": 7
+  },
+  {
+   "narrate": "Hand two. Claude opens, and GPT is waiting.",
+   "seq": 43
+  },
+  {
+   "seq": 57
+  },
+  {
+   "seq": 58
+  },
+  {
+   "seq": 60,
+   "text": "ATo on the button/dealer versus a likely late-position open after folds is strong enough to 3-bet for value and initiative."
+  },
+  {
+   "seq": 61
+  },
+  {
+   "seq": 69
+  },
+  {
+   "seq": 70
+  },
+  {
+   "narrate": "GPT takes it down without a fight.",
+   "seq": 71
+  },
+  {
+   "narrate": "Meanwhile, the folding. So much folding.",
+   "seq": 72
+  },
+  {
+   "seq": 22
+  },
+  {
+   "seq": 126
+  },
+  {
+   "seq": 291
+  },
+  {
+   "narrate": "Hand five. The blinds go up, and Grok goes to work.",
+   "seq": 141
+  },
+  {
+   "seq": 156
+  },
+  {
+   "seq": 162
+  },
+  {
+   "seq": 164
+  },
+  {
+   "seq": 165
+  },
+  {
+   "seq": 168
+  },
+  {
+   "seq": 171
+  },
+  {
+   "narrate": "Claude had ace-jack. Six hundred sixty chips, no cards shown.",
+   "seq": 172
+  },
+  {
+   "narrate": "Hand six. Grok announces his hand out loud. Kimi is listening.",
+   "seq": 173
+  },
+  {
+   "seq": 185
+  },
+  {
+   "seq": 187,
+   "text": "Pocket fives play well as a set-mining call here — Grok announced J-T, so a 5 on the flop gives me a well-hidden set against top pair."
+  },
+  {
+   "seq": 188
+  },
+  {
+   "narrate": "Queen, six, six. No five for Kimi.",
+   "seq": 198
+  },
+  {
+   "seq": 201
+  },
+  {
+   "seq": 203,
+   "text": "Grok said he has JT, so his 140 bet is a bluff on this board — but my pocket fives can't do anything about it. … Save the chips."
+  },
+  {
+   "seq": 204
+  },
+  {
+   "narrate": "Hand eight. The hand of the game.",
+   "seq": 232
+  },
+  {
+   "seq": 246
+  },
+  {
+   "seq": 247
+  },
+  {
+   "seq": 255,
+   "text": "Queen-ten suited is a strong hand in the big blind facing a late position raise. 3-betting to about 2.5x the raise applies pressure…"
+  },
+  {
+   "seq": 256
+  },
+  {
+   "seq": 258
+  },
+  {
+   "seq": 259
+  },
+  {
+   "narrate": "Nine, four, six. Two diamonds. Grok has the flush draw.",
+   "seq": 260
+  },
+  {
+   "seq": 263
+  },
+  {
+   "seq": 265
+  },
+  {
+   "seq": 266,
+   "pause": 0.8
+  },
+  {
+   "seq": 268,
+   "text": "I have a flush draw with two overcards (queen and ten)… roughly 45-50% equity against a typical range. Pot odds are good as I'm getting over 3:1. Let's go for it."
+  },
+  {
+   "seq": 269,
+   "pause": 0.8
+  },
+  {
+   "narrate": "The turn. Four of spades. No diamond.",
+   "seq": 270
+  },
+  {
+   "narrate": "The river. Three of clubs. No diamond.",
+   "seq": 271
+  },
+  {
+   "narrate": "Both play the fours on the board. Claude's ace kicker takes twenty-four hundred chips, and Grok is out.",
+   "seq": 274,
+   "pause": 0.8
+  },
+  {
+   "narrate": "Hand nine. Kimi bets middle pair. DeepSeek has other ideas.",
+   "seq": 277
+  },
+  {
+   "seq": 301
+  },
+  {
+   "seq": 303,
+   "text": "Open-ended straight draw (J or 8) gives 8 outs ~32% equity. Semi-bluff all-in puts maximum pressure on Kimi's claimed middle pair."
+  },
+  {
+   "seq": 304
+  },
+  {
+   "seq": 307
+  },
+  {
+   "narrate": "Here's the thing. King-nine on queen, ten, four isn't an open-ender. It needs exactly a jack. And here's the jack.",
+   "seq": 308,
+   "pause": 0.6
+  },
+  {
+   "narrate": "A straight. DeepSeek doubles up.",
+   "seq": 312
+  },
+  {
+   "narrate": "The final hand. Claude has the lead. Everyone else has nothing to lose.",
+   "seq": 313
+  },
+  {
+   "seq": 324
+  },
+  {
+   "seq": 327
+  },
+  {
+   "seq": 329,
+   "text": "Final hand. QJo is a solid hand against desperate shoves on the last hand. … If I win I could take the chip lead from Claude."
+  },
+  {
+   "seq": 330
+  },
+  {
+   "seq": 332
+  },
+  {
+   "seq": 333
+  },
+  {
+   "narrate": "Queen on the flop.",
+   "seq": 334
+  },
+  {
+   "narrate": "DeepSeek's queens hold. It busts two players and takes the lead from Claude, who folded. DeepSeek wins.",
+   "seq": 340,
+   "pause": 1.0
+  }
+ ]
+}
