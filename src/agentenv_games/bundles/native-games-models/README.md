@@ -1,0 +1,1 @@
+Six models play on native agent-env game envs, each calling the env's MCP tools with its own seat token, via the `[model]` endpoint. The two tasks differ only in `env_id`. Run `agent-env games setup` once first.

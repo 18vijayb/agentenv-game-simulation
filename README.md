@@ -13,7 +13,7 @@ frontier models, each with a summary and its full event log.
 
 ```bash
 agent-env plugin add 'agentenv-games @ git+https://github.com/18vijayb/agentenv-game-simulation'
-agent-env run game-secret-hitler       # seven bots; needs no model, Docker or configuration
+agent-env run game-secret-hitler       # seven bots in-process; needs no model, Docker or configuration
 agent-env up --no-bootstrap            # needs a .agentenv/config.toml; an empty one means local defaults
 open http://localhost:8234/games
 ```
@@ -29,6 +29,46 @@ agent-env run game-secret-hitler-models       # seven models, 30 to 60 minutes
 
 The model ids in those bundles are LiteLLM proxy ids; change them to what your endpoint serves. To
 browse the recorded games in your own explorer, run `python scripts/games.py load simulations/`.
+
+## Games as native agent-env environments
+
+Each game is a real agent-env environment: an `MCPServerEnv` deployed by the standard `deploy_env`
+step into a sandbox, serving the agentenv protocol (an environment card, MCP tools, and a control
+extension). One task plays any game; swapping the `env_id` swaps the game.
+
+```bash
+agent-env games setup                       # build the game server image, register agent-games/<game> envs
+agent-env run native-games --task texas-holdem
+agent-env run native-games --task secret-hitler
+```
+
+The two tasks are identical except for one line:
+
+```json
+[
+  {"id": "env", "type": "deploy_env", "env_id": "agent-games/texas_holdem", "sandbox_type": "local"},
+  {"id": "game", "type": "play_game", "env_step_id": "env", "depends_on": ["env"],
+   "params": {"hands": 10, "discussion_turns": 1}, "seats": [{"name": "Claude Opus 5.5", "model": "anthropic/claude-opus-5-5"}, ...]}
+]
+```
+
+- **The env.** `agent-env games setup` builds one image (the game engine on the agentenv-protocol
+  server SDK), stores it as a `docker_image` artifact and registers one `MCPServerEnv` per game, with
+  `env_provider_type = "server"`. The container reads `ENVIRONMENT_NAME`, which agent-env sets to the
+  env's registered name, to pick the game. `agent-env games context DIR` writes the build context
+  instead, for `agent-env env mcp-server put` by hand.
+- **Seats.** Players use the env's own MCP endpoint and identify themselves with an
+  `X-Agent-Games-Seat` header, one token per seat, so a seat's tools only ever see that seat's cards
+  and role. Models send it themselves; A2A agents get the endpoint and their header through the
+  standard `urn:agentenv:mcp-config/v1` extension. The `server` provider is used because it puts no
+  gateway in front of the env, so headers arrive unchanged.
+- **Control.** The `play_game` step drives the game through the env's `urn:agentenv-games:control/v1`
+  extension (start, pending, bot, complete, events, result). `start` returns a control token, so
+  players connected to the same server cannot read spectator data. The step mirrors the env's log
+  into the object store, so the viewer works the same for native and in-process games, and records
+  the env id and version with every game.
+- **In-process mode.** `play_game` with `"game": "<name>"` instead runs the game inside the step,
+  with no Docker, which the `game-*` bundles use.
 
 ## Writing a game
 
@@ -78,8 +118,9 @@ coin = "my_games.coin:Coin"
 
 ## How players play
 
-Every game runs an MCP server for its length, with one endpoint per seat, so a seat's tools only
-ever see that seat's information:
+A native game env serves one MCP endpoint and tells seats apart by their `X-Agent-Games-Seat` token;
+an in-process game gives each seat its own endpoint instead. Either way a seat's tools only ever see
+that seat's information:
 
 | Tool | Returns |
 |---|---|

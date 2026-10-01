@@ -5,6 +5,9 @@ import pytest
 from agentenv_games import Game, Move, Result, Turn, available_games, load_game
 from agentenv_games.games.prisoners_dilemma import PrisonersDilemma
 from agentenv_games.games.secret_hitler import SecretHitler
+from agentenv_games.runner import BotPlayer
+
+from helpers import play, setup_game
 
 
 def test_choices_match_case_insensitively_and_numbers_accept_digit_strings():
@@ -62,10 +65,7 @@ class Coin(Game):
 
 
 async def test_a_minimal_game_runs_end_to_end():
-    from helpers import setup_game
-    from agentenv_games.runner import BotPlayer, Runner
-
-    game, table, log = setup_game(Coin, ["Solo"])
-    result = await Runner(game, [BotPlayer(game)], table, log).run()
+    game, match, log = setup_game(Coin, ["Solo"])
+    result = await play(match, [BotPlayer()])
     assert result.summary.startswith("called ")
     assert [e["k"] for e in log.events] == ["setup", "intro", "turn", "move", "event", "end"]

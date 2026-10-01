@@ -5,30 +5,28 @@ import re
 import httpx
 
 from agentenv_games.log import GameLog
+from agentenv_games.match import LocalMatch, Match
 from agentenv_games.players import call_mcp
 from agentenv_games.runner import BotPlayer, Runner
-from agentenv_games.server import Table
 
 
 def setup_game(cls, names, seed=0, params=None, sink=None):
+    """A game, its ``Match`` (its table is ``match.table``) and its log, ready to run in-process."""
     game = cls()
-    table = None
-
-    def state():
-        pending = sorted(set(table.pending) - set(table.moves)) if table else []
-        return {"board": game.board(False), "spectator": game.board(True), "players": game.players(False),
-                "spectator_players": game.players(True), "pending": pending}
-
+    holder: dict = {}
     log = GameLog(f"g{seed}", {"game": cls.name, "players": [{"seat": i, "name": n} for i, n in enumerate(names)]},
-                  sink, state, min_interval=0)
-    game.bind(list(names), random.Random(seed), log, params or {})
-    table = Table(game, log)
-    return game, table, log
+                  sink, lambda: holder["match"].state(), min_interval=0)
+    holder["match"] = Match(game, list(names), seed, params or {}, log)
+    return game, holder["match"], log
+
+
+async def play(match, players, **kw):
+    return await Runner(LocalMatch(match), players, **kw).run()
 
 
 async def bot_game(cls, n, seed, params=None):
-    game, table, log = setup_game(cls, [f"P{i}" for i in range(n)], seed, params)
-    result = await Runner(game, [BotPlayer(game) for _ in range(n)], table, log).run()
+    game, match, log = setup_game(cls, [f"P{i}" for i in range(n)], seed, params)
+    result = await play(match, [BotPlayer() for _ in range(n)])
     return game, log, result
 
 

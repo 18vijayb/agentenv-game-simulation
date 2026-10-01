@@ -1,15 +1,17 @@
-"""Runs one game: opens each batch of turns, lets every seat's player act through MCP, applies the moves."""
+"""Runs one game: opens each batch of turns, lets every seat's player act, then completes the batch.
+
+The runner drives a ``MatchHandle``, so the same loop plays a game in this process (``LocalMatch``)
+or inside a deployed env server (``RemoteMatch``).
+"""
 
 from __future__ import annotations
 
 import asyncio
-import dataclasses
 import logging
 from typing import Protocol
 
-from .log import GameLog
-from .sdk import Game, Move, Result, Turn
-from .server import Table
+from .match import MatchHandle
+from .sdk import Result
 
 logger = logging.getLogger(__name__)
 
@@ -21,58 +23,40 @@ class PlayerFailed(Exception):
 
 
 class Player(Protocol):
-    async def start(self) -> None: ...
-    async def play(self, turn: Turn, table: Table) -> None: ...
+    async def start(self, seat: int, match: MatchHandle) -> None: ...
+    async def play(self, seat: int, match: MatchHandle) -> None: ...
     async def close(self) -> None: ...
 
 
 class Runner:
-    def __init__(self, game: Game, players: list[Player], table: Table, log: GameLog, *, turn_timeout: float = 600):
-        self.game, self.players, self.table, self.log = game, players, table, log
+    def __init__(self, match: MatchHandle, players: list[Player], *, turn_timeout: float = 600, names: list[str] | None = None):
+        self.match, self.players = match, players
         self.turn_timeout = turn_timeout
+        self.names = names or [f"seat {i + 1}" for i in range(len(players))]
 
     async def run(self) -> Result:
-        g = self.game
-        g.setup()
-        self.log.add("setup", text=f"{g.title}: {', '.join(g.names)}.")
-        for seat in range(g.n):
-            self.log.add("intro", seen_by=[seat], actor=seat, text=g.intro(seat))
-        await asyncio.gather(*(p.start() for p in self.players))
+        seats = await self.match.begin()
+        await asyncio.gather(*(p.start(i, self.match) for i, p in enumerate(self.players)))
         try:
             for _ in range(MAX_STEPS):
-                result = g.result()
-                if result is not None:
+                if not seats:
                     break
-                turns = g.turns()
-                if not turns:
-                    raise RuntimeError(f"{g.name}: turns() returned nothing but result() is None")
-                await self._batch(turns)
+                await asyncio.gather(*(self._drive(s) for s in seats))
+                seats = await self.match.complete()
             else:
-                raise RuntimeError(f"{g.name}: no result after {MAX_STEPS} turns")
+                raise RuntimeError(f"no result after {MAX_STEPS} turns")
         finally:
             await asyncio.gather(*(p.close() for p in self.players), return_exceptions=True)
-        self.log.add("end", text=f"Game over. {result.summary}", winners=list(result.winners), team=result.team,
-                     summary=result.summary)
+        result = await self.match.result()
+        if result is None:
+            raise RuntimeError("the game ended without a result")
         return result
 
-    async def _batch(self, turns: list[Turn]) -> None:
-        names = self.game.names
-        self.table.open(turns)
-        self.log.add("turn", seats=[t.seat for t in turns],
-                     text=f"Waiting on {', '.join(names[t.seat] for t in turns)}.")
-        self.log.flush()
-        await asyncio.gather(*(self._drive(t) for t in turns))
-        moves = dict(self.table.moves)
-        for t in sorted(turns, key=lambda t: t.seat):
-            self._log_move(t, moves[t.seat])
-        self.game.play(moves)
-
-    async def _drive(self, turn: Turn) -> None:
+    async def _drive(self, seat: int) -> None:
         """Let the seat's player act, but never wait on it past the deadline: a player stuck somewhere
         that ignores cancellation is abandoned, not awaited, so the game always moves on."""
-        seat = turn.seat
         error = None
-        task = asyncio.create_task(self.players[seat].play(turn, self.table))
+        task = asyncio.create_task(self.players[seat].play(seat, self.match))
         done, _ = await asyncio.wait({task}, timeout=self.turn_timeout)
         if task not in done:
             task.cancel()
@@ -80,42 +64,20 @@ class Runner:
         elif task.exception() is not None:
             e = task.exception()
             error = str(e) if isinstance(e, PlayerFailed) else f"{type(e).__name__}: {e}"
-        if not self.table.done(seat):
+        if not await self.match.done(seat):
             error = error or "the player ended its turn without taking an action"
-            logger.warning("seat %s (%s): %s; a stand-in moves", seat, self.game.names[seat], error)
-            self.log.add("stand_in", seen_by=[], actor=seat, text=f"A stand-in moved for {self.game.names[seat]}: {error}",
-                         error=error[:500])
-            self.table.record(seat, self.game.bot(turn))
-
-    def _log_move(self, turn: Turn, move: Move) -> None:
-        name = self.game.names[turn.seat]
-        described = self.game.describe(turn, move)
-        parts = [f"{name} {described}"] if described else []
-        if move.action is not None and not described:
-            chosen = f"{move.action} {move.amount}" if move.amount is not None else repr(move.action)
-            parts.append(f"{name} chose {chosen}" + (" (secret)" if turn.private else ""))
-        if move.say:
-            parts.append(f'{name} says: "{move.say}"')
-        secret = None
-        if turn.truth is not None and move.action is not None:
-            secret = {"truth": turn.truth, "lie": move.action != turn.truth}
-        self.log.add("move", seen_by=[turn.seat] if turn.private else None, secret=secret,
-                     text=". ".join(parts) if parts else f"{name} passed.", actor=turn.seat, turn=turn.kind,
-                     prompt=turn.prompt, action=move.action, amount=move.amount, say=move.say, stand_in=move.stand_in,
-                     described=described)
+            logger.warning("%s: %s; a stand-in moves", self.names[seat], error)
+            await self.match.stand_in(seat, error)
 
 
 class BotPlayer:
-    """Plays the game's own ``bot`` move, without MCP: a seat filler and a baseline."""
+    """Plays the game's own ``bot`` move without MCP: a seat filler and a baseline."""
 
-    def __init__(self, game: Game):
-        self.game = game
-
-    async def start(self) -> None:
+    async def start(self, seat: int, match: MatchHandle) -> None:
         pass
 
-    async def play(self, turn: Turn, table: Table) -> None:
-        table.record(turn.seat, dataclasses.replace(self.game.bot(turn), reasoning="", stand_in=False))
+    async def play(self, seat: int, match: MatchHandle) -> None:
+        await match.bot(seat)
 
     async def close(self) -> None:
         pass

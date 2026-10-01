@@ -6,10 +6,10 @@ from agentenv_games import Game, Turn
 from agentenv_games.games.holdem import TexasHoldem
 from agentenv_games.games.holdem.cards import best_hand, describe, show
 from agentenv_games.players import ChatEndpoint, ModelPlayer
-from agentenv_games.runner import BotPlayer, Runner
+from agentenv_games.runner import BotPlayer
 from agentenv_games.server import McpServer
 
-from helpers import scripted_llm, setup_game
+from helpers import play, scripted_llm, setup_game
 
 
 def hand(text: str) -> list[str]:
@@ -36,13 +36,13 @@ def test_best_five_of_seven_and_its_name():
 
 
 def game(n=3, chips=None, **params):
-    g, table, log = setup_game(TexasHoldem, [f"P{i}" for i in range(n)], params=params)
+    g, match, log = setup_game(TexasHoldem, [f"P{i}" for i in range(n)], params=params)
     g.setup()
     g.turns()
     if chips:
         g.chips = list(chips)
     g._end_hand = lambda: None
-    return g, table, log
+    return g, match, log
 
 
 def test_side_pots_go_to_the_best_hand_among_those_who_paid_in():
@@ -85,15 +85,19 @@ def test_raises_take_an_amount_in_range():
 
 async def test_games_keep_every_chip_and_end():
     class Random(BotPlayer):
-        async def play(self, turn, table):
-            table.record(turn.seat, dataclasses.replace(Game.bot(self.game, turn), reasoning="", stand_in=False))
+        def __init__(self, game):
+            self.game = game
+
+        async def play(self, seat, match):
+            table = match.match.table
+            table.record(seat, dataclasses.replace(Game.bot(self.game, table.pending[seat]), reasoning="", stand_in=False))
 
     for n in (2, 3, 6, 9):
         for seed in range(8):
             for player in (BotPlayer, Random):
-                g, table, log = setup_game(TexasHoldem, [f"P{i}" for i in range(n)], seed,
+                g, match, log = setup_game(TexasHoldem, [f"P{i}" for i in range(n)], seed,
                                            {"hands": 12, "double_blinds_every": 3})
-                result = await Runner(g, [player(g) for _ in range(n)], table, log).run()
+                result = await play(match, [player(g) if player is Random else player() for _ in range(n)])
                 assert sum(g.chips) == n * g.start_chips and result.winners
                 for e in log.events:
                     tags = [t for p in e["state"]["players"] for t in p.get("tags", [])]
@@ -101,8 +105,8 @@ async def test_games_keep_every_chip_and_end():
 
 
 async def test_hole_cards_stay_private_until_a_showdown():
-    g, table, log = setup_game(TexasHoldem, [f"P{i}" for i in range(4)], 5, {"hands": 6})
-    await Runner(g, [BotPlayer(g) for _ in range(4)], table, log).run()
+    g, match, log = setup_game(TexasHoldem, [f"P{i}" for i in range(4)], 5, {"hands": 6})
+    await play(match, [BotPlayer() for _ in range(4)])
     dealt = [e for e in log.events if e["k"] == "hole"]
     assert dealt and all(e["vis"] == "private" and len(e["seen_by"]) == 1 for e in dealt)
     assert all("role" not in p for e in log.events for p in e["state"]["players"] if e["k"] == "hole")
@@ -112,10 +116,10 @@ async def test_hole_cards_stay_private_until_a_showdown():
 
 
 async def test_models_play_holdem_through_mcp_with_amounts():
-    g, table, log = setup_game(TexasHoldem, ["A", "B", "C"], 2, {"hands": 3})
-    async with McpServer(table, g.name) as server:
-        players = [ModelPlayer(0, server.url(0), ChatEndpoint("http://llm.test", "k", "m", backoff=0, transport=scripted_llm())),
-                   BotPlayer(g), BotPlayer(g)]
-        await Runner(g, players, table, log).run()
+    g, match, log = setup_game(TexasHoldem, ["A", "B", "C"], 2, {"hands": 3})
+    async with McpServer(match.table, g.name) as server:
+        players = [ModelPlayer(server.url(0), ChatEndpoint("http://llm.test", "k", "m", backoff=0, transport=scripted_llm())),
+                   BotPlayer(), BotPlayer()]
+        await play(match, players)
     assert not [e for e in log.events if e["k"] == "stand_in"]
     assert any(e["k"] == "move" and e["actor"] == 0 for e in log.events)

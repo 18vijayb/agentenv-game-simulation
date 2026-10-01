@@ -13,9 +13,8 @@ import httpx
 from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 
+from .match import MatchHandle
 from .runner import PlayerFailed
-from .sdk import Turn
-from .server import Table
 
 logger = logging.getLogger(__name__)
 
@@ -31,13 +30,15 @@ SYSTEM = ("You are a player in a multiplayer game. Everything happens through th
 MCP_TIMEOUT = 60
 
 
-async def call_mcp(url: str, tool: str | None = None, args: dict | None = None, timeout: float = MCP_TIMEOUT):
+async def call_mcp(url: str, tool: str | None = None, args: dict | None = None, timeout: float = MCP_TIMEOUT,
+                   headers: dict[str, str] | None = None):
     """One MCP exchange on a fresh session: list the tools, or call one and return its text."""
-    return await asyncio.wait_for(_call_mcp(url, tool, args), timeout)
+    return await asyncio.wait_for(_call_mcp(url, tool, args, headers), timeout)
 
 
-async def _call_mcp(url: str, tool: str | None, args: dict | None):
-    async with streamable_http_client(url) as (read, write, _):
+async def _call_mcp(url: str, tool: str | None, args: dict | None, headers: dict[str, str] | None):
+    async with httpx.AsyncClient(headers=headers or {}, timeout=httpx.Timeout(MCP_TIMEOUT, read=MCP_TIMEOUT)) as client, \
+            streamable_http_client(url, http_client=client) as (read, write, _):
         async with ClientSession(read, write) as session:
             await session.initialize()
             if tool is None:
@@ -96,24 +97,27 @@ def openai_tools(tools) -> list[dict]:
 class ModelPlayer:
     """A model that plays its seat by calling the seat's MCP tools, keeping one conversation all game."""
 
-    def __init__(self, seat: int, mcp_url: str, chat: ChatEndpoint, *, max_tool_calls: int = 10, max_nudges: int = 2):
-        self.seat, self.mcp_url, self.chat = seat, mcp_url, chat
+    def __init__(self, mcp_url: str, chat: ChatEndpoint, *, headers: dict[str, str] | None = None,
+                 max_tool_calls: int = 10, max_nudges: int = 2):
+        self.mcp_url, self.chat, self.headers = mcp_url, chat, headers
         self.max_tool_calls, self.max_nudges = max_tool_calls, max_nudges
         self.messages: list[dict] = [{"role": "system", "content": SYSTEM}]
         self.tools: list[dict] = []
         self.tool_calls = 0
 
-    async def start(self) -> None:
-        self.tools = openai_tools(await call_mcp(self.mcp_url))
+    async def start(self, seat: int, match: MatchHandle) -> None:
+        self.headers = {**(self.headers or {}), **match.headers(seat)}
+        self.tools = openai_tools(await call_mcp(self.mcp_url, headers=self.headers))
 
     async def close(self) -> None:
         pass
 
-    async def play(self, turn: Turn, table: Table) -> None:
+    async def play(self, seat: int, match: MatchHandle) -> None:
         self._repair()
         self.messages.append({"role": "user", "content": FIRST if len(self.messages) == 1 else YOUR_TURN})
         calls = nudges = 0
-        while not table.done(self.seat):
+        accepted = False
+        while not accepted:
             message = await self.chat.complete(self.messages, self.tools)
             tool_calls = message.get("tool_calls") or []
             self.messages.append({"role": "assistant", "content": message.get("content") or "",
@@ -127,9 +131,10 @@ class ModelPlayer:
             for call in tool_calls:
                 calls += 1
                 self.tool_calls += 1
-                result = await self._run(call, turn, table)
+                result = await self._run(call)
                 self.messages.append({"role": "tool", "tool_call_id": call["id"], "content": result})
-            if calls >= self.max_tool_calls and not table.done(self.seat):
+                accepted = accepted or ((call.get("function") or {}).get("name") == "take_action" and result == "Accepted.")
+            if calls >= self.max_tool_calls and not accepted:
                 raise PlayerFailed(f"{self.chat.model}: {calls} tool calls without a legal take_action")
 
     def _repair(self) -> None:
@@ -141,10 +146,8 @@ class ModelPlayer:
                     self.messages.insert(self.messages.index(m) + 1, {"role": "tool", "tool_call_id": call["id"],
                                                                       "content": "Error: the turn ended before this finished."})
 
-    async def _run(self, call: dict, turn: Turn, table: Table) -> str:
+    async def _run(self, call: dict) -> str:
         fn = call.get("function") or {}
-        if fn.get("name") == "take_action" and table.pending.get(self.seat) is not turn:
-            return "Error: that turn is over. Call get_turn to see what is happening now."
         try:
             args = json.loads(fn.get("arguments") or "{}")
         except json.JSONDecodeError:
@@ -152,7 +155,7 @@ class ModelPlayer:
         if not isinstance(args, dict):
             return "Error: the arguments must be a JSON object."
         try:
-            return await call_mcp(self.mcp_url, fn.get("name"), args)
+            return await call_mcp(self.mcp_url, fn.get("name"), args, headers=self.headers)
         except Exception as e:
             return f"Error calling {fn.get('name')}: {type(e).__name__}: {e}"
 
@@ -160,33 +163,36 @@ class ModelPlayer:
 class AgentPlayer:
     """A deployed A2A agent: it gets the seat's MCP URL once, then a short message on each of its turns."""
 
-    def __init__(self, seat: int, mcp_url: str, a2a_url: str, card: dict | None, game_title: str, *,
-                 max_nudges: int = 1, poll_interval: float = 2.0, transport: httpx.AsyncBaseTransport | None = None):
-        self.seat, self.mcp_url, self.a2a_url = seat, mcp_url, a2a_url.rstrip("/")
+    def __init__(self, mcp_url: str, a2a_url: str, card: dict | None, game_title: str, *,
+                 headers: dict[str, str] | None = None, max_nudges: int = 1, poll_interval: float = 2.0,
+                 transport: httpx.AsyncBaseTransport | None = None):
+        self.mcp_url, self.a2a_url, self.headers = mcp_url, a2a_url.rstrip("/"), headers
         self.card, self.title = card or {}, game_title
         self.max_nudges, self.poll_interval, self._transport = max_nudges, poll_interval, transport
         self.context_id = uuid.uuid4().hex
         self._started = False
 
-    async def start(self) -> None:
+    async def start(self, seat: int, match: MatchHandle) -> None:
+        self.headers = {**(self.headers or {}), **match.headers(seat)}
         endpoint = "/ext/mcp-config"
         for ext in (self.card.get("capabilities") or {}).get("extensions") or []:
             if ext.get("uri") == MCP_CONFIG_URI:
                 endpoint = (ext.get("params") or {}).get("endpoint", endpoint)
         async with httpx.AsyncClient(transport=self._transport, timeout=60) as client:
-            resp = await client.post(self.a2a_url + endpoint, json={"url": self.mcp_url, "name": "game"})
+            body = {"url": self.mcp_url, "name": "game", **({"headers": self.headers} if self.headers else {})}
+            resp = await client.post(self.a2a_url + endpoint, json=body)
         if resp.status_code >= 400:
             raise PlayerFailed(f"registering the game's MCP server failed: HTTP {resp.status_code} {resp.text[:200]}")
 
     async def close(self) -> None:
         pass
 
-    async def play(self, turn: Turn, table: Table) -> None:
+    async def play(self, seat: int, match: MatchHandle) -> None:
         text = (f"You are a player in {self.title}. " + FIRST) if not self._started else YOUR_TURN
         self._started = True
         for attempt in range(self.max_nudges + 1):
             await self._ask(text)
-            if table.done(self.seat):
+            if await match.done(seat):
                 return
             text = NUDGE
         raise PlayerFailed("the agent finished its turn without calling take_action")

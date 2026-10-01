@@ -9,14 +9,12 @@ Kinds the framework writes: ``setup``, ``turn``, ``move``, ``think``, ``beliefs`
 
 from __future__ import annotations
 
-import json
 import re
 import time
 from collections.abc import Callable
 from datetime import datetime, timezone
 from typing import Any, Protocol
 
-from agent_env.config import get_config
 
 KEY_PREFIX = "agent-games/games/"
 GAME_ID = re.compile(r"^[A-Za-z0-9_-]{1,128}$")
@@ -62,6 +60,14 @@ class GameLog:
         """What a game calls to narrate: public by default, or seen only by ``seen_by``."""
         return self.add(kind, seen_by=seen_by, secret=secret, text=text, **data)
 
+    def extend(self, events: list[dict]) -> None:
+        """Append events recorded elsewhere, such as an env server's log, and write them out."""
+        if events:
+            self.events.extend(events)
+            self.meta.update(events=len(self.events), updated_at=events[-1]["ts"])
+            self._dirty = True
+            self.flush()
+
     def visible_to(self, seat: int, since: int = 0) -> list[dict]:
         return [e for e in self.events[since:] if e["vis"] == "public" or seat in e.get("seen_by", ())]
 
@@ -84,21 +90,3 @@ def events_key(game_id: str) -> str:
 
 def meta_key(game_id: str) -> str:
     return f"{KEY_PREFIX}{game_id}/meta.json"
-
-
-class ObjectStoreSink:
-    """Writes the log to the configured object store, where the explorer plugin reads it back."""
-
-    def __init__(self, store=None):
-        self._store = store
-
-    @property
-    def store(self):
-        return self._store or get_config().get_object_store()
-
-    def write(self, game_id: str, meta: dict, events: list[dict]) -> None:
-        self.store.put(events_key(game_id), json.dumps(events).encode(), "application/json", allow_overwrite=True)
-        self.store.put(meta_key(game_id), json.dumps(meta).encode(), "application/json", allow_overwrite=True)
-
-    def events_url(self, game_id: str) -> str:
-        return self.store.object_url(events_key(game_id))

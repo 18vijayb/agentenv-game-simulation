@@ -18,6 +18,9 @@ dev = ["pytest>=8", "pytest-asyncio>=0.23"]
 [project.entry-points."agent_env.task_steps"]
 play_game = "agentenv_games.step:PlayGameTaskStep"
 
+[project.entry-points."agent_env.cli_plugins"]
+games = "agentenv_games.cli:games"
+
 [project.entry-points."agent_env.explorer_plugins"]
 agent_games = "agentenv_games.explorer:GamesExplorer"
 
@@ -33,6 +36,8 @@ game-secret-hitler-models = "agentenv_games.bundles"
 game-prisoners-dilemma-models = "agentenv_games.bundles"
 game-texas-holdem = "agentenv_games.bundles"
 game-texas-holdem-models = "agentenv_games.bundles"
+native-games = "agentenv_games.bundles"
+native-games-models = "agentenv_games.bundles"
 
 [build-system]
 requires = ["hatchling"]
