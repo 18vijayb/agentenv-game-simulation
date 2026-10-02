@@ -2,12 +2,15 @@
 
     python video/storyboard.py simulations/texas-holdem-mcp-1 video/cuts/texas-holdem-mcp-1.json
 
-A cut list is JSON: ``{"title": ..., "cast": {...}, "beats": [...]}``. Each beat is one of
+A cut list is JSON: ``{"title": ..., "cast": {...}, "beats": [...]}``, optionally with ``end_seq`` (the event
+whose state the final standings show, for an episode that stops before the game does), ``summary``, and
+``intro_seconds`` / ``outro_seconds`` (0 drops the title or standings card, for a short clip). Each beat is one of
 ``{"seq": N}`` (that event: speech, a thought or an action), ``{"seq": N, "text": "..."}`` (the same,
 trimmed), or ``{"narrate": "...", "seq": N}`` (narrator over the table as of event N). Dialogue and
 thoughts come from the log verbatim unless trimmed. Speech is generated through the configured
 model endpoint (``LITELLM_BASE_URL`` / ``LITELLM_API_KEY``); thoughts are whispered and processed
-into an inner voice. Output goes to ``video/public``: ``storyboard.json`` and ``audio/*.mp3``.
+into an inner voice. Output goes to ``video/public``: ``storyboard.json`` and ``audio/*.mp3``. With ``SILENT=1``
+no speech is generated and each line is timed by its length, for a preview.
 """
 
 from __future__ import annotations
@@ -32,8 +35,12 @@ RANKS = {"A": "ace", "K": "king", "Q": "queen", "J": "jack", "T": "ten", "9": "n
 SUITS = {"♠": "spades", "♥": "hearts", "♦": "diamonds", "♣": "clubs"}
 
 
-def spoken(text: str) -> str:
-    """Poker shorthand read the way a player says it: A7o -> ace-seven offsuit, 3-bet -> three-bet."""
+def spoken(text: str, game: str = "texas_holdem") -> str:
+    """Poker shorthand read the way a player says it: A7o -> ace-seven offsuit, 3-bet -> three-bet. Other
+    games only get the generic fixes (ratios, dashes)."""
+    if game != "texas_holdem":
+        text = re.sub(r"(\d):(\d)", r"\1 to \2", text)
+        return text.replace("~", "about ").replace("—", ", ").replace("–", "-")
     def hand(m: re.Match) -> str:
         a, b, kind = m.group(1), m.group(2), m.group(3) or ""
         if a == b:
@@ -66,10 +73,12 @@ def trim(text: str, limit: int = 230) -> str:
     return out if out else text[:limit].rsplit(" ", 1)[0] + "…"
 
 
-def tts(text: str, voice: str, style: str, mode: str) -> tuple[str, float]:
+def tts(text: str, voice: str, style: str, mode: str) -> tuple[str | None, float]:
     """Generate (or reuse) one line of speech; returns its file name under public/audio and its length.
     Lines are tightened with ``TEMPO`` (pitch kept); thoughts are whispered and given an inner-voice sound."""
     whisper = mode == "think"
+    if os.environ.get("SILENT"):
+        return None, max(1.6, len(text.split()) / 2.6)
     raw = PUBLIC / "audio" / "raw" / (hashlib.sha1(f"{TTS_MODEL}|{voice}|{style}|{whisper}|{text}".encode()).hexdigest()[:16] + ".mp3")
     out = PUBLIC / "audio" / f"{raw.stem}-{TEMPO[mode]}.mp3"
     if not raw.exists():
@@ -108,11 +117,43 @@ def table(state: dict, names: list[str]) -> dict:
             "blinds": board.get("Blinds"), "street": board.get("Street")}
 
 
+def catan_table(state: dict, names: list[str], pictures: dict[str, str]) -> dict:
+    """What the renderer draws for CATAN: the island picture and, per seat, points, hand, cards and awards."""
+    board = state.get("spectator") or {}
+    picture = board.get("Map") or {}
+    seats = []
+    for s, p in enumerate(state.get("spectator_players") or []):
+        tags = [t if isinstance(t, str) else t.get("label", "") for t in p.get("tags", [])]
+        vp = next((int(t.split()[0]) for t in tags if t.endswith(" VP")), 0)
+        hand = dict(re.findall(r"(\S+) (\d+)", p.get("role") or ""))
+        devs = [t["label"] for t in p.get("tags", []) if isinstance(t, dict) and t.get("tone") == "blue"]
+        awards = [t["label"] for t in p.get("tags", []) if isinstance(t, dict) and t.get("tone") == "gold"]
+        knights = next((int(t.split()[0]) for t in tags if "knight" in t and "played" in t), 0)
+        seats.append({"name": names[s], "vp": vp, "hand": {k: int(v) for k, v in hand.items()}, "devs": devs,
+                      "awards": awards, "knights": knights})
+    return {"kind": "catan", "seats": seats, "map": picture.get("image") or pictures.get(picture.get("image_ref"), ""),
+            "turn": board.get("Turn"), "now": board.get("Now"), "dice": board.get("Dice")}
+
+
+def collect_pictures(events: list[dict]) -> dict[str, str]:
+    """Every stored board picture by its image_ref; the log keeps each one only on the first event to carry it."""
+    out = {}
+    for e in events:
+        for board in ((e.get("state") or {}).get("board"), (e.get("state") or {}).get("spectator")):
+            for v in (board or {}).values():
+                if isinstance(v, dict) and isinstance(v.get("image"), str) and v.get("image_ref"):
+                    out[v["image_ref"]] = v["image"]
+    return out
+
+
 def build(game_dir: Path, cut_path: Path) -> dict:
     meta = json.loads((game_dir / "meta.json").read_text())
     events = json.loads((game_dir / "events.json").read_text())
     cut = json.loads(cut_path.read_text())
     names = [p["name"] for p in meta["players"]]
+    game = meta.get("game", "texas_holdem")
+    pictures = collect_pictures(events)
+    view = (lambda st: catan_table(st, names, pictures)) if game == "catan" else (lambda st: table(st, names))
     cast = cut["cast"]
     beats, frame = [], 0
     for b in cut["beats"]:
@@ -129,20 +170,23 @@ def build(game_dir: Path, cut_path: Path) -> dict:
         voice = cast["narrator"] if speaker is None else cast[names[speaker]]
         audio, seconds = (None, 1.3)
         if text and mode != "act":
-            audio, seconds = tts(spoken(text), voice["voice"], voice["style"], mode)
+            audio, seconds = tts(spoken(text, game), voice["voice"], voice["style"], mode)
         frames = int((seconds + b.get("pause", 0.35)) * FPS)
         beats.append({"from": frame, "frames": frames, "mode": mode, "speaker": speaker, "text": text,
                       "action": e.get("described") if e["k"] == "move" else None, "audio": audio,
-                      "table": table(state, names), "seq": b["seq"]})
+                      "table": view(state), "seq": b["seq"]})
         frame += frames
-    final = table(events[-1]["state"], names)
-    standings = sorted(final["seats"], key=lambda s: -s["chips"])
-    outro = int(6 * FPS)
-    return {"title": cut["title"], "subtitle": cut.get("subtitle", ""), "fps": FPS, "intro": int(4 * FPS),
+    end = events[cut["end_seq"]] if "end_seq" in cut else events[-1]
+    final = view(next(e["state"] for e in reversed(events[:events.index(end) + 1]) if e.get("state")))
+    score = "vp" if game == "catan" else "chips"
+    standings = sorted(final["seats"], key=lambda s: -s[score])
+    intro, outro = int(cut.get("intro_seconds", 4) * FPS), int(cut.get("outro_seconds", 6) * FPS)
+    return {"title": cut["title"], "subtitle": cut.get("subtitle", ""), "fps": FPS, "intro": intro,
             "outro": outro, "players": [{"name": n, "color": cast[n]["color"], "label": cast[n]["label"],
                          "mono": cast[n].get("mono", cast[n]["label"][0])} for n in names],
-            "beats": beats, "standings": [{"name": s["name"], "chips": s["chips"]} for s in standings],
-            "summary": meta.get("summary"), "frames": int(4 * FPS) + frame + outro}
+            "beats": beats, "standings": [{"name": s["name"], "chips": s[score]} for s in standings],
+            "score": "Victory points" if game == "catan" else "Chips", "game": game,
+            "summary": cut.get("summary", meta.get("summary")), "frames": intro + frame + outro}
 
 
 if __name__ == "__main__":

@@ -1,0 +1,70 @@
+{
+ "subtitle": "",
+ "cast": {
+  "narrator": {
+   "voice": "onyx",
+   "style": "A warm, energetic board-game commentator. Crisp and dramatic, with a hint of a smile."
+  },
+  "Claude Opus 5.5": {
+   "voice": "sage",
+   "label": "Opus",
+   "color": "#d23c2f",
+   "mono": "Op",
+   "style": "Calm, dry and economical, a patient builder who plays the long game."
+  },
+  "GPT-5.5": {
+   "voice": "cedar",
+   "label": "GPT",
+   "color": "#2f6fd2",
+   "mono": "GPT",
+   "style": "Measured, analytical and polite, explaining each move like a strategist."
+  },
+  "Gemini 3.1 Pro": {
+   "voice": "coral",
+   "label": "Gemini",
+   "color": "#e58a1f",
+   "mono": "Gem",
+   "style": "Bright and chatty, a little scattered, cheerfully thinking out loud."
+  },
+  "Claude Fable 5.1": {
+   "voice": "verse",
+   "label": "Fable",
+   "color": "#f2f0ea",
+   "mono": "Fab",
+   "style": "Sly, theatrical and confident, enjoying every bit of table talk."
+  }
+ },
+ "intro_seconds": 0,
+ "outro_seconds": 0,
+ "title": "Two grain smells like a city",
+ "beats": [
+  {
+   "narrate": "Opus has two cities and wants a third. Fable has noticed.",
+   "seq": 1030,
+   "pause": 0.6
+  },
+  {
+   "seq": 1031
+  },
+  {
+   "seq": 1033,
+   "pause": 1.0
+  },
+  {
+   "seq": 1136,
+   "pause": 1.0
+  },
+  {
+   "seq": 1149,
+   "pause": 0.6
+  },
+  {
+   "seq": 1153
+  },
+  {
+   "seq": 1155,
+   "pause": 1.5
+  }
+ ],
+ "end_seq": 1156
+}
