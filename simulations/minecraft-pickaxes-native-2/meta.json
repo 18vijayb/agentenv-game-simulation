@@ -1,0 +1,50 @@
+{
+ "game_id": "pickaxes-lwoymz59",
+ "status": "finished",
+ "started_at": "2026-10-01T22:58:18.359+00:00",
+ "updated_at": "2026-10-01T23:01:46.391+00:00",
+ "events": 102,
+ "players": [
+  {
+   "seat": 0,
+   "name": "Claude",
+   "kind": "model",
+   "model": "anthropic/claude-opus-5-5"
+  },
+  {
+   "seat": 1,
+   "name": "GPT",
+   "kind": "model",
+   "model": "openai/gpt-5.4"
+  },
+  {
+   "seat": 2,
+   "name": "Gemini",
+   "kind": "model",
+   "model": "gemini/gemini-3.1-pro-preview"
+  },
+  {
+   "seat": 3,
+   "name": "Kimi",
+   "kind": "model",
+   "model": "fireworks_ai/kimi-k3"
+  }
+ ],
+ "seed": 2429277624,
+ "instance_id": "@local/agentenv-games/native-minecraft/pickaxes-lwoymz59",
+ "game": "minecraft",
+ "env_id": "agent-games/minecraft",
+ "env_version": 3,
+ "env_instance_id": "agent-games/minecraft-wpmd45ky",
+ "title": "Minecraft",
+ "teams": null,
+ "beliefs": null,
+ "winners": [
+  0,
+  1,
+  2,
+  3
+ ],
+ "summary": "Claude, GPT, Gemini, Kimi reached the goal in 3:20 (4/4 stone_pickaxe (each player)).",
+ "team": null
+}

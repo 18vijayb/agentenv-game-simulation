@@ -34,6 +34,8 @@ def summarize(folder: Path) -> dict:
 
     lines = [f"# {folder.name}: {meta.get('title', meta.get('game'))}", "",
              f"**{meta.get('summary', meta['status'])}** {len(events)} events, {minutes(meta):.0f} minutes.", "",
+             *([f"Watch it: [{meta['video']['file']}]({meta['video']['file']}), recorded by the env's camera.", ""]
+               if (meta.get("video") or {}).get("file") else []),
              "| Seat | Player | Plays as | At the end | Moves | Claims | Lies | Stand-ins | Won |", "|---|---|---|---|---|---|---|---|---|"]
     for p in meta["players"]:
         s = p["seat"]
