@@ -1,9 +1,8 @@
 """UNO: bot games end for every player count, the deck is conserved, the tricky rules hold, secrets stay
 private, the Wild +4 claim is flagged, and a model plays it through MCP."""
 import dataclasses
-import random
 
-from agentenv_games import Game, Move, Turn
+from agentenv_games import Game, Move
 from agentenv_games.games.uno import Uno, deck, show
 from agentenv_games.players import ChatEndpoint, ModelPlayer
 from agentenv_games.runner import BotPlayer
@@ -44,8 +43,9 @@ async def test_bot_games_end_and_keep_every_card():
                 assert result.winners and cards_in_play(g) == DECK
                 for e in log.events[1:]:  # the state snapshot is consistent at every event after setup
                     rows = e["state"]["spectator_players"]
-                    table = rows[0]["table"]
-                    assert sum(r["count"] for r in rows) + table["pile"] + table["discards"] == DECK
+                    board = e["state"]["board"]
+                    in_hands = sum(board["Cards in hand"].values())
+                    assert in_hands + board["Draw pile"] + board["Discard pile"] == DECK
                     assert all(isinstance(t, (str, dict)) for r in rows for t in r.get("tags", []))
                 if g.winner is not None:
                     assert not g.hands[g.winner]

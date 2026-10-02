@@ -33,23 +33,29 @@ RUN useradd --create-home --uid 10001 player
 USER player
 CMD ["python", "-m", "agentenv_games.envserver"]
 """
-SKIP = shutil.ignore_patterns("__pycache__", "static", "bundles", "*.pyc")
+SKIP = shutil.ignore_patterns("__pycache__", "static", "bundles", "*.pyc", "node_modules", "minecraft")
+MINECRAFT_SKIP = shutil.ignore_patterns("__pycache__", "static", "bundles", "*.pyc", "node_modules")
+MINECRAFT_ARTIFACT_ID = "agent-games-minecraft"
+MINECRAFT_ENV_ID = ENV_PREFIX + "minecraft"
+SKYBLOCK_ENV_ID = ENV_PREFIX + "minecraft-skyblock"
 
 
 def env_id(game: str) -> str:
     return ENV_PREFIX + game
 
 
-def write_context(path: Path) -> Path:
-    """The image's build context: the protocol SDK, the games and a Dockerfile."""
+def write_context(path: Path, *, minecraft: bool = False) -> Path:
+    """The image's build context: the protocol SDK, the games and a Dockerfile; with ``minecraft``, the
+    Minecraft env's instead, which adds the Paper server and the bot bridge."""
     path.mkdir(parents=True, exist_ok=True)
     for package in (agentenv_protocol, agentenv_games):
         source = Path(package.__file__).parent
         target = path / source.name
         if target.exists():
             shutil.rmtree(target)
-        shutil.copytree(source, target, ignore=SKIP)
-    (path / "Dockerfile").write_text(DOCKERFILE)
+        shutil.copytree(source, target, ignore=MINECRAFT_SKIP if minecraft else SKIP)
+    dockerfile = (Path(agentenv_games.__file__).parent / "minecraft" / "Dockerfile").read_text() if minecraft else DOCKERFILE
+    (path / "Dockerfile").write_text(dockerfile)
     return path
 
 
@@ -82,3 +88,24 @@ def setup(games: list[str] | None = None, echo=print) -> list[MCPServerEnv]:
         echo(f"Env {env.id} v{env.version}: {cls.title}")
         envs.append(env)
     return envs
+
+
+def setup_minecraft(echo=print) -> MCPServerEnv:
+    """Build the Minecraft env's image (a few minutes the first time: it downloads Paper and generates the
+    worlds) and register it as ``agent-games/minecraft`` and, on its void world, ``agent-games/minecraft-skyblock``."""
+    with tempfile.TemporaryDirectory() as tmp:
+        context = write_context(Path(tmp) / "context", minecraft=True)
+        tag = f"agent-games-minecraft:{_digest(context)}"
+        echo(f"Building {tag}")
+        subprocess.run(["docker", "build", "-q", "-t", tag, str(context)], check=True, stdout=subprocess.DEVNULL)
+        artifact = DockerImageArtifact.put(id=MINECRAFT_ARTIFACT_ID, description="agentenv-games Minecraft server",
+                                           image_name=tag, build_context_path=str(context),
+                                           dockerfile_path=str(context / "Dockerfile"))
+    echo(f"Image artifact {artifact.id} v{artifact.version}")
+    env = MCPServerEnv.put(id=MINECRAFT_ENV_ID, docker_image_artifact=artifact, environment_name="minecraft",
+                           env_provider_type="server", metadata={"title": "Minecraft", "game": "minecraft"})
+    echo(f"Env {env.id} v{env.version}: Minecraft")
+    sky = MCPServerEnv.put(id=SKYBLOCK_ENV_ID, docker_image_artifact=artifact, environment_name="minecraft_skyblock",
+                           env_provider_type="server", metadata={"title": "Minecraft skyblock", "game": "minecraft"})
+    echo(f"Env {sky.id} v{sky.version}: Minecraft skyblock")
+    return env

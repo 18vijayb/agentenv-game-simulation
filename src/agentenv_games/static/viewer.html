@@ -151,6 +151,8 @@ a { color: var(--ink); }
   .pane.right { max-height: 75vh; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+.film { margin: 0 0 12px; }
+.film video { display: block; width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 10px; border: 1px solid var(--edge); }
 </style>
 </head>
 <body>
@@ -175,6 +177,7 @@ a { color: var(--ink); }
       </div>
     </div>
     <div class="scroll">
+      <div class="film" id="film" hidden><video id="video" controls playsinline preload="auto" muted aria-label="Recording of this game"></video></div>
       <div class="players" id="players"></div>
       <div id="board"></div>
       <div id="beliefs" class="heat" hidden></div>
@@ -399,17 +402,56 @@ function tick() {
   ui.i = nextStop(ui.i, 1); render();
   ui.timer = setTimeout(tick, delayFor(E[ui.i]));
 }
+/* ---------- the recording: when a game has one, the video is the clock ---------- */
+const VID = $("video");
+let T0 = null;
+const tsOf = e => Date.parse(e.ts);
+function eventAt(ms) {
+  let lo = 0, hi = E.length - 1;
+  while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (tsOf(E[mid]) <= ms) lo = mid; else hi = mid - 1; }
+  return lo;
+}
+function seekVideo() {
+  if (T0 === null) return;
+  const t = Math.max(0, (tsOf(E[ui.i]) - T0) / 1000);
+  if (Number.isFinite(VID.duration)) VID.currentTime = Math.min(t, VID.duration);
+  else VID.currentTime = t;
+}
+function setupVideo() {
+  if (T0 !== null || !META.video || META.status === "running") return;
+  T0 = Date.parse(META.video.started_at);
+  VID.src = `${API}/video`;
+  $("film").hidden = false;
+  VID.playbackRate = Number($("speed").value);
+  const follow = () => {
+    if (VID.paused) return;
+    const i = eventAt(T0 + VID.currentTime * 1000);
+    if (i !== ui.i) { ui.i = i; render(); }
+    requestAnimationFrame(follow);
+  };
+  VID.addEventListener("play", () => { ui.playing = true; render(); requestAnimationFrame(follow); });
+  VID.addEventListener("pause", () => { ui.playing = false; render(); });
+  VID.addEventListener("loadedmetadata", seekVideo, { once: true });
+  VID.addEventListener("seeked", () => {
+    if (!VID.paused) return;
+    const i = eventAt(T0 + VID.currentTime * 1000);
+    if (i !== ui.i) { ui.i = i; render(); }
+  });
+  $("speed").addEventListener("change", () => { VID.playbackRate = Number($("speed").value); });
+}
+
 function setPlaying(p) {
+  if (T0 !== null) { if (p) VID.play(); else VID.pause(); return; }
   ui.playing = p; clearTimeout(ui.timer);
   if (p) { if (ui.i >= E.length - 1 && META.status !== "running") ui.i = 0; render(); ui.timer = setTimeout(tick, delayFor(E[ui.i])); }
   else render();
 }
-const step = dir => { setPlaying(false); ui.i = nextStop(ui.i, dir); ui.follow = ui.i === E.length - 1; render(); };
+const step = dir => { setPlaying(false); ui.i = nextStop(ui.i, dir); ui.follow = ui.i === E.length - 1; render(); seekVideo(); };
 $("play").onclick = () => setPlaying(!ui.playing);
 $("back").onclick = () => step(-1);
 $("fwd").onclick = () => step(1);
-$("restart").onclick = () => { setPlaying(false); ui.i = 0; ui.follow = false; render(); };
-$("range").oninput = ev => { setPlaying(false); ui.i = Number(ev.target.value); ui.follow = ui.i === E.length - 1; render(); };
+$("restart").onclick = () => { setPlaying(false); ui.i = 0; ui.follow = false; render(); seekVideo(); };
+$("range").oninput = ev => { setPlaying(false); ui.i = Number(ev.target.value); ui.follow = ui.i === E.length - 1; render(); seekVideo(); };
 $("spoilers").onclick = () => { ui.spoilers = !ui.spoilers; $("spoilers").setAttribute("aria-pressed", ui.spoilers); renderMarks(); render(); };
 $("focusChip").onclick = () => { ui.focus = null; render(); };
 document.querySelectorAll("[data-filter]").forEach(b => b.onclick = () => {
@@ -484,7 +526,7 @@ async function poll() {
         const from = E.length; E.push(...data.events); derive(from); renderMarks();
         if (ui.follow && atEnd && !ui.playing) ui.i = E.length - 1;
       }
-      render(); updateMeta();
+      render(); updateMeta(); setupVideo();
     }
   } catch (err) { console.warn("poll failed", err); }
   if (META.status === "running") setTimeout(poll, 1500);
@@ -502,7 +544,7 @@ async function poll() {
   const deep = /e=(\d+)/.exec(location.hash);
   ui.i = deep ? Math.min(E.length - 1, Number(deep[1])) : (META.status === "running" ? E.length - 1 : 0);
   if (/tab=beliefs/.test(location.hash) && META.beliefs) $("beliefsTab").click();
-  renderMarks(); render(); updateMeta();
+  renderMarks(); render(); updateMeta(); setupVideo();
   if (META.status === "running") setTimeout(poll, 1500);
 })();
 </script>

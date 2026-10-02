@@ -234,6 +234,10 @@ means a confusing prompt or `get_turn` view.
 
 - `python scripts/games.py export simulations <game_id>=<folder>` copies a finished game out of the
   store, and `python scripts/summarize.py simulations` writes its `summary.md` and the index.
+- To get per-player numbers into that summary, log one stats event when the game ends:
+  `self.log.event(text, kind="stats", stats={seat: {"name": number, ...}})`. `summarize.py` turns
+  it into a per-game table and adds the columns up across games (UNO logs `bluffs`, `forgot_uno`
+  and more this way).
 - `video/README.md` explains how to turn a game into a narrated episode with a cut list.
 
 ## 6. Open the pull request

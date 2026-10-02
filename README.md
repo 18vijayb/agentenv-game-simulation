@@ -75,6 +75,36 @@ The tasks are identical except for one line:
 - **In-process mode.** `play_game` with `"game": "<name>"` instead runs the game inside the step,
   with no Docker, which the `game-*` bundles use.
 
+## Minecraft: a real-time world
+
+`agent-games/minecraft` is a native env with a real Minecraft server inside: Paper 1.21.4 with a
+pre-generated world, one [Mineflayer](https://github.com/PrismarineJS/mineflayer) bot per seat, and MCP
+tools that drive the bot with high-level skills (`observe`, `go_to`, `collect`, `craft`, `place`, `give`,
+`chat`). There are no turns: the `play_world` step runs every seat at once until the env reports the
+goal met or the time runs out, and the env logs every action for the explorer viewer as for a game.
+
+```bash
+agent-env games minecraft setup               # build the image (a few minutes; accepts the Minecraft EULA for its server)
+agent-env run native-minecraft --task duo     # Claude and GPT, 8 minutes; --task pickaxes for four models
+agent-env games minecraft watch               # while it runs: the world on localhost:25565, 3D views on 127.0.0.1:8300 and up, the camera on 127.0.0.1:8399
+```
+
+Every session is filmed: an invisible spectator camera follows whoever is acting (a chase shot that keeps
+its player in sight, cutting to a wide shot of everyone when things go quiet), headless Chromium records
+its view, and `play_world` stores the video beside the log. The explorer plays it above the board, in step
+with the timeline. Pass `"record": false` in `params` to skip it.
+
+`agent-games/minecraft-skyblock` is the same env on a void world: two islands 24 blocks apart, a chest
+of obsidian and a flint and steel on the far one, and the goal of building and lighting a nether portal
+there. The players start with too few blocks to bridge the gap alone, and get `bridge`, `take` and `use`
+tools, the full map with coordinates, and a frame checklist in `observe`. Run it with
+`agent-env run native-minecraft --task skyblock-duo` (or `--task skyblock` for four models).
+
+`watch` forwards the env's game server to loopback, so you can join the agents' world from your own
+Minecraft Java 1.21.4 client (Multiplayer, Direct Connection, `localhost:25565`) and talk to them in chat;
+the agents see what you say. The goal and target come from `params`: `goal` (text), `each` (items every
+player must hold, default one `stone_pickaxe`), `target` (items the team holds in total), `seconds`.
+
 ## Writing a game
 
 A game is a `Game` subclass that keeps its state on `self`. The framework calls `setup` once, then

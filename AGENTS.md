@@ -41,6 +41,7 @@ uv pip install --python .venv/bin/python -e ../agentenv-framework/packages/agent
 | `src/agentenv_games/envserver.py` | the native env server (agentenv-protocol SDK): player tools by seat header, the control extension, `BUILT_IN` games |
 | `src/agentenv_games/runner.py`, `players.py`, `remote.py` | the turn loop, model and A2A players, and the client for a deployed env |
 | `src/agentenv_games/step.py` | the `play_game` task step (native with `env_step_id` / `env_id`, in-process with `game`) |
+| `src/agentenv_games/world.py`, `minecraft/`, `watch.py` | the real-time `play_world` step and the Minecraft env: its env server, the Node Mineflayer bridge, the image, and `games minecraft watch` |
 | `src/agentenv_games/setup.py`, `cli.py` | `agent-env games setup` and `context` |
 | `src/agentenv_games/explorer.py`, `static/` | the explorer plugin and the generic viewer |
 | `src/agentenv_games/bundles/` | `game-<name>` (in-process), `native-games` (deployed envs), `*-models` (model seats) |

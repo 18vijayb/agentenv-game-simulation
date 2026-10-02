@@ -40,6 +40,32 @@ def list_games(limit: int) -> None:
         click.echo(f"    replay: http://localhost:8234/games/{g['game_id']}  (with `agent-env up` running)")
 
 
+@games.group()
+def minecraft() -> None:
+    """The Minecraft world env."""
+
+
+@minecraft.command(name="setup")
+def minecraft_setup() -> None:
+    """Build the Minecraft env image and register it as agent-games/minecraft (needs Docker; building it accepts
+    the Minecraft EULA for the server inside)."""
+    from .setup import setup_minecraft
+
+    env = setup_minecraft(echo=click.echo)
+    click.echo(f"Done. Try: agent-env run native-minecraft --task duo  (env {env.id})")
+
+
+@minecraft.command()
+@click.option("--players", default=8, show_default=True, help="How many 3D views to forward (one per seat).")
+def watch(players: int) -> None:
+    """Forward the running Minecraft env to this machine: the server on localhost:25565 for your own Java
+    1.21.4 client, and each seat's 3D view on 127.0.0.1:8300 and up."""
+    from .watch import forward
+
+    for line in forward(players):
+        click.echo(line)
+
+
 @games.command()
 @click.argument("path", type=click.Path(file_okay=False, path_type=Path))
 def context(path: Path) -> None:
