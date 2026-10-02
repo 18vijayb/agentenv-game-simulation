@@ -37,6 +37,7 @@ SKIP = shutil.ignore_patterns("__pycache__", "static", "bundles", "*.pyc", "node
 MINECRAFT_SKIP = shutil.ignore_patterns("__pycache__", "static", "bundles", "*.pyc", "node_modules")
 MINECRAFT_ARTIFACT_ID = "agent-games-minecraft"
 MINECRAFT_ENV_ID = ENV_PREFIX + "minecraft"
+SKYBLOCK_ENV_ID = ENV_PREFIX + "minecraft-skyblock"
 
 
 def env_id(game: str) -> str:
@@ -91,7 +92,7 @@ def setup(games: list[str] | None = None, echo=print) -> list[MCPServerEnv]:
 
 def setup_minecraft(echo=print) -> MCPServerEnv:
     """Build the Minecraft env's image (a few minutes the first time: it downloads Paper and generates the
-    world) and register it as ``agent-games/minecraft``."""
+    worlds) and register it as ``agent-games/minecraft`` and, on its void world, ``agent-games/minecraft-skyblock``."""
     with tempfile.TemporaryDirectory() as tmp:
         context = write_context(Path(tmp) / "context", minecraft=True)
         tag = f"agent-games-minecraft:{_digest(context)}"
@@ -104,4 +105,7 @@ def setup_minecraft(echo=print) -> MCPServerEnv:
     env = MCPServerEnv.put(id=MINECRAFT_ENV_ID, docker_image_artifact=artifact, environment_name="minecraft",
                            env_provider_type="server", metadata={"title": "Minecraft", "game": "minecraft"})
     echo(f"Env {env.id} v{env.version}: Minecraft")
+    sky = MCPServerEnv.put(id=SKYBLOCK_ENV_ID, docker_image_artifact=artifact, environment_name="minecraft_skyblock",
+                           env_provider_type="server", metadata={"title": "Minecraft skyblock", "game": "minecraft"})
+    echo(f"Env {sky.id} v{sky.version}: Minecraft skyblock")
     return env

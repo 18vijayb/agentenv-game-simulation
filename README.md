@@ -94,6 +94,12 @@ its player in sight, cutting to a wide shot of everyone when things go quiet), h
 its view, and `play_world` stores the video beside the log. The explorer plays it above the board, in step
 with the timeline. Pass `"record": false` in `params` to skip it.
 
+`agent-games/minecraft-skyblock` is the same env on a void world: two islands 24 blocks apart, a chest
+of obsidian and a flint and steel on the far one, and the goal of building and lighting a nether portal
+there. The players start with too few blocks to bridge the gap alone, and get `bridge`, `take` and `use`
+tools, the full map with coordinates, and a frame checklist in `observe`. Run it with
+`agent-env run native-minecraft --task skyblock-duo` (or `--task skyblock` for four models).
+
 `watch` forwards the env's game server to loopback, so you can join the agents' world from your own
 Minecraft Java 1.21.4 client (Multiplayer, Direct Connection, `localhost:25565`) and talk to them in chat;
 the agents see what you say. The goal and target come from `params`: `goal` (text), `each` (items every

@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
+import os
 import re
 import secrets
 import signal
@@ -27,6 +28,7 @@ from starlette.responses import FileResponse, JSONResponse, Response
 
 from ..log import GameLog
 from ..remote import CONTROL_URI
+from . import skyblock
 
 BRIDGE = "http://127.0.0.1:3100"
 SEAT_HEADER = "x-agent-games-seat"
@@ -83,6 +85,12 @@ def held(inventories: list[dict], item: str) -> int:
 
 
 def describe(op: str, args: dict) -> str:
+    if op == "bridge":
+        return f"toward {args.get('x')} {args.get('z')}"
+    if op == "take":
+        return f"{args.get('item') or 'everything'} from the chest"
+    if op == "use":
+        return f"{args.get('item')} on {args.get('x')} {args.get('y')} {args.get('z')}"
     if op == "go_to":
         if args.get("player"):
             return f"to {args['player']}"
@@ -130,8 +138,8 @@ class Director:
 
 
 class MinecraftEnvironment(AgentEnvEnvironment):
-    def __init__(self, bridge: str = BRIDGE) -> None:
-        self.bridge = bridge
+    def __init__(self, bridge_url: str = BRIDGE) -> None:
+        self.bridge_url = bridge_url
         self._reset()
         self.create_app()
         self.mcp.custom_route("/recording", methods=["GET"])(self._recording)
@@ -150,6 +158,9 @@ class MinecraftEnvironment(AgentEnvEnvironment):
         self.last_seen: dict[int, int] = {}
         self.finished: dict | None = None
         self.poller: asyncio.Task | None = None
+        self.skyblock = os.environ.get("ENVIRONMENT_NAME") == "minecraft_skyblock"
+        self.frame: dict = {}
+        self.deaths: dict[str, int] = {}
         self.acted: dict[int, float] = {}
         self.busy: set[int] = set()
         self.director: asyncio.Task | None = None
@@ -160,7 +171,7 @@ class MinecraftEnvironment(AgentEnvEnvironment):
 
     async def _bridge(self, method: str, path: str, body: dict | None = None, timeout: float = ACTION_TIMEOUT) -> dict:
         async with httpx.AsyncClient(timeout=timeout) as client:
-            resp = await client.request(method, self.bridge + path, json=body)
+            resp = await client.request(method, self.bridge_url + path, json=body)
         data = resp.json()
         if resp.status_code != 200:
             raise RuntimeError(data.get("error") or f"bridge {path}: HTTP {resp.status_code}")
@@ -168,6 +179,16 @@ class MinecraftEnvironment(AgentEnvEnvironment):
 
     async def _refresh(self) -> None:
         self.world = await self._bridge("GET", "/state", timeout=10)
+        for i, u in enumerate(self.usernames):
+            died = ((self.world.get("bots") or {}).get(u) or {}).get("deaths", 0)
+            if died > self.deaths.get(u, 0) and self.log is not None:
+                self.log.event(f"{self.names[i]} fell into the void! They respawn on the start island.", kind="event",
+                               actor=i)
+            self.deaths[u] = died
+        if self.skyblock:
+            spots = skyblock.FRAME + skyblock.INSIDE
+            names = (await self._bridge("POST", "/blocks", {"positions": [list(p) for p in spots]}, timeout=10))["blocks"]
+            self.frame = skyblock.frame_status(dict(zip(spots, names)))
         chat = (await self._bridge("GET", f"/chat?since={self.chat_seen}", timeout=10))["messages"]
         self.chat_seen += len(chat)
         ours = {u.lower() for u in self.usernames}
@@ -188,6 +209,9 @@ class MinecraftEnvironment(AgentEnvEnvironment):
         return [(bots.get(u) or {}).get("inventory") or {} for u in self.usernames]
 
     def progress(self) -> dict[str, dict]:
+        if self.skyblock:
+            return {"obsidian in the frame": {"value": self.frame.get("placed", 0), "max": len(skyblock.FRAME)},
+                    "portal lit": {"value": int(bool(self.frame.get("lit"))), "max": 1}}
         inv = self._inventories()
         team = {item: {"value": min(held(inv, item), need), "max": need} for item, need in self.target.items()}
         each = {f"{item} (each player)": {"value": sum(held([i], item) >= need for i in inv), "max": len(inv)}
@@ -195,9 +219,13 @@ class MinecraftEnvironment(AgentEnvEnvironment):
         return {**team, **each}
 
     def done(self) -> bool:
+        if self.skyblock:
+            return bool(self.frame.get("lit"))
         return bool(self.target or self.each) and all(p["value"] >= p["max"] for p in self.progress().values())
 
     def _target_text(self) -> str:
+        if self.skyblock:
+            return skyblock.TARGET
         parts = [f"the team holds {n} {k}" for k, n in self.target.items()]
         parts += [f"every player holds {n} {k}" for k, n in self.each.items()]
         return "; ".join(parts) or "none"
@@ -215,6 +243,7 @@ class MinecraftEnvironment(AgentEnvEnvironment):
             "Team progress": self.progress(),
             "Time left": f"{left // 60}:{left % 60:02d}",
             "In-game": self.world.get("time") or "—",
+            **({"Frame blocks missing": len(self.frame.get("missing", skyblock.FRAME))} if self.skyblock else {}),
             "Live 3D views": {n: f"http://127.0.0.1:{HOST_VIEWER_PORT + i}" for i, n in enumerate(self.names)},
         }
         rows = []
@@ -224,6 +253,8 @@ class MinecraftEnvironment(AgentEnvEnvironment):
             items = sorted((b.get("inventory") or {}).items(),
                            key=lambda kv: (not any(kv[0] == g or kv[0].endswith("_" + g) for g in goal), -kv[1]))
             tags: list = [f"at {' '.join(map(str, b['at']))}" if b.get("at") else "offline"]
+            if self.skyblock and b.get("at"):
+                tags.append({"label": skyblock.where(b["at"]), "tone": "blue"})
             if b.get("health") is not None and b["health"] < 20:
                 tags.append({"label": f"health {b['health']}", "tone": "red"})
             tags += [f"{n} {k.replace('_', ' ')}" for k, n in items[:6]]
@@ -285,8 +316,9 @@ class MinecraftEnvironment(AgentEnvEnvironment):
         seat = self._seat()
         others = ", ".join(f"{n} (username {u})" for i, (n, u) in enumerate(zip(self.names, self.usernames)) if i != seat)
         target = self._target_text()
-        return RULES.format(name=self.names[seat], username=self.usernames[seat], others=others or "nobody",
+        text = RULES.format(name=self.names[seat], username=self.usernames[seat], others=others or "nobody",
                             goal=self.goal, target=target, minutes=max(1, self.seconds // 60))
+        return text + skyblock.rules() if self.skyblock else text
 
     @tool(name="observe")
     async def observe(self) -> dict:
@@ -298,6 +330,14 @@ class MinecraftEnvironment(AgentEnvEnvironment):
         self.last_seen[seat] = self.last_seen.get(seat, 0) + len(chat)
         seen["new_chat"] = [f"{c['from']}: {c['text']}" for c in chat if c["from"] != self.usernames[seat]]
         seen["team_progress"] = {k: f"{v['value']}/{v['max']}" for k, v in self.progress().items()}
+        bots = self.world.get("bots") or {}
+        seen["teammates"] = {u: {"at": (bots.get(u) or {}).get("at"), "doing": (bots.get(u) or {}).get("doing"),
+                                 "inventory": (bots.get(u) or {}).get("inventory"),
+                                 **({"where": skyblock.where((bots.get(u) or {}).get("at"))} if self.skyblock else {})}
+                             for u in self.usernames if u != self.usernames[seat]}
+        if self.skyblock:
+            seen["where"] = skyblock.where(seen.get("at"))
+            seen["portal_frame"] = {**self.frame, "next_to_place": (self.frame.get("missing") or [None])[0]}
         seen["seconds_left"] = self.time_left()
         return seen
 
@@ -331,6 +371,25 @@ class MinecraftEnvironment(AgentEnvEnvironment):
     async def give(self, player: str, item: str, count: int = 1, intent: str = "") -> str:
         """Walk to another player (by username) and throw them items; they pick them up when close."""
         return await self._act("give", {"player": player, "item": item, "count": count}, intent)
+
+    @tool(name="bridge")
+    async def bridge(self, x: int, z: int, max_blocks: int = 64, block: str = "", intent: str = "") -> str:
+        """Bridge across open void toward x, z at your current height: walk one block at a time and place a block
+        under you wherever the floor ahead is missing (cobblestone, dirt, planks or logs from your inventory, or
+        ``block``). Stops when you arrive, run out of blocks, hit something, or after max_blocks."""
+        return await self._act("bridge", {"x": x, "z": z, "max_blocks": max_blocks, "block": block}, intent)
+
+    @tool(name="take")
+    async def take(self, item: str = "", count: int = 0, intent: str = "") -> str:
+        """Walk to the nearest chest (within 32 blocks) and take ``count`` of ``item`` from it, or everything if
+        item is empty; says what the chest still holds."""
+        return await self._act("take", {"item": item, "count": count}, intent)
+
+    @tool(name="use")
+    async def use(self, item: str, x: int, y: int, z: int, intent: str = "") -> str:
+        """Use an item from your inventory on the top of the block at x, y, z, such as flint_and_steel on obsidian
+        to light a nether portal. Says whether a portal formed."""
+        return await self._act("use", {"item": item, "x": x, "y": y, "z": z}, intent)
 
     @tool(name="chat")
     async def chat(self, message: str, intent: str = "") -> str:
@@ -371,7 +430,7 @@ class MinecraftEnvironment(AgentEnvEnvironment):
         if not 1 <= len(names) <= 8:
             raise ValueError("Minecraft takes 1 to 8 players")
         self.params = params or {}
-        self.goal = self.params.get("goal") or DEFAULT_GOAL
+        self.goal = self.params.get("goal") or (skyblock.GOAL if self.skyblock else DEFAULT_GOAL)
         self.target = dict(self.params.get("target") or {})
         self.each = dict(self.params.get("each") or ({} if self.target else {"stone_pickaxe": 1}))
         self.seconds = int(self.params.get("seconds") or 600)
@@ -385,14 +444,18 @@ class MinecraftEnvironment(AgentEnvEnvironment):
         taken: set[str] = {CAMERA_NAME.lower()}
         self.names, self.usernames = list(names), [username(n, taken) for n in names]
         for cmd in ("gamerule doDaylightCycle " + ("true" if self.params.get("daylight_cycle") else "false"),
-                    "time set day", "gamerule spawnRadius 4", "gamerule announceAdvancements false"):
+                    "time set day", "gamerule spawnRadius 4", "gamerule announceAdvancements false",
+                    *(skyblock.WORLD_COMMANDS if self.skyblock else ())):
             await self._bridge("POST", "/command", {"command": cmd})
         self.log = GameLog(game_id, {}, None, state=self._state)
-        self.log.add("setup", text=f"{TITLE}: {', '.join(self.names)} join a fresh world.")
+        self.log.add("setup", text=f"{TITLE}: {', '.join(self.names)} join a fresh "
+                                  f"{'skyblock ' if self.skyblock else ''}world.")
         for i, u in enumerate(self.usernames):
             await self._bridge("POST", "/bots", {"username": u, "viewer_port": VIEWER_BASE_PORT + i}, timeout=90)
         for u in self.usernames:
             await self._bridge("POST", "/command", {"command": f"clear {u}"})
+        for cmd in skyblock.kit_commands(self.usernames) if self.skyblock else ():
+            await self._bridge("POST", "/command", {"command": cmd})
         tokens = [secrets.token_urlsafe(18) for _ in names]
         self.seats = {t: i for i, t in enumerate(tokens)}
         self.control_token = secrets.token_urlsafe(24)
@@ -425,7 +488,9 @@ class MinecraftEnvironment(AgentEnvEnvironment):
             if shot != current:
                 target = self.usernames[shot[1]] if shot[1] is not None else None
                 with contextlib.suppress(Exception):
-                    await self._bridge("POST", "/camera/shot", {"mode": shot[0], "target": target}, timeout=10)
+                    await self._bridge("POST", "/camera/shot", {"mode": shot[0], "target": target,
+                                                                "frame": skyblock.WIDE_FRAME if self.skyblock else []},
+                                       timeout=10)
                     current = shot
             await asyncio.sleep(1)
 
@@ -436,7 +501,8 @@ class MinecraftEnvironment(AgentEnvEnvironment):
         if self.director is not None:
             self.director.cancel()
         with contextlib.suppress(Exception):
-            await self._bridge("POST", "/camera/shot", {"mode": "wide"}, timeout=10)
+            await self._bridge("POST", "/camera/shot", {"mode": "wide", "frame": skyblock.WIDE_FRAME if self.skyblock else []},
+                               timeout=10)
         await asyncio.sleep(4)
         recorder, self.recorder = self.recorder, None
         if recorder.returncode is None:

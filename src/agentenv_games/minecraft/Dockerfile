@@ -22,7 +22,10 @@ WORKDIR /srv/mc
 RUN curl -fsSL -o paper.jar "$PAPER_URL" && echo "eula=true" > eula.txt
 COPY --chown=player agentenv_games/minecraft/server.properties /srv/mc/server.properties
 COPY --chown=player agentenv_games/minecraft/pregen.sh /srv/mc/pregen.sh
-RUN sh /srv/mc/pregen.sh
+RUN sh /srv/mc/pregen.sh world && cp server.properties /tmp/server.properties \
+    && printf '%s\n' 'level-type=minecraft\:flat' \
+       'generator-settings={"layers"\:[{"block"\:"minecraft\:air","height"\:1}],"biome"\:"minecraft\:the_void"}' >> server.properties \
+    && sh /srv/mc/pregen.sh skyblock && cp /tmp/server.properties server.properties
 COPY --chown=player agentenv_games/minecraft/bridge/package.json /app/bridge/package.json
 RUN cd /app/bridge && npm install --omit=dev --no-audit --no-fund --registry=https://registry.npmjs.org
 COPY --chown=player agentenv_protocol /app/agentenv_protocol

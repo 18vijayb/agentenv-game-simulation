@@ -102,7 +102,7 @@ async function goTo (bot, args) {
     goal = new goals.GoalNear(found.position.x, found.position.y, found.position.z, 2)
   } else if (args.x !== undefined && args.z !== undefined) {
     goal = args.y === undefined || args.y === null
-      ? new goals.GoalNearXZ(Number(args.x), Number(args.z), 2)
+      ? new goals.GoalNearXZ(Number(args.x), Number(args.z), 1)
       : new goals.GoalNear(Number(args.x), Number(args.y), Number(args.z), 1)
   } else {
     throw new Error('give a player, a block, or x and z (y optional)')
@@ -221,13 +221,21 @@ async function craft (bot, args) {
 
 function solid (block) { return block && block.boundingBox === 'block' }
 
+async function reach (bot, at) {
+  // get within arm's reach of the block at ``at``, measured from the eyes; walk only as close as needed sideways
+  const eyes = () => bot.entity.position.offset(0, 1.62, 0)
+  if (eyes().distanceTo(at.offset(0.5, 0.5, 0.5)) <= 4.2) return
+  await bot.pathfinder.goto(new goals.GoalNearXZ(at.x + 0.5, at.z + 0.5, 2))
+  if (eyes().distanceTo(at.offset(0.5, 0.5, 0.5)) > 4.5) throw new Error(`${at.x} ${at.y} ${at.z} is out of reach from the ground; stand closer or higher`)
+}
+
 async function place (bot, args) {
   const items = bot.inventory.items().filter(i => i.name === args.item)
   if (!items.length) throw new Error(`you have no ${args.item}`)
   let target
   if (args.x !== undefined && args.y !== undefined && args.z !== undefined) {
     target = new Vec3(Number(args.x), Number(args.y), Number(args.z))
-    if (target.distanceTo(bot.entity.position) > 4) await bot.pathfinder.goto(new goals.GoalNear(target.x, target.y, target.z, 3))
+    await reach(bot, target)
   } else {
     const feet = bot.entity.position.floored()
     for (const [dx, dz] of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1], [2, 0], [0, 2]]) {
@@ -266,7 +274,116 @@ async function say (bot, args) {
   return 'Said it.'
 }
 
-const ACTIONS = { go_to: goTo, collect, craft, place, give, chat: say }
+const BRIDGING = ['cobblestone', 'dirt', 'stone', 'cobbled_deepslate', 'netherrack']
+
+function bridgingItem (bot, name) {
+  const items = bot.inventory.items()
+  if (name) return items.find(i => i.name === name)
+  return items.find(i => BRIDGING.includes(i.name)) || items.find(i => i.name.endsWith('_planks')) ||
+    items.find(i => i.name.endsWith('_log'))
+}
+
+async function bridge (bot, args) {
+  // walk toward x, z one block at a time at the current height, placing a block wherever the floor ahead is missing
+  if (args.x === undefined || args.z === undefined) throw new Error('give the x and z to bridge toward')
+  const tx = Math.floor(Number(args.x))
+  const tz = Math.floor(Number(args.z))
+  const most = Math.max(1, Math.min(Number(args.max_blocks || 64), 128))
+  const deadline = Date.now() + ACTION_TIMEOUT_MS - 8000
+  let placed = 0
+  let why = ''
+  try {
+    while (Date.now() < deadline) {
+      const feet = bot.entity.position.floored()
+      const dx = tx - feet.x
+      const dz = tz - feet.z
+      if (!dx && !dz) { why = 'arrived'; break }
+      const step = Math.abs(dx) >= Math.abs(dz) ? new Vec3(Math.sign(dx), 0, 0) : new Vec3(0, 0, Math.sign(dz))
+      const floor = bot.blockAt(feet.offset(0, -1, 0))
+      if (!solid(floor)) { why = 'you are not standing on a solid block'; break }
+      const next = feet.plus(step)
+      if (solid(bot.blockAt(next)) || solid(bot.blockAt(next.offset(0, 1, 0)))) { why = `something blocks the way at ${next.x} ${next.y} ${next.z}`; break }
+      if (!solid(bot.blockAt(next.offset(0, -1, 0)))) {
+        if (placed >= most) { why = `placed the ${most} blocks you allowed`; break }
+        const item = bridgingItem(bot, args.block)
+        if (!item) { why = args.block ? `you have no ${args.block} left` : 'you have no blocks left to bridge with (cobblestone, dirt, planks or logs)'; break }
+        await bot.equip(item, 'hand')
+        bot.setControlState('sneak', true)
+        await bot.lookAt(floor.position.offset(0.5 + step.x * 0.5, 0.5, 0.5 + step.z * 0.5), true)
+        await bot.placeBlock(floor, step)
+        placed++
+      }
+      await bot.pathfinder.goto(new goals.GoalBlock(next.x, next.y, next.z))
+    }
+  } finally {
+    bot.setControlState('sneak', false)
+  }
+  if (!why) why = 'stopped to report back (call bridge again to go on)'
+  return `Placed ${placed} blocks. You are at ${pos(bot.entity.position).join(' ')}: ${why}.`
+}
+
+const CHESTS = ['chest', 'trapped_chest', 'barrel']
+
+async function take (bot, args) {
+  // take an item (or everything) from the nearest chest within 32 blocks
+  const ids = CHESTS.map(n => bot.registry.blocksByName[n].id)
+  let chest = bot.findBlock({ matching: ids, maxDistance: 32 })
+  if (!chest) throw new Error('no chest within 32 blocks')
+  if (chest.position.distanceTo(bot.entity.position) > 3.5) {
+    await bot.pathfinder.goto(new goals.GoalNear(chest.position.x, chest.position.y, chest.position.z, 2))
+    chest = bot.blockAt(chest.position)
+  }
+  const box = await bot.openContainer(chest)
+  try {
+    const all = box.containerItems()
+    const want = args.item ? all.filter(i => i.name === args.item) : all
+    const list = items => Object.entries(items.reduce((o, i) => ({ ...o, [i.name]: (o[i.name] || 0) + i.count }), {}))
+      .map(([k, n]) => `${n} ${k}`).join(', ') || 'nothing'
+    if (!want.length) throw new Error(`the chest at ${pos(chest.position).join(' ')} has ${list(all)}`)
+    const took = {}
+    for (const item of want) {
+      const n = args.count ? Math.min(Number(args.count) - (took[item.name] || 0), item.count) : item.count
+      if (n <= 0) continue
+      await box.withdraw(item.type, null, n)
+      took[item.name] = (took[item.name] || 0) + n
+    }
+    const left = box.containerItems()
+    return `Took ${Object.entries(took).map(([k, n]) => `${n} ${k}`).join(', ')} from the chest at ${pos(chest.position).join(' ')}; it still has ${list(left)}.`
+  } finally {
+    box.close()
+  }
+}
+
+async function use (bot, args) {
+  // use an item on a block's top face, such as flint_and_steel on obsidian to light a portal
+  const item = bot.inventory.items().find(i => i.name === args.item)
+  if (!item) throw new Error(`you have no ${args.item}`)
+  const at = new Vec3(Number(args.x), Number(args.y), Number(args.z))
+  await reach(bot, at)
+  const block = bot.blockAt(at)
+  if (!block || AIR.has(block.name)) throw new Error(`there is no block at ${at.x} ${at.y} ${at.z} to use it on`)
+  await bot.equip(item, 'hand')
+  await bot.lookAt(at.offset(0.5, 1, 0.5), true)
+  await bot.activateBlock(block, new Vec3(0, 1, 0))
+  await sleep(600)
+  const portal = bot.findBlock({ matching: bot.registry.blocksByName.nether_portal.id, maxDistance: 8 })
+  return portal ? `Used ${args.item} on ${block.name} at ${at.x} ${at.y} ${at.z}: a nether portal is now lit at ${pos(portal.position).join(' ')}!`
+    : `Used ${args.item} on ${block.name} at ${at.x} ${at.y} ${at.z}, but no portal formed: the frame must be complete and the fire must land inside it.`
+}
+
+function blocksAt (positions) {
+  // block names at positions, read from any bot that has their chunks loaded
+  const viewers = [...bots.values()].map(e => e.bot).concat(camera ? [camera.bot] : [])
+  return positions.map(([x, y, z]) => {
+    for (const b of viewers) {
+      const block = b.blockAt(new Vec3(x, y, z))
+      if (block) return block.name
+    }
+    return null
+  })
+}
+
+const ACTIONS = { go_to: goTo, collect, craft, place, give, chat: say, bridge, take, use }
 
 function stop (entry) {
   try { entry.bot.pathfinder.stop() } catch (e) {}
@@ -323,9 +440,12 @@ const CAMERA_PORT = Number(process.env.CAMERA_PORT || 3099)
 const CHASE = 5
 let camera = null
 
+const MAX_DOWN = 1.05 // the steepest the camera looks down, in radians
+
 function angles (from, to) {
   const d = to.minus(from)
-  return { yaw: Math.atan2(-d.x, -d.z), pitch: Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z)) }
+  const pitch = Math.atan2(d.y, Math.sqrt(d.x * d.x + d.z * d.z))
+  return { yaw: Math.atan2(-d.x, -d.z), pitch: Math.max(-MAX_DOWN, pitch), look: to }
 }
 
 function clearOf (bot, p) {
@@ -376,10 +496,11 @@ function aim () {
     pos = pos || clearOf(camera.bot, head.plus(back.scaled(3)).offset(0, 8, 0))
     return { pos, ...angles(pos, head) }
   }
-  const ents = [...bots.values()].map(b => b.bot.entity).filter(Boolean)
-  if (!ents.length) return pose
-  const c = ents.reduce((a, e) => a.plus(e.position), new Vec3(0, 0, 0)).scaled(1 / ents.length)
-  const r = Math.max(4, ...ents.map(e => e.position.distanceTo(c))) * 1.2 + 9
+  const points = [...bots.values()].map(b => b.bot.entity).filter(Boolean).map(e => e.position)
+    .concat((shot.frame || []).map(([x, y, z]) => new Vec3(x, y, z)))
+  if (!points.length) return pose
+  const c = points.reduce((a, p) => a.plus(p), new Vec3(0, 0, 0)).scaled(1 / points.length)
+  const r = Math.max(4, ...points.map(p => p.distanceTo(c))) * 1.2 + 9
   const a = Date.now() / 20000 * 2 * Math.PI
   const pos = clearOf(camera.bot, c.offset(Math.sin(a) * r, r * 0.5, Math.cos(a) * r))
   return { pos, ...angles(pos, c.offset(0, 1, 0)) }
@@ -389,7 +510,7 @@ function frame () {
   const want = aim()
   if (!want) return
   const p = camera.pose
-  if (!p || camera.cut) {
+  if (!p || camera.cut || !sees(camera.bot, p.pos, want.look)) {
     camera.pose = want
   } else {
     const k = 0.12
@@ -453,7 +574,7 @@ function startCamera (username) {
 
 function setShot (shot) {
   if (shot.mode !== camera.shot.mode || shot.target !== camera.shot.target) camera.cut = true
-  camera.shot = { mode: shot.mode === 'follow' ? 'follow' : 'wide', target: shot.target }
+  camera.shot = { mode: shot.mode === 'follow' ? 'follow' : 'wide', target: shot.target, frame: shot.frame }
 }
 
 function state () {
@@ -509,6 +630,9 @@ http.createServer(async (req, res) => {
         if (e.status) throw e
         return reply(res, 200, { error: e.message })
       }
+    }
+    if (req.method === 'POST' && url.pathname === '/blocks') {
+      return reply(res, 200, { blocks: blocksAt((await body(req)).positions || []) })
     }
     if (req.method === 'POST' && url.pathname === '/camera') {
       if (camera) return reply(res, 409, { error: 'the camera is already running' })

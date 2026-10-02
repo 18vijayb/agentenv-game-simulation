@@ -128,3 +128,62 @@ def test_video_byte_ranges():
     assert _ranged(data, "bytes=90-", "video/webm").body == data[90:]
     assert _ranged(data, "bytes=-5", "video/webm").body == data[95:]
     assert _ranged(data, "bytes=200-", "video/webm").status_code == 416
+
+
+def test_skyblock_frame_status_and_where():
+    from agentenv_games.minecraft import skyblock
+
+    empty = skyblock.frame_status({})
+    assert empty["placed"] == 0 and len(empty["missing"]) == 14 and not empty["lit"]
+    built = {p: "obsidian" for p in skyblock.FRAME}
+    full = skyblock.frame_status({**built, **{p: "air" for p in skyblock.INSIDE}})
+    assert full["placed"] == 14 and full["missing"] == [] and full["inside_blocked"] == []
+    lit = skyblock.frame_status({**built, **{p: "nether_portal" for p in skyblock.INSIDE}})
+    assert lit["lit"]
+    assert skyblock.frame_status({**built, skyblock.INSIDE[0]: "cobblestone"})["inside_blocked"] == [list(skyblock.INSIDE[0])]
+    assert skyblock.where([3, 65, 1]) == "on the start island"
+    assert skyblock.where([33, 65, 1]) == "on the portal island"
+    assert skyblock.where([15, 64, 1]) == "over the void"
+    rules = skyblock.rules()
+    assert "35 65 3" in rules and "31 65 1" in rules and "32 65 1" in rules
+
+
+class SkyBridge(FakeBridge):
+    def __init__(self):
+        super().__init__()
+        self.blocks: dict[tuple, str] = {}
+        self.commands: list[str] = []
+
+    async def __call__(self, method, path, body=None, timeout=0):
+        if path == "/blocks":
+            return {"blocks": [self.blocks.get(tuple(p), "air") for p in body["positions"]]}
+        if path == "/command":
+            self.commands.append(body["command"])
+        return await super().__call__(method, path, body, timeout)
+
+
+async def test_skyblock_session_builds_the_world_and_wins_on_a_lit_portal(monkeypatch):
+    from agentenv_games.minecraft import skyblock
+
+    monkeypatch.setenv("ENVIRONMENT_NAME", "minecraft_skyblock")
+    e = MinecraftEnvironment.__new__(MinecraftEnvironment)
+    e._reset()
+    e._bridge = SkyBridge()
+    token = (await e.control(op="start", names=["Claude", "GPT"], seed=1, params={"record": False}))["control_token"]
+    assert any(c.startswith("item replace block 35 65 3") for c in e._bridge.commands)
+    assert "give Claude cobblestone 16" in e._bridge.commands
+    assert (await e.control(op="status", control_token=token))["progress"]["obsidian in the frame"]["value"] == 0
+    e._bridge.blocks = {p: "obsidian" for p in skyblock.FRAME}
+    await e._refresh()
+    status = await e.control(op="status", control_token=token)
+    assert status["progress"]["obsidian in the frame"]["value"] == 14 and not status["done"]
+    e._bridge.blocks.update({p: "nether_portal" for p in skyblock.INSIDE})
+    await e._refresh()
+    assert (await e.control(op="status", control_token=token))["done"]
+    assert "Frame blocks missing" in e._state()["board"]
+
+
+async def test_every_tool_is_served():
+    e = MinecraftEnvironment()
+    names = {t.name for t in await e.mcp.list_tools()}
+    assert names == {"get_rules", "observe", "go_to", "collect", "craft", "place", "give", "chat", "bridge", "take", "use"}

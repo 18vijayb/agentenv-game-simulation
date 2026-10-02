@@ -1,8 +1,9 @@
-# Start the server once at build time, so the jar is patched and the spawn area generated before any
-# deploy, then stop it.
+# Start the server once at build time on world $1 (default: world), so the jar is patched and the spawn
+# area generated before any deploy, then stop it.
 set -e
+world=${1:-world}
 mkfifo /tmp/console
-java -Xmx2G -jar paper.jar --nogui < /tmp/console > /tmp/pregen.log 2>&1 &
+java -Xmx2G -jar paper.jar --nogui --world "$world" < /tmp/console > /tmp/pregen.log 2>&1 &
 pid=$!
 exec 3>/tmp/console
 for i in $(seq 1 300); do
