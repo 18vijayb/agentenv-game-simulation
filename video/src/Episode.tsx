@@ -1,9 +1,9 @@
 import React from "react";
 import {
-  AbsoluteFill, Audio, Sequence, continueRender, delayRender, interpolate, spring, staticFile,
+  AbsoluteFill, Audio, Img, Sequence, continueRender, delayRender, interpolate, spring, staticFile,
   useCurrentFrame, useVideoConfig,
 } from "remotion";
-import type { Beat, Player, Seat, Storyboard, Table } from "./types";
+import type { Beat, CatanSeat, CatanTable, Player, Seat, Storyboard, Table } from "./types";
 
 const DISPLAY = "'Big Shoulders Display', 'Arial Narrow', Impact, sans-serif";
 const TEXT = "'Literata', Georgia, serif";
@@ -194,20 +194,25 @@ function Line({ beat, board, local, current }: { beat: Beat; board: Storyboard; 
   );
 }
 
+const score = (s: Seat | CatanSeat) => ("vp" in s ? s.vp : s.chips + s.bet);
+
 function Leaderboard({ board, idx }: { board: Storyboard; idx: number }) {
-  const seats = board.beats[idx].table.seats.map((s, i) => ({ ...s, player: board.players[i] }))
-    .sort((a, b) => (b.chips + b.bet) - (a.chips + a.bet));
+  const seats = (board.beats[idx].table.seats as (Seat | CatanSeat)[]).map((s, i) => ({ ...s, player: board.players[i] }))
+    .sort((a, b) => score(b) - score(a));
   return (
     <div style={{ background: "rgba(10,15,13,.8)", border: "1px solid rgba(241,234,216,.12)", borderRadius: 16,
                   padding: "12px 18px", display: "grid", gap: 4 }}>
-      <div style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 22, color: GOLD }}>Chip counts</div>
-      {seats.map((s) => (
-        <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 10, opacity: s.out ? 0.35 : 1 }}>
+      <div style={{ fontFamily: DISPLAY, fontWeight: 700, fontSize: 22, color: GOLD }}>{board.score ?? "Chip counts"}</div>
+      {seats.map((s) => {
+        const out = "out" in s && s.out;
+        return (
+        <div key={s.name} style={{ display: "flex", alignItems: "center", gap: 10, opacity: out ? 0.35 : 1 }}>
           <div style={{ width: 12, height: 12, borderRadius: "50%", background: s.player.color }} />
           <div style={{ flex: 1, fontFamily: DISPLAY, fontWeight: 700, fontSize: 26, color: INK }}>{s.player.name}</div>
-          <div style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 26, color: INK }}>{s.out ? "Out" : fmt(s.chips + s.bet)}</div>
+          <div style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 26, color: INK }}>{out ? "Out" : fmt(score(s))}</div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -264,14 +269,94 @@ function Header({ table }: { table: Table }) {
   );
 }
 
+/* ---------- CATAN ---------- */
+
+const CATAN_CARD = { left: 980, width: 350, top: 150, height: 206, gap: 12 };
+
+function CatanSeatCard({ seat, player, i, active, thinking }: {
+  seat: CatanSeat; player: Player; i: number; active: boolean; thinking: boolean;
+}) {
+  const top = CATAN_CARD.top + i * (CATAN_CARD.height + CATAN_CARD.gap);
+  return (
+    <div style={{ position: "absolute", left: CATAN_CARD.left, top, width: CATAN_CARD.width, height: CATAN_CARD.height,
+                  background: "rgba(10,15,13,.85)", borderRadius: 16, borderLeft: `8px solid ${player.color}`,
+                  boxShadow: active ? `0 0 0 3px ${player.color}, 0 0 28px ${player.color}66` : "0 6px 18px rgba(0,0,0,.4)",
+                  padding: "12px 16px", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: 8, zIndex: 3 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <div style={{ width: 46, height: 46, borderRadius: "50%", border: `4px solid ${player.color}`, display: "grid",
+                      placeItems: "center", fontFamily: DISPLAY, fontWeight: 800, fontSize: 19, color: player.color,
+                      background: "#141b18" }}>{player.mono}</div>
+        <div style={{ flex: 1, fontFamily: DISPLAY, fontWeight: 800, fontSize: 30, color: INK, lineHeight: 1 }}>
+          {player.name}{thinking && <span style={{ color: GOLD, fontSize: 22 }}> · thinking</span>}
+        </div>
+        <div style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 44, color: GOLD, lineHeight: 1 }}>
+          {seat.vp}<span style={{ fontSize: 22, color: "#b9c2bc" }}> VP</span>
+        </div>
+      </div>
+      <div style={{ display: "flex", gap: 14, fontFamily: DISPLAY, fontWeight: 700, fontSize: 28, color: INK }}>
+        {Object.entries(seat.hand).map(([icon, n]) => (
+          <span key={icon} style={{ opacity: n ? 1 : 0.35 }}>{icon} {n}</span>
+        ))}
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+        {seat.awards.map((a) => (
+          <span key={a} style={{ background: GOLD, color: "#2a2008", fontFamily: DISPLAY, fontWeight: 800, fontSize: 18,
+                                 borderRadius: 8, padding: "1px 9px" }}>{a}</span>
+        ))}
+        {seat.devs.map((d, k) => (
+          <span key={k} style={{ background: "#24406b", color: "#dbe7ff", fontFamily: TEXT, fontSize: 16, borderRadius: 8,
+                                 padding: "1px 9px" }}>{d}</span>
+        ))}
+        {seat.knights > 0 && (
+          <span style={{ color: "#b9c2bc", fontFamily: TEXT, fontSize: 16 }}>{seat.knights} knight{seat.knights === 1 ? "" : "s"} played</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CatanScene({ board, beat, idx, local }: { board: Storyboard; beat: Beat; idx: number; local: number }) {
+  const { fps } = useVideoConfig();
+  const t = beat.table as CatanTable;
+  const pop = spring({ frame: local, fps, config: { damping: 11, mass: 0.6 } });
+  const speaker = beat.speaker !== null ? board.players[beat.speaker] : null;
+  return (
+    <AbsoluteFill style={{ background: "radial-gradient(ellipse at 30% 45%, #1d3a5c 0%, #0b1622 70%)" }}>
+      <div style={{ position: "absolute", left: 56, top: 36, color: INK, zIndex: 4 }}>
+        <div style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 58, lineHeight: 1 }}>
+          {typeof t.turn === "number" ? `Turn ${t.turn}` : "Set-up"}
+        </div>
+        <div style={{ fontFamily: TEXT, fontSize: 24, color: "#b9c2bc", marginTop: 6 }}>
+          {t.now}{t.dice && t.dice !== "–" ? ` · rolled ${t.dice}` : ""}
+        </div>
+      </div>
+      {t.map && <Img src={t.map} style={{ position: "absolute", left: 36, top: 150, width: 920 }} />}
+      {t.seats.map((s, i) => (
+        <CatanSeatCard key={i} seat={s} player={board.players[i]} i={i} active={beat.speaker === i}
+                       thinking={beat.speaker === i && beat.mode === "think"} />
+      ))}
+      <Panel board={board} idx={idx} local={local} />
+      {speaker && beat.action && beat.mode !== "think" && (
+        <div style={{ position: "absolute", left: 496, top: 132, transform: `translate(-50%, 0) scale(${pop})`,
+                      background: "#0f1412", color: INK, border: `3px solid ${speaker.color}`, fontFamily: DISPLAY,
+                      fontWeight: 800, fontSize: 34, padding: "4px 22px", borderRadius: 14, whiteSpace: "nowrap",
+                      boxShadow: "0 10px 30px rgba(0,0,0,.6)", zIndex: 6 }}>
+          {speaker.label}: {beat.action}
+        </div>
+      )}
+    </AbsoluteFill>
+  );
+}
+
 /* ---------- scenes ---------- */
 
 function TableScene({ board }: { board: Storyboard }) {
   const frame = useCurrentFrame() - board.intro;
   const idx = Math.max(0, board.beats.findIndex((b) => frame >= b.from && frame < b.from + b.frames));
   const beat = board.beats[idx];
-  const prev = idx > 0 ? board.beats[idx - 1].table : null;
   const local = frame - beat.from;
+  if (beat.table.kind === "catan") return <CatanScene board={board} beat={beat} idx={idx} local={local} />;
+  const prev = idx > 0 ? (board.beats[idx - 1].table as Table) : null;
   const n = board.players.length;
   const t = beat.table;
   return (
@@ -327,7 +412,9 @@ function Outro({ board }: { board: Storyboard }) {
   return (
     <AbsoluteFill style={{ background: "rgba(5,8,7,.92)", display: "flex", flexDirection: "column", alignItems: "center",
                            justifyContent: "center", gap: 18, opacity: spring({ frame, fps, config: { damping: 20 } }) }}>
-      <div style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 84, color: INK, marginBottom: 16 }}>Final chips</div>
+      <div style={{ fontFamily: DISPLAY, fontWeight: 800, fontSize: 84, color: INK, marginBottom: 16 }}>
+        {board.score ? board.score : "Final chips"}
+      </div>
       {board.standings.map((s, i) => {
         const grow = spring({ frame: frame - 8 - i * 6, fps, config: { damping: 18 } });
         return (
@@ -356,12 +443,16 @@ export const Episode = ({ board }: { board: Storyboard }) => {
       <Sequence from={tableStart} durationInFrames={outroAt}>
         <TableScene board={board} />
       </Sequence>
-      <Sequence from={0} durationInFrames={board.intro}>
-        <Intro board={board} />
-      </Sequence>
-      <Sequence from={outroAt}>
-        <Outro board={board} />
-      </Sequence>
+      {board.intro > 0 && (
+        <Sequence from={0} durationInFrames={board.intro}>
+          <Intro board={board} />
+        </Sequence>
+      )}
+      {board.outro > 0 && (
+        <Sequence from={outroAt}>
+          <Outro board={board} />
+        </Sequence>
+      )}
       {board.beats.map((b, i) => b.audio && (
         <Sequence key={i} from={board.intro + b.from} durationInFrames={b.frames}>
           <Audio src={staticFile(`audio/${b.audio}`)} />

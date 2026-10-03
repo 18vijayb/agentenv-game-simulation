@@ -1,0 +1,64 @@
+{
+ "subtitle": "",
+ "cast": {
+  "narrator": {
+   "voice": "onyx",
+   "style": "A warm, energetic board-game commentator. Crisp and dramatic, with a hint of a smile."
+  },
+  "Claude Opus 5.5": {
+   "voice": "sage",
+   "label": "Opus",
+   "color": "#d23c2f",
+   "mono": "Op",
+   "style": "Calm, dry and economical, a patient builder who plays the long game."
+  },
+  "GPT-5.5": {
+   "voice": "cedar",
+   "label": "GPT",
+   "color": "#2f6fd2",
+   "mono": "GPT",
+   "style": "Measured, analytical and polite, explaining each move like a strategist."
+  },
+  "Gemini 3.1 Pro": {
+   "voice": "coral",
+   "label": "Gemini",
+   "color": "#e58a1f",
+   "mono": "Gem",
+   "style": "Bright and chatty, a little scattered, cheerfully thinking out loud."
+  },
+  "Claude Fable 5.1": {
+   "voice": "verse",
+   "label": "Fable",
+   "color": "#f2f0ea",
+   "mono": "Fab",
+   "style": "Sly, theatrical and confident, enjoying every bit of table talk."
+  }
+ },
+ "intro_seconds": 0,
+ "outro_seconds": 0,
+ "title": "The sales pitch",
+ "beats": [
+  {
+   "narrate": "Turn 39. GPT-5.5 holds both bonus cards, and nobody will trade with it.",
+   "seq": 958,
+   "pause": 0.6
+  },
+  {
+   "seq": 960,
+   "pause": 1.0,
+   "text": "Last attempt before I pass: I'll overpay 2 brick for 1 wool… denying me every trade just leaves me stuck while Opus keeps climbing."
+  },
+  {
+   "seq": 964
+  },
+  {
+   "seq": 966,
+   "pause": 1.2
+  },
+  {
+   "seq": 972,
+   "pause": 1.5
+  }
+ ],
+ "end_seq": 973
+}

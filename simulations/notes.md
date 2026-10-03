@@ -11,6 +11,11 @@ your own explorer with `python scripts/games.py load simulations/` to replay the
 - `secret-hitler-text-*` games came first: each turn the model got a text prompt and answered with
   one JSON object. Their logs are converted to the current format.
 
-All seats ran on each model's default settings. GPT-5.4, Claude Opus 5.5, Qwen3 235B and DeepSeek V4
+All seats ran on each model's default settings, except in `catan-mcp-1` (below). GPT-5.4, Claude Opus 5.5, Qwen3 235B and DeepSeek V4
 Pro answered without reasoning tokens; Gemini 3.1 Pro, Grok 4.20 and Kimi K3 reasoned. Read results
 as a baseline, not a ranking.
+
+`catan-mcp-1` stops being a model result at turn 53. The proxy's budget ran out there (event 1312), and
+from then on every model call failed and a stand-in bot moved, 78 times, so the win on turn 73 is
+partly the bots'. Read turns 1 to 53 as the game. Its seats kept the last 20 turns of conversation
+(`history_turns: 20`), and GPT-5.5 and Gemini 3.1 Pro ran at `reasoning_effort: low`.

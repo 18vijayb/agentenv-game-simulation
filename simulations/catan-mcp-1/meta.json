@@ -1,0 +1,49 @@
+{
+ "game_id": "game-3sd6dk0u",
+ "status": "finished",
+ "started_at": "2026-10-01T22:42:57.020+00:00",
+ "updated_at": "2026-10-01T23:34:44.413+00:00",
+ "events": 1689,
+ "players": [
+  {
+   "seat": 0,
+   "name": "Claude Opus 5.5",
+   "kind": "model",
+   "model": "anthropic/claude-opus-5-5"
+  },
+  {
+   "seat": 1,
+   "name": "GPT-5.5",
+   "kind": "model",
+   "model": "openai/gpt-5.5"
+  },
+  {
+   "seat": 2,
+   "name": "Gemini 3.1 Pro",
+   "kind": "model",
+   "model": "gemini/gemini-3.1-pro-preview"
+  },
+  {
+   "seat": 3,
+   "name": "Claude Fable 5.1",
+   "kind": "model",
+   "model": "anthropic/claude-fable-5-1"
+  }
+ ],
+ "seed": 602580467,
+ "instance_id": "@local/agentenv-games/game-catan-models/game-3sd6dk0u",
+ "game": "catan",
+ "title": "Catan",
+ "teams": {
+  "red": "#d23c2f",
+  "blue": "#2f6fd2",
+  "orange": "#e58a1f",
+  "white": "#f2f0ea"
+ },
+ "beliefs": null,
+ "winners": [
+  3
+ ],
+ "summary": "Claude Fable 5.1 wins with 10 victory points on turn 73.",
+ "team": null
+}

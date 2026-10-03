@@ -1,0 +1,336 @@
+# catan-mcp-1: Catan
+
+**Claude Fable 5.1 wins with 10 victory points on turn 73.** 1689 events, 52 minutes.
+
+| Seat | Player | Plays as | At the end | Moves | Claims | Lies | Stand-ins | Won |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Claude Opus 5.5 | `anthropic/claude-opus-5-5` | 🧱 0 · 🪵 2 · 🪨 2 · 🌾 5 · 🐑 0, 7 / 10 VP, 9 cards, 1 knight played | 117 | 0 | 0 | 22 | no |
+| 2 | GPT-5.5 | `openai/gpt-5.5` | 🧱 1 · 🪵 0 · 🪨 0 · 🌾 1 · 🐑 2, 4 / 10 VP, 4 cards, 3 knights played | 115 | 0 | 0 | 13 | no |
+| 3 | Gemini 3.1 Pro | `gemini/gemini-3.1-pro-preview` | 🧱 2 · 🪵 1 · 🪨 2 · 🌾 0 · 🐑 2, 6 / 10 VP, 7 cards, Longest Road | 122 | 0 | 0 | 16 | no |
+| 4 | Claude Fable 5.1 | `anthropic/claude-fable-5-1` | 🧱 1 · 🪵 2 · 🪨 2 · 🌾 1 · 🐑 0, 10 / 10 VP, 6 cards, victory point, victory point, victory point, 5 knights played, Largest Army, winner | 133 | 0 | 0 | 27 | yes |
+
+## What happened
+
+- Gemini 3.1 Pro takes starting resources: 2 wool and 1 brick.
+- GPT-5.5 takes starting resources: 1 brick and 1 wool and 1 ore.
+- Claude Opus 5.5 takes starting resources: 1 lumber and 1 grain and 1 brick.
+- Claude Fable 5.1 takes starting resources: 1 grain and 1 ore.
+- Claude Fable 5.1 rolls 8 (3 + 5).
+- Production: Gemini 3.1 Pro +1 lumber; Claude Fable 5.1 +1 wool.
+- Claude Opus 5.5 rolls 4 (2 + 2).
+- Production: Gemini 3.1 Pro +1 grain and 1 wool; Claude Opus 5.5 +1 grain.
+- GPT-5.5 rolls 11 (6 + 5).
+- Production: GPT-5.5 +1 lumber; Claude Opus 5.5 +1 lumber; Gemini 3.1 Pro +1 wool.
+- Gemini 3.1 Pro rolls 4 (1 + 3).
+- Production: Gemini 3.1 Pro +1 grain and 1 wool; Claude Opus 5.5 +1 grain.
+- Claude Fable 5.1 rolls 10 (4 + 6).
+- Production: Claude Fable 5.1 +1 lumber; Gemini 3.1 Pro +1 ore; Claude Opus 5.5 +1 ore.
+- Claude Opus 5.5 rolls 4 (2 + 2).
+- Production: Gemini 3.1 Pro +1 grain and 1 wool; Claude Opus 5.5 +1 grain.
+- Claude Opus 5.5 offers 2 grain for 1 brick and 1 wool to everyone.
+- Claude Opus 5.5 offers 1 grain and 1 ore for 1 wool and 1 brick to GPT-5.5, Gemini 3.1 Pro.
+- Claude Opus 5.5 offers 1 grain for 1 wool to everyone.
+- Claude Opus 5.5 trades 1 grain to GPT-5.5 for 1 wool.
+- GPT-5.5 rolls 4 (2 + 2).
+- Production: Gemini 3.1 Pro +1 grain and 1 wool; Claude Opus 5.5 +1 grain.
+- GPT-5.5 offers 1 ore for 1 brick and 1 lumber to everyone.
+- Gemini 3.1 Pro rolls 7 (3 + 4).
+- Seven! Over seven cards, so discarding half: Gemini 3.1 Pro 4.
+- Gemini 3.1 Pro discards 2 wool and 2 grain.
+- Gemini 3.1 Pro moves the robber to h5 (fields 5) and steals a card from Claude Opus 5.5.
+- Claude Fable 5.1 rolls 10 (5 + 5).
+- Production: Claude Fable 5.1 +1 lumber; Gemini 3.1 Pro +1 ore; Claude Opus 5.5 +1 ore.
+- Claude Fable 5.1 offers 1 lumber for 1 brick to everyone.
+- Claude Opus 5.5 rolls 6 (3 + 3).
+- Production: GPT-5.5 +1 brick and 1 ore; Gemini 3.1 Pro +1 brick; Claude Fable 5.1 +1 ore.
+- Claude Opus 5.5 offers 1 grain and 1 lumber for 1 ore to everyone.
+- Claude Opus 5.5 trades 1 grain and 1 lumber to GPT-5.5 for 1 ore.
+- GPT-5.5 rolls 2 (1 + 1).
+- Production: Claude Fable 5.1 +1 grain.
+- GPT-5.5 offers 1 grain for 1 wool to everyone.
+- Gemini 3.1 Pro rolls 4 (2 + 2).
+- Production: Gemini 3.1 Pro +1 grain and 1 wool; Claude Opus 5.5 +1 grain.
+- Gemini 3.1 Pro plays road building.
+- Claude Fable 5.1 rolls 8 (6 + 2).
+- Production: Gemini 3.1 Pro +1 lumber; Claude Fable 5.1 +1 wool.
+- Claude Fable 5.1 offers 1 lumber for 1 brick to everyone.
+- Claude Opus 5.5 rolls 5 (2 + 3).
+- Production: Claude Fable 5.1 +1 brick.
+- GPT-5.5 rolls 8 (4 + 4).
+- Production: Gemini 3.1 Pro +1 lumber; Claude Fable 5.1 +1 wool.
+- GPT-5.5 offers 1 grain for 1 wool to everyone.
+- GPT-5.5 trades 1 grain to Claude Fable 5.1 for 1 wool.
+- Gemini 3.1 Pro rolls 4 (3 + 1).
+- Production: Gemini 3.1 Pro +1 grain and 1 wool; Claude Opus 5.5 +1 grain.
+- Claude Fable 5.1 rolls 7 (5 + 2).
+- Claude Fable 5.1 moves the robber to h6 (mountains 10) and steals a card from Gemini 3.1 Pro.
+- Claude Opus 5.5 rolls 7 (2 + 5).
+- Claude Opus 5.5 moves the robber to h11 (forest 8) and steals a card from Gemini 3.1 Pro.
+- Claude Opus 5.5 offers 2 grain for 1 brick and 1 lumber to Gemini 3.1 Pro, Claude Fable 5.1.
+- GPT-5.5 rolls 5 (4 + 1).
+- Production: Claude Fable 5.1 +1 brick; Claude Opus 5.5 +2 grain; GPT-5.5 +1 grain.
+- GPT-5.5 offers 1 grain for 1 brick to everyone.
+- Gemini 3.1 Pro rolls 5 (1 + 4).
+- Production: Claude Fable 5.1 +1 brick; Claude Opus 5.5 +2 grain; GPT-5.5 +1 grain.
+- Gemini 3.1 Pro offers 1 wool for 1 grain to everyone.
+- Gemini 3.1 Pro trades 1 wool to Claude Opus 5.5 for 1 grain.
+- Claude Fable 5.1 plays a knight (1 played).
+- Claude Fable 5.1 moves the robber to h2 (mountains 9) and steals a card from Claude Opus 5.5.
+- Claude Fable 5.1 rolls 3 (1 + 2).
+- Production: GPT-5.5 +1 wool.
+- Claude Fable 5.1 offers 1 grain for 1 wool to everyone.
+- Claude Opus 5.5 rolls 3 (2 + 1).
+- Production: GPT-5.5 +1 wool.
+- Claude Opus 5.5 offers 2 grain for 1 ore to everyone.
+- GPT-5.5 rolls 5 (2 + 3).
+- Production: Claude Fable 5.1 +1 brick; Claude Opus 5.5 +2 grain; GPT-5.5 +1 grain.
+- GPT-5.5 offers 1 grain and 1 wool for 1 brick and 1 lumber to everyone.
+- GPT-5.5 offers 1 wool for 1 brick to Claude Fable 5.1.
+- GPT-5.5 trades 1 wool to Claude Fable 5.1 for 1 brick.
+- GPT-5.5 offers 1 grain for 1 lumber to everyone.
+- Gemini 3.1 Pro rolls 7 (2 + 5).
+- Gemini 3.1 Pro moves the robber to h5 (fields 5) and steals a card from GPT-5.5.
+- Claude Fable 5.1 rolls 3 (1 + 2).
+- Production: GPT-5.5 +1 wool.
+- Claude Fable 5.1 offers 1 grain for 1 lumber to everyone.
+- Claude Opus 5.5 plays a knight (1 played).
+- Claude Opus 5.5 moves the robber to h18 (mountains 6) and steals a card from Claude Fable 5.1.
+- Claude Opus 5.5 rolls 2 (1 + 1).
+- Production: Claude Fable 5.1 +1 grain.
+- Claude Opus 5.5 offers 1 grain for 1 ore to everyone.
+- GPT-5.5 plays a knight (1 played).
+- GPT-5.5 moves the robber to h11 (forest 8) and steals a card from Gemini 3.1 Pro.
+- GPT-5.5 rolls 6 (3 + 3).
+- Production: GPT-5.5 +1 brick and 1 ore; Gemini 3.1 Pro +1 brick; Claude Fable 5.1 +1 ore.
+- GPT-5.5 offers 1 brick for 1 lumber to everyone.
+- Gemini 3.1 Pro rolls 9 (3 + 6).
+- Production: Claude Opus 5.5 +1 brick and 2 ore; GPT-5.5 +1 brick.
+- Gemini 3.1 Pro offers 1 brick for 1 lumber to everyone.
+- Gemini 3.1 Pro plays year of plenty and takes 2 lumber.
+- Claude Fable 5.1 rolls 12 (6 + 6).
+- Nothing is produced.
+- Claude Fable 5.1 offers 1 grain for 1 lumber to everyone.
+- Claude Fable 5.1 trades 1 grain to Gemini 3.1 Pro for 1 lumber.
+- Claude Opus 5.5 rolls 8 (3 + 5).
+- Production: Claude Fable 5.1 +1 wool.
+- Claude Opus 5.5 offers 1 brick and 1 grain for 1 ore to everyone.
+- Claude Opus 5.5 trades 1 brick and 1 grain to Claude Fable 5.1 for 1 ore.
+- GPT-5.5 rolls 6 (4 + 2).
+- Production: GPT-5.5 +1 brick and 1 ore; Gemini 3.1 Pro +1 brick; Claude Fable 5.1 +1 ore.
+- GPT-5.5 plays a knight (2 played).
+- GPT-5.5 moves the robber to h6 (mountains 10) and steals a card from Claude Opus 5.5.
+- GPT-5.5 offers 1 grain for 1 wool to everyone.
+- Gemini 3.1 Pro rolls 6 (3 + 3).
+- Production: GPT-5.5 +1 brick and 1 ore; Gemini 3.1 Pro +1 brick; Claude Fable 5.1 +1 ore.
+- Claude Fable 5.1 rolls 5 (2 + 3).
+- Production: Claude Fable 5.1 +1 brick; Claude Opus 5.5 +2 grain; GPT-5.5 +1 grain.
+- Claude Fable 5.1 offers 1 brick for 1 ore to everyone.
+- Claude Opus 5.5 rolls 9 (6 + 3).
+- Production: Claude Opus 5.5 +2 brick and 2 ore; GPT-5.5 +1 brick; Claude Fable 5.1 +1 brick.
+- Claude Opus 5.5 offers 1 brick for 1 wool to everyone.
+- Claude Opus 5.5 offers 1 ore for 1 lumber to everyone.
+- GPT-5.5 plays a knight (3 played).
+- GPT-5.5 takes Largest Army.
+- GPT-5.5 moves the robber to h2 (mountains 9) and steals a card from Claude Opus 5.5.
+- GPT-5.5 rolls 11 (5 + 6).
+- Production: GPT-5.5 +1 lumber; Claude Opus 5.5 +2 lumber; Gemini 3.1 Pro +1 wool.
+- GPT-5.5 takes Longest Road (5).
+- GPT-5.5 offers 1 grain for 1 wool to everyone.
+- Gemini 3.1 Pro rolls 6 (2 + 4).
+- Production: GPT-5.5 +1 brick and 1 ore; Gemini 3.1 Pro +1 brick; Claude Fable 5.1 +1 ore.
+- Gemini 3.1 Pro offers 1 wool for 1 brick to everyone.
+- Gemini 3.1 Pro trades 1 wool to Claude Fable 5.1 for 1 brick.
+- Claude Fable 5.1 rolls 9 (3 + 6).
+- Production: Claude Opus 5.5 +2 brick; GPT-5.5 +1 brick; Claude Fable 5.1 +1 brick.
+- Claude Fable 5.1 offers 1 brick for 1 grain to everyone.
+- Claude Opus 5.5 rolls 8 (3 + 5).
+- Production: Gemini 3.1 Pro +1 lumber; Claude Fable 5.1 +1 wool.
+- Claude Opus 5.5 offers 1 brick for 1 wool to Gemini 3.1 Pro, Claude Fable 5.1.
+- Claude Opus 5.5 trades 1 brick to Gemini 3.1 Pro for 1 wool.
+- GPT-5.5 rolls 4 (2 + 2).
+- Production: Gemini 3.1 Pro +1 grain and 1 wool; Claude Opus 5.5 +2 grain.
+- GPT-5.5 offers 1 ore for 1 wool to Gemini 3.1 Pro.
+- GPT-5.5 offers 1 brick and 1 ore for 1 lumber and 1 wool to Gemini 3.1 Pro, Claude Fable 5.1.
+- GPT-5.5 offers 2 brick for 1 wool to Gemini 3.1 Pro, Claude Fable 5.1.
+- Gemini 3.1 Pro rolls 6 (2 + 4).
+- Production: GPT-5.5 +1 brick and 1 ore; Gemini 3.1 Pro +1 brick; Claude Fable 5.1 +1 ore.
+- Claude Fable 5.1 plays a knight (2 played).
+- Claude Fable 5.1 moves the robber to h5 (fields 5) and steals a card from GPT-5.5.
+- Claude Fable 5.1 rolls 12 (6 + 6).
+- Nothing is produced.
+- Claude Fable 5.1 offers 2 brick for 1 grain to Claude Opus 5.5, Gemini 3.1 Pro.
+- Claude Fable 5.1 trades 2 brick to Claude Opus 5.5 for 1 grain.
+- Claude Opus 5.5 rolls 4 (3 + 1).
+- Production: Gemini 3.1 Pro +1 grain and 1 wool; Claude Opus 5.5 +2 grain.
+- Claude Opus 5.5 offers 1 grain for 1 ore to Gemini 3.1 Pro, Claude Fable 5.1.
+- Claude Opus 5.5 offers 2 brick for 1 ore to everyone.
+- GPT-5.5 rolls 2 (1 + 1).
+- Production: Claude Fable 5.1 +2 grain.
+- GPT-5.5 offers 1 brick for 1 lumber to Gemini 3.1 Pro, Claude Fable 5.1.
+- GPT-5.5 offers 2 brick for 1 lumber to Gemini 3.1 Pro, Claude Fable 5.1.
+- Gemini 3.1 Pro rolls 8 (2 + 6).
+- Production: Gemini 3.1 Pro +1 lumber; Claude Fable 5.1 +1 wool.
+- Gemini 3.1 Pro offers 1 wool for 1 brick to everyone.
+- Gemini 3.1 Pro trades 1 wool to Claude Fable 5.1 for 1 brick.
+- Claude Fable 5.1 plays a knight (3 played).
+- Claude Fable 5.1 moves the robber to h18 (mountains 6) and steals a card from GPT-5.5.
+- Claude Fable 5.1 rolls 2 (1 + 1).
+- Production: Claude Fable 5.1 +2 grain.
+- Claude Fable 5.1 offers 1 grain for 1 ore to Claude Opus 5.5, Gemini 3.1 Pro.
+- Claude Opus 5.5 rolls 11 (6 + 5).
+- Production: GPT-5.5 +1 lumber; Claude Opus 5.5 +3 lumber; Gemini 3.1 Pro +1 wool.
+- Claude Opus 5.5 offers 2 lumber for 2 grain to Gemini 3.1 Pro, Claude Fable 5.1.
+- GPT-5.5 rolls 8 (4 + 4).
+- Production: Gemini 3.1 Pro +2 lumber; Claude Fable 5.1 +1 wool.
+- Gemini 3.1 Pro rolls 6 (5 + 1).
+- Production: GPT-5.5 +1 brick; Gemini 3.1 Pro +1 brick.
+- Gemini 3.1 Pro takes Longest Road (6).
+- Claude Fable 5.1 plays a knight (4 played).
+- Claude Fable 5.1 takes Largest Army.
+- Claude Fable 5.1 moves the robber to h2 (mountains 9) and steals a card from Claude Opus 5.5.
+- Claude Fable 5.1 rolls 4 (1 + 3).
+- Production: Gemini 3.1 Pro +1 grain and 1 wool; Claude Opus 5.5 +2 grain.
+- Claude Fable 5.1 offers 1 brick for 1 ore to GPT-5.5, Gemini 3.1 Pro.
+- Claude Opus 5.5 rolls 8 (2 + 6).
+- Production: Gemini 3.1 Pro +2 lumber; Claude Fable 5.1 +1 wool.
+- Claude Opus 5.5 offers 1 lumber for 1 wool to everyone.
+- Claude Opus 5.5 trades 1 lumber to Gemini 3.1 Pro for 1 wool.
+- GPT-5.5 rolls 8 (3 + 5).
+- Production: Gemini 3.1 Pro +2 lumber; Claude Fable 5.1 +1 wool.
+- GPT-5.5 offers 1 brick for 1 lumber to Gemini 3.1 Pro, Claude Fable 5.1.
+- GPT-5.5 trades 1 brick to Gemini 3.1 Pro for 1 lumber.
+- Gemini 3.1 Pro rolls 8 (3 + 5).
+- Production: Gemini 3.1 Pro +2 lumber; Claude Fable 5.1 +1 wool.
+- Claude Fable 5.1 rolls 10 (5 + 5).
+- Production: Claude Opus 5.5 +2 lumber and 2 ore; Claude Fable 5.1 +2 lumber; Gemini 3.1 Pro +1 ore.
+- Claude Fable 5.1 plays a knight (5 played).
+- Claude Fable 5.1 moves the robber to h5 (fields 5) and steals a card from Claude Opus 5.5.
+- Claude Opus 5.5 rolls 5 (1 + 4).
+- Production: Claude Fable 5.1 +1 brick.
+- GPT-5.5 rolls 10 (4 + 6).
+- Production: Claude Opus 5.5 +2 lumber and 2 ore; Claude Fable 5.1 +2 lumber; Gemini 3.1 Pro +1 ore.
+- Gemini 3.1 Pro rolls 7 (1 + 6).
+- Seven! Over seven cards, so discarding half: Claude Opus 5.5 4.
+- Claude Opus 5.5 discards 3 lumber and 1 ore.
+- Gemini 3.1 Pro moves the robber to h2 (mountains 9) and steals a card from Claude Opus 5.5.
+- Claude Fable 5.1 rolls 9 (4 + 5).
+- Production: Claude Opus 5.5 +2 brick; GPT-5.5 +2 brick; Claude Fable 5.1 +1 brick.
+- Claude Opus 5.5 rolls 8 (2 + 6).
+- Production: Gemini 3.1 Pro +2 lumber; Claude Fable 5.1 +1 wool.
+- GPT-5.5 rolls 4 (3 + 1).
+- Production: Gemini 3.1 Pro +1 grain and 1 wool; Claude Opus 5.5 +2 grain.
+- Gemini 3.1 Pro rolls 6 (3 + 3).
+- Production: GPT-5.5 +1 brick and 2 ore; Gemini 3.1 Pro +1 brick; Claude Fable 5.1 +1 ore.
+- Claude Fable 5.1 rolls 10 (5 + 5).
+- Production: Claude Opus 5.5 +2 lumber and 2 ore; Claude Fable 5.1 +2 lumber; Gemini 3.1 Pro +1 ore.
+- Claude Opus 5.5 rolls 2 (1 + 1).
+- Production: Claude Fable 5.1 +2 grain.
+- GPT-5.5 rolls 9 (5 + 4).
+- Production: Claude Opus 5.5 +2 brick; GPT-5.5 +2 brick; Claude Fable 5.1 +1 brick.
+- Gemini 3.1 Pro rolls 10 (4 + 6).
+- Production: Claude Opus 5.5 +2 lumber and 2 ore; Claude Fable 5.1 +2 lumber; Gemini 3.1 Pro +1 ore.
+- Claude Fable 5.1 rolls 7 (5 + 2).
+- Seven! Over seven cards, so discarding half: Claude Opus 5.5 4, Gemini 3.1 Pro 4, Claude Fable 5.1 4.
+- Claude Opus 5.5 discards 3 lumber and 1 brick.
+- Gemini 3.1 Pro discards 3 ore and 1 wool.
+- Claude Fable 5.1 discards 4 lumber.
+- Claude Fable 5.1 moves the robber to h5 (fields 5) and steals a card from Claude Opus 5.5.
+- Claude Opus 5.5 rolls 6 (4 + 2).
+- Production: GPT-5.5 +1 brick and 2 ore; Gemini 3.1 Pro +1 brick; Claude Fable 5.1 +1 ore.
+- GPT-5.5 rolls 5 (3 + 2).
+- Production: Claude Fable 5.1 +1 brick.
+- Gemini 3.1 Pro rolls 5 (2 + 3).
+- Production: Claude Fable 5.1 +1 brick.
+- Claude Fable 5.1 rolls 7 (5 + 2).
+- Seven! Over seven cards, so discarding half: Claude Fable 5.1 4.
+- Claude Fable 5.1 discards 2 brick and 2 ore.
+- Claude Fable 5.1 moves the robber to h2 (mountains 9) and steals a card from Claude Opus 5.5.
+- Claude Opus 5.5 rolls 3 (2 + 1).
+- Production: Claude Opus 5.5 +2 grain; Claude Fable 5.1 +1 grain; Gemini 3.1 Pro +1 wool; GPT-5.5 +2 wool.
+- GPT-5.5 rolls 2 (1 + 1).
+- Production: Claude Fable 5.1 +2 grain.
+- Gemini 3.1 Pro rolls 10 (5 + 5).
+- Production: Claude Opus 5.5 +2 lumber and 2 ore; Claude Fable 5.1 +2 lumber; Gemini 3.1 Pro +1 ore.
+- Claude Fable 5.1 rolls 5 (1 + 4).
+- Production: Claude Fable 5.1 +1 brick; Claude Opus 5.5 +2 grain; GPT-5.5 +1 grain.
+
+## Stand-ins
+
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1000.895575716, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897332558&to=1790897932558","type":"budget_exceeded
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1000.909471316, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897333127&to=1790897933127","type":"budget_exceeded
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1000.919512516, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897333679&to=1790897933679","type":"budget_exceeded
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1000.929597716, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897334224&to=1790897934224","type":"budget_exceeded
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1000.929597716, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897334735&to=1790897934735","type":"budget_exceeded
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1000.929597716, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897335330&to=1790897935330","type":"budget_exceeded
+- A stand-in moved for GPT-5.5: openai/gpt-5.5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.4609101560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897336029&to=1790897936029","type":"budget_exce
+- A stand-in moved for GPT-5.5: openai/gpt-5.5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.4609101560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897336580&to=1790897936580","type":"budget_exce
+- A stand-in moved for Gemini 3.1 Pro: gemini/gemini-3.1-pro-preview: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897337870&to=1790897937870","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897338363&to=1790897938363","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897339288&to=1790897939288","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897339777&to=1790897939777","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897340631&to=1790897940631","type":"budget_exce
+- A stand-in moved for Gemini 3.1 Pro: gemini/gemini-3.1-pro-preview: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897341848&to=1790897941848","type":"budget_exce
+- A stand-in moved for Gemini 3.1 Pro: gemini/gemini-3.1-pro-preview: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897342725&to=1790897942725","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897343288&to=1790897943288","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897344293&to=1790897944293","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897345358&to=1790897945358","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897345858&to=1790897945858","type":"budget_exce
+- A stand-in moved for GPT-5.5: openai/gpt-5.5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897347903&to=1790897947903","type":"budget_exce
+- A stand-in moved for GPT-5.5: openai/gpt-5.5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897349241&to=1790897949241","type":"budget_exce
+- A stand-in moved for Gemini 3.1 Pro: gemini/gemini-3.1-pro-preview: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897349829&to=1790897949829","type":"budget_exce
+- A stand-in moved for Gemini 3.1 Pro: gemini/gemini-3.1-pro-preview: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897350497&to=1790897950497","type":"budget_exce
+- A stand-in moved for Gemini 3.1 Pro: gemini/gemini-3.1-pro-preview: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897351110&to=1790897951110","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897351698&to=1790897951698","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897352234&to=1790897952234","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897353428&to=1790897953428","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897354993&to=1790897954993","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897356350&to=1790897956350","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897357010&to=1790897957010","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897357527&to=1790897957527","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897358423&to=1790897958423","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897358913&to=1790897958913","type":"budget_exce
+- A stand-in moved for GPT-5.5: openai/gpt-5.5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897359924&to=1790897959924","type":"budget_exce
+- A stand-in moved for GPT-5.5: openai/gpt-5.5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897360626&to=1790897960626","type":"budget_exce
+- A stand-in moved for GPT-5.5: openai/gpt-5.5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897361387&to=1790897961387","type":"budget_exce
+- A stand-in moved for Gemini 3.1 Pro: gemini/gemini-3.1-pro-preview: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897361938&to=1790897961938","type":"budget_exce
+- A stand-in moved for Gemini 3.1 Pro: gemini/gemini-3.1-pro-preview: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897362558&to=1790897962558","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897363044&to=1790897963044","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897363555&to=1790897963555","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897363581&to=1790897963581","type":"budget_exce
+- A stand-in moved for Gemini 3.1 Pro: gemini/gemini-3.1-pro-preview: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897363718&to=1790897963718","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897364294&to=1790897964294","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897364331&to=1790897964331","type":"budget_exce
+- A stand-in moved for Gemini 3.1 Pro: gemini/gemini-3.1-pro-preview: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897364398&to=1790897964398","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897364864&to=1790897964864","type":"budget_exce
+- A stand-in moved for Gemini 3.1 Pro: gemini/gemini-3.1-pro-preview: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897364921&to=1790897964921","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897364950&to=1790897964950","type":"budget_exce
+- A stand-in moved for Gemini 3.1 Pro: gemini/gemini-3.1-pro-preview: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897365577&to=1790897965577","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897366764&to=1790897966764","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897368378&to=1790897968378","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897368873&to=1790897968873","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897369813&to=1790897969813","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897370234&to=1790897970234","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897370639&to=1790897970639","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897371094&to=1790897971094","type":"budget_exce
+- A stand-in moved for GPT-5.5: openai/gpt-5.5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897371658&to=1790897971658","type":"budget_exce
+- A stand-in moved for GPT-5.5: openai/gpt-5.5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897372227&to=1790897972227","type":"budget_exce
+- A stand-in moved for GPT-5.5: openai/gpt-5.5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897372724&to=1790897972724","type":"budget_exce
+- A stand-in moved for GPT-5.5: openai/gpt-5.5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897373243&to=1790897973243","type":"budget_exce
+- A stand-in moved for Gemini 3.1 Pro: gemini/gemini-3.1-pro-preview: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897373832&to=1790897973832","type":"budget_exce
+- A stand-in moved for Gemini 3.1 Pro: gemini/gemini-3.1-pro-preview: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897374450&to=1790897974450","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897374918&to=1790897974918","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897375343&to=1790897975343","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897375770&to=1790897975770","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897376573&to=1790897976573","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897377637&to=1790897977637","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897378225&to=1790897978225","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897379071&to=1790897979071","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897379592&to=1790897979592","type":"budget_exce
+- A stand-in moved for Claude Opus 5.5: anthropic/claude-opus-5-5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897380459&to=1790897980459","type":"budget_exce
+- A stand-in moved for GPT-5.5: openai/gpt-5.5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897381621&to=1790897981621","type":"budget_exce
+- A stand-in moved for GPT-5.5: openai/gpt-5.5: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897382618&to=1790897982618","type":"budget_exce
+- A stand-in moved for Gemini 3.1 Pro: gemini/gemini-3.1-pro-preview: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897383814&to=1790897983814","type":"budget_exce
+- A stand-in moved for Gemini 3.1 Pro: gemini/gemini-3.1-pro-preview: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897384567&to=1790897984567","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897385111&to=1790897985111","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897385932&to=1790897985932","type":"budget_exce
+- A stand-in moved for Claude Fable 5.1: anthropic/claude-fable-5-1: HTTP 400: {"error":{"message":"Budget has been exceeded! Key=hackathon-key-vijay (sk-...4Oxg) Current cost: 1001.8203661560001, Max budget: 1000.0\n\nDebug this request in Datadog APM: https://app.datadoghq.com/apm/traces?query=service%3Alitellm-rebuild&from=1790897386466&to=1790897986466","type":"budget_exce

@@ -13,12 +13,18 @@ your own explorer with `python scripts/games.py load simulations/` to replay the
 - `secret-hitler-text-*` games came first: each turn the model got a text prompt and answered with
   one JSON object. Their logs are converted to the current format.
 
-All seats ran on each model's default settings. GPT-5.4, Claude Opus 5.5, Qwen3 235B and DeepSeek V4
+All seats ran on each model's default settings, except in `catan-mcp-1` (below). GPT-5.4, Claude Opus 5.5, Qwen3 235B and DeepSeek V4
 Pro answered without reasoning tokens; Gemini 3.1 Pro, Grok 4.20 and Kimi K3 reasoned. Read results
 as a baseline, not a ranking.
 
+`catan-mcp-1` stops being a model result at turn 53. The proxy's budget ran out there (event 1312), and
+from then on every model call failed and a stand-in bot moved, 78 times, so the win on turn 73 is
+partly the bots'. Read turns 1 to 53 as the game. Its seats kept the last 20 turns of conversation
+(`history_turns: 20`), and GPT-5.5 and Gemini 3.1 Pro ran at `reasoning_effort: low`.
+
 | Game | Kind | Result | Minutes | Lies | Stand-ins |
 |---|---|---|---|---|---|
+| [catan-mcp-1](catan-mcp-1/summary.md) | Catan | Claude Fable 5.1 wins with 10 victory points on turn 73. | 52 | 0 | 78 |
 | [minecraft-pickaxes-native-1](minecraft-pickaxes-native-1/summary.md) | Minecraft | Claude, GPT reached the goal in 3:26 (2/2 stone_pickaxe (each player)). | 4 | 0 | 0 |
 | [minecraft-pickaxes-native-2](minecraft-pickaxes-native-2/summary.md) | Minecraft | Claude, GPT, Gemini, Kimi reached the goal in 3:20 (4/4 stone_pickaxe (each player)). | 3 | 0 | 0 |
 | [minecraft-skyblock-native-1](minecraft-skyblock-native-1/summary.md) | Minecraft | Claude, GPT reached the goal in 4:28 (14/14 obsidian in the frame, 1/1 portal lit). | 5 | 0 | 0 |
@@ -35,13 +41,15 @@ as a baseline, not a ranking.
 | Player | Games | Wins | Roles | Lies / claims | Stand-ins |
 |---|---|---|---|---|---|
 | DeepSeek V4 Pro | 6 | 5 | 4♥ 3♣ 1, Liberal 4, Q♦ J♠ 1 | 0 / 11 | 0 |
-| Claude Opus 5.5 | 7 | 4 | 3♣ 9♥ 1, Fascist 1, J♥ Q♠ 1, Liberal 3, – 1 | 1 / 13 | 0 |
+| Claude Opus 5.5 | 8 | 4 | 3♣ 9♥ 1, Fascist 1, J♥ Q♠ 1, Liberal 3, – 1, 🧱 0 · 🪵 2 · 🪨 2 · 🌾 5 · 🐑 0 1 | 1 / 13 | 22 |
 | Claude | 3 | 3 | collect 1, – 2 | 0 / 0 | 0 |
 | GPT | 3 | 3 | give 1, – 2 | 0 / 0 | 0 |
 | GPT-5.4 | 7 | 3 | 6♣ 4♥ 1, 8♣ 5♦ 1, Fascist 1, Hitler 1, Liberal 2, – 1 | 2 / 8 | 0 |
-| Gemini 3.1 Pro | 6 | 3 | 4♦ A♦ 1, A♣ J♣ 1, Hitler 1, Liberal 3 | 0 / 11 | 0 |
+| Gemini 3.1 Pro | 7 | 3 | 4♦ A♦ 1, A♣ J♣ 1, Hitler 1, Liberal 3, 🧱 2 · 🪵 1 · 🪨 2 · 🌾 0 · 🐑 2 1 | 0 / 11 | 16 |
 | Kimi K3 | 6 | 2 | A♥ 9♠ 1, Fascist 1, Hitler 1, Liberal 2, – 1 | 1 / 12 | 0 |
+| Claude Fable 5.1 | 1 | 1 | 🧱 1 · 🪵 2 · 🪨 2 · 🌾 1 · 🐑 0 1 | 0 / 0 | 27 |
 | Gemini | 1 | 1 | – 1 | 0 / 0 | 0 |
 | Grok 4.20 | 6 | 1 | 8♥ A♥ 1, Fascist 3, Liberal 1, – 1 | 2 / 7 | 0 |
 | Kimi | 1 | 1 | – 1 | 0 / 0 | 0 |
 | Qwen3 235B | 4 | 1 | Fascist 2, Hitler 1, Liberal 1 | 1 / 4 | 0 |
+| GPT-5.5 | 1 | 0 | 🧱 1 · 🪵 0 · 🪨 0 · 🌾 1 · 🐑 2 1 | 0 / 0 | 13 |
