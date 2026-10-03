@@ -1,16 +1,78 @@
-# agentenv-game-simulation
+# agentenv-games
 
-Multi-agent games for [agent-env](https://github.com/scaleapi/agentenv-framework). You write a
-game's rules as a small Python class. Agents and models play it through an MCP server, and the
-agent-env explorer shows every game live or as a replay: the game state on the left, and on the
-right the log of what each player said, did and privately thought.
+**Frontier AI models playing Secret Hitler, poker, CATAN and Minecraft with and against each other,
+built entirely on [agent-env](https://github.com/scaleapi/agentenv-framework).**
 
-This repo is the `agentenv-games` plugin, with six games (Secret Hitler, no-limit Texas Hold'em,
-Liar's Dice, the iterated Prisoner's Dilemma, UNO with the Wild +4 challenge rule and CATAN, the base game
-with trading and a drawn board), plus [`simulations/`](simulations/): games played between
-frontier models, each with a summary and its full event log.
+![Claude and GPT bridge the void in Minecraft skyblock and light a nether portal](docs/media/minecraft-skyblock.gif)
 
-Adding a game? Follow [`docs/adding-a-game.md`](docs/adding-a-game.md); coding agents pick up [`AGENTS.md`](AGENTS.md) automatically.
+*Claude and GPT start on a floating island with 16 cobblestone each and a 24-block gap to cross. They
+bridge side by side, both run out at the same spot, chop the only tree for planks, finish the bridge,
+then build and light a nether portal together. 4 minutes 28 seconds, filmed by the environment's own
+camera. [The full run](simulations/minecraft-skyblock-native-1/summary.md) and
+[its video](simulations/minecraft-skyblock-native-1/video.mp4).*
+
+Every game here is an agent-env environment: a server deployed into a sandbox, played over MCP by
+models or by deployed agents, driven by an ordinary agent-env task, and recorded so that every move,
+spoken line and private thought can be replayed. This repo is just a plugin. It adds games, two task
+steps, an explorer page and a CLI group, and agent-env does the rest.
+
+## What the agents got up to
+
+### Secret Hitler: Claude finds Hitler
+
+![Claude, a Liberal, executes GPT-5.4, who is secretly Hitler](docs/media/secret-hitler.gif)
+
+Seven models, hidden roles, and lies told to each other's faces. With four fascist policies down and
+the power to execute, Claude Opus 5.5 works out the deck math, decides Grok's claim of three fascist
+cards was close to impossible, reasons back to who covered for whom, and executes GPT-5.4, who was
+secretly Hitler. The viewer shows what everyone said publicly next to what
+they privately thought, and marks every lie. [The game](simulations/secret-hitler-text-1/summary.md)
+
+### Texas Hold'em: Grok shows its cards
+
+![Grok announces "Raising with JT" and Kimi plans around it](docs/media/poker-grok-reveals.gif)
+
+Six models, ten hands of no-limit hold'em. Grok 4.20 announces its own hand out loud, "Raising with
+JT", and Kimi K3 immediately plans a set-mining call around it. This clip is from the narrated episode
+that [`video/`](video/README.md) renders from a game's log: a voice per player, thoughts whispered, and
+commentary between beats. [The game](simulations/texas-holdem-mcp-1/summary.md)
+
+### CATAN: the full board game
+
+![A game of CATAN replayed in the explorer, board and all](docs/media/catan.gif)
+
+The base game, with trading, development cards, the robber, the longest road and the largest army, on a
+board drawn live in the viewer. This replay is four built-in bots; `agent-env run game-catan-models`
+seats models instead.
+
+### Every game is a replay
+
+![The explorer replaying the Minecraft run, with the recording in step with the log](docs/media/explorer-minecraft.gif)
+
+`agent-env up` serves the explorer with this plugin's viewer: the game state on the left (here, the
+env's recording plus the portal frame filling up), and on the right everything that happened. Scrub the
+timeline and the video follows; play the video and the log follows. Here GPT is standing on the last
+frame spot, and Claude has to ask it to move.
+
+Also in the box: Liar's Dice, UNO with the Wild +4 challenge, the iterated Prisoner's Dilemma, and the
+Minecraft stone-pickaxe race, where [four models](simulations/minecraft-pickaxes-native-2/summary.md)
+finished in 3:20 after GPT walked over and handed its pickaxe to a teammate that had stalled. Every
+recorded game is in [`simulations/`](simulations/README.md), with a summary and its full event log.
+
+## What agent-env does here
+
+| You see | agent-env underneath |
+|---|---|
+| Each game, and the Minecraft server, runs in its own container | an `MCPServerEnv`, deployed by the standard `deploy_env` step into a sandbox from the configured provider (local Docker here) |
+| One task plays any game | tasks are DAGs of steps; swapping the `env_id` swaps the game and nothing else changes |
+| Models and agents play by calling tools | the env serves MCP over the agentenv protocol; models call it by function calling, and deployed A2A agents (Claude Code, Codex, ...) can take a seat through the `mcp-config` extension |
+| Four models act in Minecraft at once | `play_world` runs every seat concurrently against one deployed env until the env reports the goal met |
+| Images and envs are versioned | `agent-env games setup` stores the image as a `docker_image` artifact and registers the envs; every game records the env id and version it ran on |
+| The explorer page, the `play_game` step, `agent-env games` | plugin entry points (`agent_env.explorer_plugins`, `agent_env.task_steps`, `agent_env.cli_plugins`, `agent_env.bundles`): no fork of agent-env |
+| Every game, video included, is kept | logs and recordings go to agent-env's configured object store |
+
+Adding a game? Follow [`docs/adding-a-game.md`](docs/adding-a-game.md). A game is one Python class, and
+coding agents pick up [`AGENTS.md`](AGENTS.md) automatically.
 
 ## Quick start
 
